@@ -1,0 +1,64 @@
+﻿@using System.Text.RegularExpressions
+@using System.ComponentModel.DataAnnotations
+
+@inject IClientiService ClientiService
+
+<MudItem xs="12">
+    <MudText Align="Align.Center" Typo="Typo.h2">CLIENTI</MudText>
+</MudItem>
+
+<MudItem xs="12">
+        <MudGrid Justify="Justify.Center">
+            <MudItem xs="12">
+                <MudPaper Class="pa-6" Elevation="5">
+                    <MudForm @ref="form" @bind-IsValid="@success">
+
+                        <MudTextField @bind-Value="Cliente.ragioneSociale" T="string" Label="Ragione Sociale" Required="true" RequiredError="Ragione sociale obbligatoria!" />
+                        <MudTextField @bind-Value="Cliente.email" T="string" Label="Email" Required="true" RequiredError="Email obbligatoria!"
+                                      Validation="@(new EmailAddressAttribute() {ErrorMessage = "Indirizzo Email non valido"})" />
+                        <MudTextField @bind-Value="Cliente.telefono" T="string" Label="Telefono" Required="true" RequiredError="Numero di telefono obbligatorio!"
+                                      Validation="@(new PhoneAttribute() {ErrorMessage = "Telefono non valido"})" />
+                    <MudTextField @bind-Value="Cliente.Indirizzo" T="string" Label="Indirizzo" Required="true" RequiredError="Indirizzo obbligatorio!" />
+                    <MudTextField @bind-Value="Cliente.Citta" T="string" Label="Città" Required="true" RequiredError="Città obbligatoria!" />
+                    <MudTextField @bind-Value="Cliente.Provincia" T="string" Label="Provincia" Required="true" RequiredError="Provincia obbligatoria!" />
+                    <MudTextField @bind-Value="Cliente.Stato" T="string" Label="Stato" Required="true" RequiredError="Stato obbligatorio!" />
+
+                        <div class="d-flex justify-content-around">
+                            <MudButton Variant="Variant.Filled" Color="Color.Info" Class="mt-5" OnClick="@(()=>{ViewTable.InvokeAsync();})">Annulla</MudButton>
+                        @if (Edit)
+                        {
+                            <MudButton Variant="Variant.Filled" Color="Color.Success" Disabled="@(!success)" Class="mt-5" OnClick="@(()=>{EditCliente.InvokeAsync(Cliente);})">Modifica</MudButton>
+                        }
+                        else
+                        {
+                            <MudButton Variant="Variant.Filled" Color="Color.Success" Disabled="@(!success)" Class="mt-5" OnClick="@(()=>{CreateCliente.InvokeAsync(Cliente);})">Aggiungi</MudButton>
+                        }
+                        </div>
+
+                    </MudForm>
+                </MudPaper>
+            </MudItem>
+        </MudGrid>
+</MudItem>
+
+
+@code {
+    [Parameter]
+    public EventCallback<bool> ViewTable { get; set; }
+
+    [Parameter]
+    public bool Edit { get; set; } = false;
+
+    [Parameter]
+    public EventCallback<Cliente> CreateCliente { get; set; }
+
+    [Parameter]
+    public EventCallback<Cliente> EditCliente { get; set; }
+
+    [Parameter]
+    public Cliente Cliente { get; set; } = new Cliente();
+
+    bool success;
+    MudForm form;
+
+}

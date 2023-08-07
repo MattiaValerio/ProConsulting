@@ -1,0 +1,184 @@
+﻿@page "/Clienti"
+@inject IClientiService ClientiService
+@inject IDialogService DialogService
+
+<MudContainer>
+    <MudGrid Justify="Justify.Center">
+
+
+        @if (NewCliente)
+        {
+            <AddClienteForm ViewTable="PopUpNewCliente" CreateCliente="AddCliente"></AddClienteForm>
+        }else if (ModificaCliente)
+        {
+            <AddClienteForm Cliente="Cliente" EditCliente="EditCliente" Edit="true" ViewTable="PopUpEditCliente" CreateCliente="AddCliente"></AddClienteForm>
+        }
+        else
+        {
+            <MudItem xs="12">
+                <MudText Align="Align.Center" Typo="Typo.h2">CLIENTI</MudText>
+            </MudItem>
+
+             <MudItem xs="1" Class="d-flex flex-column align-items-center justify-center">
+                <MudIconButton Icon="@Icons.Material.Filled.Add" Color="Color.Primary" aria-label="github" OnClick="@(()=>{NewCliente = !NewCliente;})"></MudIconButton>
+            </MudItem>
+
+            <MudItem xs="11">
+                <MudAutocomplete T="string" Label="Ragione Sociale" @bind-Value="Cliente.ragioneSociale" SearchFunc="@Search"
+                                 ResetValueOnEmptyText="true"
+                                 Clearable="true"
+                                 CoerceValue="true"
+                                 AdornmentIcon="@Icons.Material.Filled.Search"
+                                 AdornmentColor="Color.Primary" />
+            </MudItem>
+
+            <MudItem xs="12">
+                <MudTable Elevation="4" Items="_FilteredList" Height="100" Breakpoint="Breakpoint.Sm" Striped="true" Virtualize="true" FixedHeader="true">
+                    <HeaderContent>
+                        <MudTh>Ragione Sociale</MudTh>
+                        <MudTh>Indirizzo</MudTh>
+                        <MudTh>Città</MudTh>
+                        <MudTh>E-Mail</MudTh>
+                        <MudTh>Telefono</MudTh>
+                        <MudTh>Modifica</MudTh>
+                        <MudTh>Elimina</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd DataLabel="Ragione Sociale">@context.ragioneSociale</MudTd>
+                        <MudTd DataLabel="Indirizzo">@context.Indirizzo</MudTd>
+                        <MudTd DataLabel="Citta">@context.Citta</MudTd>
+                        <MudTd DataLabel="E-Mail">@context.email</MudTd>
+                        <MudTd DataLabel="Telefono">@context.telefono</MudTd>
+                        <MudTd DataLabel="Modifica">
+                            <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" aria-label="github" OnClick="@(()=>{EditBtnClick(context);})"></MudIconButton>
+                        </MudTd>
+                        <MudTd DataLabel="Elimina">
+                            <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" aria-label="github" @onclick="@(()=>{OpenDialog(context);})"></MudIconButton>
+                        </MudTd>
+                    </RowTemplate>
+                </MudTable>
+
+            </MudItem>
+
+        }
+    </MudGrid>
+</MudContainer>
+
+
+
+@code {
+    private bool ModificaCliente = false;
+    private bool NewCliente = false;
+
+    private bool resetValueOnEmptyText;
+    private bool coerceText;
+    private bool coerceValue;
+
+    private Cliente Cliente = new Cliente();
+
+    private string[] ArrClienti;
+
+    private List<Cliente> _ListaClienti = new List<Cliente>();
+    private List<Cliente> _FilteredList = new List<Cliente>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        ArrClienti = await GetArray();
+    }
+
+    //metodo per creare l'array con tutte le ragioni sociali
+    private async Task<string[]> GetArray()
+    {
+        List<string> NomiClienti = new List<string>();
+
+        List<Cliente> res = await ClientiService.GetClienti();
+
+        _ListaClienti = res;
+        _FilteredList = res;
+        res.ForEach(c =>
+        {
+            NomiClienti.Add(c.ragioneSociale);
+        });
+
+        return NomiClienti.ToArray();
+    }
+
+    //metodo per la ricerca tra tutte le ragioni sociali
+    private async Task<IEnumerable<string>> Search(string value)
+    {
+        // if text is null or empty, don't return values (drop-down will not open)
+        if (string.IsNullOrEmpty(value))
+        {
+            _FilteredList = _ListaClienti;
+            StateHasChanged();
+            return new string[0];
+        }
+
+
+        _FilteredList = _ListaClienti.Where(x => x.ragioneSociale.Contains(value, StringComparison.InvariantCultureIgnoreCase)).ToList();
+        return ArrClienti.Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
+    }
+
+    private void PopUpNewCliente()
+    {
+        NewCliente = !NewCliente;
+        StateHasChanged();
+    }
+
+    private async void AddCliente(Cliente c)
+    {
+        await ClientiService.CreateCliente(c);
+        _FilteredList = await ClientiService.GetClienti();
+        NewCliente = !NewCliente;
+        StateHasChanged();
+    }
+
+    //mostro la maschera e assegno alla variabile cliente c, il cliente che voglio modificare
+    private void EditBtnClick(Cliente c)
+    {
+        ModificaCliente = !ModificaCliente;
+        Cliente = c;
+    }
+
+    //cliccando su annulla nascondo la maschera, ripulisco la variabile cliente
+    private void PopUpEditCliente()
+    {
+        ModificaCliente = !ModificaCliente;
+        Cliente = new Cliente();
+    }
+
+    //modifico i dati di un cliente
+    private async void EditCliente(Cliente c)
+    {
+        await ClientiService.UpdateCliente(c);
+        Cliente = new Cliente();
+        _FilteredList = await ClientiService.GetClienti();
+        ModificaCliente = !ModificaCliente;
+        StateHasChanged();
+    }
+
+    private void OpenDialog(Cliente cliente)
+    {
+        var parameters = new DialogParameters<Dialog>();
+        parameters.Add(x => x.ContentText, $"Vuoi veramente eliminare {cliente.ragioneSociale} dalla lista clienti? Questa operazione non potrà essere annullata.");
+        parameters.Add(x => x.ButtonText, "ELIMINA");
+        parameters.Add(x => x.Color, Color.Error);
+
+        var options = new DialogOptions() { CloseButton = true, MaxWidth = MaxWidth.ExtraSmall };
+
+        DialogService.Show<Dialog>("ATTENZIONE", parameters, options);
+    }
+
+    private async void DeleteClient(Cliente c)
+    {
+        await ClientiService.DeleteCliente(c.id);
+        await GetArray();
+        StateHasChanged();
+    }
+
+    private void ClearSearch()
+    {
+        _FilteredList = _ListaClienti;
+        StateHasChanged();
+    }
+}
