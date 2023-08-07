@@ -6,7 +6,7 @@
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="Cancel">ANNULLA</MudButton>
-        <MudButton Color="@Color" Variant="Variant.Filled" OnClick="Submit">@ButtonText</MudButton>
+        <MudButton Color="@Color" Variant="Variant.Filled" OnClick="@(()=> {Delete.InvokeAsync();})">@ButtonText</MudButton>
     </DialogActions>
 </MudDialog>
 
@@ -16,6 +16,8 @@
     [Parameter] public string ContentText { get; set; }
 
     [Parameter] public string ButtonText { get; set; }
+
+    [Parameter] public Cliente Delete { get; set; }
 
     [Parameter] public Color Color { get; set; }
 

@@ -32,33 +32,42 @@
                                  AdornmentColor="Color.Primary" />
             </MudItem>
 
-            <MudItem xs="12">
-                <MudTable Elevation="4" Items="_FilteredList" Height="100" Breakpoint="Breakpoint.Sm" Striped="true" Virtualize="true" FixedHeader="true">
-                    <HeaderContent>
-                        <MudTh>Ragione Sociale</MudTh>
-                        <MudTh>Indirizzo</MudTh>
-                        <MudTh>Città</MudTh>
-                        <MudTh>E-Mail</MudTh>
-                        <MudTh>Telefono</MudTh>
-                        <MudTh>Modifica</MudTh>
-                        <MudTh>Elimina</MudTh>
-                    </HeaderContent>
-                    <RowTemplate>
-                        <MudTd DataLabel="Ragione Sociale">@context.ragioneSociale</MudTd>
-                        <MudTd DataLabel="Indirizzo">@context.Indirizzo</MudTd>
-                        <MudTd DataLabel="Citta">@context.Citta</MudTd>
-                        <MudTd DataLabel="E-Mail">@context.email</MudTd>
-                        <MudTd DataLabel="Telefono">@context.telefono</MudTd>
-                        <MudTd DataLabel="Modifica">
-                            <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" aria-label="github" OnClick="@(()=>{EditBtnClick(context);})"></MudIconButton>
-                        </MudTd>
-                        <MudTd DataLabel="Elimina">
-                            <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" aria-label="github" @onclick="@(()=>{OpenDialog(context);})"></MudIconButton>
-                        </MudTd>
-                    </RowTemplate>
-                </MudTable>
+            @if (_FilteredList is null)
+            {
+                <MudItem xs="12" Style="display:flex; justify-content:center; align-items:center;">
+                    <MudProgressCircular  Color="Color.Primary" Indeterminate="true" />
+                </MudItem>
+            }
+            else
+            {
+                <MudItem xs="12">
+                    <MudTable Elevation="4" Items="_FilteredList" Height="100" Breakpoint="Breakpoint.Sm" Striped="true" Virtualize="true" FixedHeader="true">
+                        <HeaderContent>
+                            <MudTh>Ragione Sociale</MudTh>
+                            <MudTh>Indirizzo</MudTh>
+                            <MudTh>Città</MudTh>
+                            <MudTh>E-Mail</MudTh>
+                            <MudTh>Telefono</MudTh>
+                            <MudTh>Modifica</MudTh>
+                            <MudTh>Elimina</MudTh>
+                        </HeaderContent>
+                        <RowTemplate>
+                            <MudTd DataLabel="Ragione Sociale">@context.ragioneSociale</MudTd>
+                            <MudTd DataLabel="Indirizzo">@context.Indirizzo</MudTd>
+                            <MudTd DataLabel="Citta">@context.Citta</MudTd>
+                            <MudTd DataLabel="E-Mail">@context.email</MudTd>
+                            <MudTd DataLabel="Telefono">@context.telefono</MudTd>
+                            <MudTd DataLabel="Modifica">
+                                <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" aria-label="github" OnClick="@(()=>{EditBtnClick(context);})"></MudIconButton>
+                            </MudTd>
+                            <MudTd DataLabel="Elimina">
+                                <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" aria-label="github"  @onclick="@(()=>{OpenDialog(context);})"></MudIconButton>
+                            </MudTd>
+                        </RowTemplate>
+                    </MudTable>
 
-            </MudItem>
+                </MudItem>
+            }
 
         }
     </MudGrid>
@@ -79,7 +88,7 @@
     private string[] ArrClienti;
 
     private List<Cliente> _ListaClienti = new List<Cliente>();
-    private List<Cliente> _FilteredList = new List<Cliente>();
+    private List<Cliente> _FilteredList;
 
     protected override async Task OnInitializedAsync()
     {
@@ -163,6 +172,7 @@
         parameters.Add(x => x.ContentText, $"Vuoi veramente eliminare {cliente.ragioneSociale} dalla lista clienti? Questa operazione non potrà essere annullata.");
         parameters.Add(x => x.ButtonText, "ELIMINA");
         parameters.Add(x => x.Color, Color.Error);
+        parameters.Add(x => x.Delete, cliente);
 
         var options = new DialogOptions() { CloseButton = true, MaxWidth = MaxWidth.ExtraSmall };
 
