@@ -5,7 +5,7 @@ namespace RapportiWeb.Shared
     {
         public int id { get; set; }
 
-        public DateOnly Data { get; set; }
+        public DateTime Data { get; set; }
 
         public int Clienteid { get; set; }
 
@@ -17,7 +17,7 @@ namespace RapportiWeb.Shared
 
         public string TipologiaIntervento { get; set; }
 
-        public DateOnly DataIntervento { get; set; }
+        public DateTime DataIntervento { get; set; }
 
         public string DurataIntervento { get; set; }
 
@@ -31,7 +31,7 @@ namespace RapportiWeb.Shared
             Firma = false;
             visible = false;
 
-            Data = DateOnly.FromDateTime(DateTime.Now);
+            Data = DateTime.Now;
         }
 
 
