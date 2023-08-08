@@ -29,6 +29,23 @@ namespace RapportiWeb.Server.Controllers
             return Ok(clienti);
         }
 
+        [HttpGet]
+        [Route("ragsoc")]
+        public async Task<ActionResult<List<string>>> GetRagioniSociali()
+        {
+            List<string> NomiClienti = new List<string>();
+
+            var res = await _context.Clienti.ToListAsync();
+
+            res.ForEach(c =>
+            {
+                NomiClienti.Add(c.ragioneSociale);
+            });
+
+            return Ok(NomiClienti);
+        }
+
+
         [HttpPost]
         public async Task<ActionResult<Cliente>> CreateCliente(Cliente cliente)
         {

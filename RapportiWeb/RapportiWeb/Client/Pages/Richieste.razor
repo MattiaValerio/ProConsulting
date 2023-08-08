@@ -1,7 +1,25 @@
 ﻿@page "/richieste"
+@inject IRichiesteService RichiesteService
 
 <MudContainer>
-    <h3>Richieste</h3>
+    <MudGrid Justify="Justify.Center">
+        <MudItem xs="12">
+            <MudText Align="Align.Center" Typo="Typo.h2">RICHIESTE</MudText>
+        </MudItem>
+
+        <MudItem xs="1" Class="d-flex flex-column align-items-center justify-center">
+            <MudIconButton Icon="@Icons.Material.Filled.Add" Color="Color.Primary" aria-label="github" OnClick="@(()=>{})"></MudIconButton>
+        </MudItem>
+
+@*        <MudItem xs="11">
+            <MudAutocomplete T="string" Label="Ragione Sociale" @bind-Value="" SearchFunc="@Search"
+                             ResetValueOnEmptyText="true"
+                             Clearable="true"
+                             CoerceValue="true"
+                             AdornmentIcon="@Icons.Material.Filled.Search"
+                             AdornmentColor="Color.Primary" />
+        </MudItem>*@
+    </MudGrid>
 </MudContainer>
 
 @code {
