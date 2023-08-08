@@ -166,20 +166,26 @@
         StateHasChanged();
     }
 
-    private void OpenDialog(Cliente cliente)
+    private async void OpenDialog(Cliente cliente)
     {
         var parameters = new DialogParameters<Dialog>();
         parameters.Add(x => x.ContentText, $"Vuoi veramente eliminare {cliente.ragioneSociale} dalla lista clienti? Questa operazione non potrà essere annullata.");
         parameters.Add(x => x.ButtonText, "ELIMINA");
         parameters.Add(x => x.Color, Color.Error);
-        parameters.Add(x => x.Delete, cliente);
+
 
         var options = new DialogOptions() { CloseButton = true, MaxWidth = MaxWidth.ExtraSmall };
 
-        DialogService.Show<Dialog>("ATTENZIONE", parameters, options);
+        var dialog = await DialogService.ShowAsync<Dialog>("ATTENZIONE", parameters, options);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+             await DeleteClient(cliente);
+        }
     }
 
-    private async void DeleteClient(Cliente c)
+    public async Task DeleteClient(Cliente c)
     {
         await ClientiService.DeleteCliente(c.id);
         await GetArray();

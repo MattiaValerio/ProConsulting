@@ -1,4 +1,4 @@
-﻿
+﻿@inject IClientiService ClientiService 
 
 <MudDialog>
     <DialogContent>
@@ -6,7 +6,7 @@
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="Cancel">ANNULLA</MudButton>
-        <MudButton Color="@Color" Variant="Variant.Filled" OnClick="@(()=> {Delete.InvokeAsync();})">@ButtonText</MudButton>
+        <MudButton Color="@Color" Variant="Variant.Filled" OnClick="@(()=> {Submit();})">@ButtonText</MudButton>
     </DialogActions>
 </MudDialog>
 
@@ -17,10 +17,8 @@
 
     [Parameter] public string ButtonText { get; set; }
 
-    [Parameter] public Cliente Delete { get; set; }
-
     [Parameter] public Color Color { get; set; }
 
-    void Submit() => MudDialog.Close(DialogResult.Ok(true));
+    void Submit() => MudDialog.Close();
     void Cancel() => MudDialog.Cancel();
 }
