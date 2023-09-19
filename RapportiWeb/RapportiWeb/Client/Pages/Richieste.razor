@@ -1,27 +1,169 @@
 ﻿@page "/richieste"
+@inject IClientiService ClientiService
 @inject IRichiesteService RichiesteService
+@inject IDialogService DialogService
+
 
 <MudContainer>
     <MudGrid Justify="Justify.Center">
         <MudItem xs="12">
             <MudText Align="Align.Center" Typo="Typo.h2">RICHIESTE</MudText>
         </MudItem>
+        
+        @if (NuovaRichiesta)
+        {
+            <NewRichiesta ShowHidePopUp="@(()=>{ShowHide();})" />
+        }
+        else if (EditRichiesta)
+        {
+            <NewRichiesta Richiesta="Richiesta" Cliente="Cliente" Edit="true" ShowHidePopUp="@(()=>{ShowHideEdit();})" />
+        }
+        else
+        {
+            <MudItem xs="1" md="1" Class="d-flex flex-column align-items-center justify-center">
+                <MudIconButton Icon="@Icons.Material.Filled.Add" Color="Color.Primary" aria-label="github" OnClick="@(()=>{NuovaRichiesta = !NuovaRichiesta;})"></MudIconButton>
+            </MudItem>
 
-        <MudItem xs="1" Class="d-flex flex-column align-items-center justify-center">
-            <MudIconButton Icon="@Icons.Material.Filled.Add" Color="Color.Primary" aria-label="github" OnClick="@(()=>{})"></MudIconButton>
-        </MudItem>
+            <MudItem xs="1" md="1" Class="d-flex flex-column align-items-center justify-center">
+                <MudIconButton Icon="@Icons.Material.Filled.RemoveRedEye" Color="Color.Primary" aria-label="github" OnClick="@(()=>{})"></MudIconButton>
+            </MudItem>
 
-@*        <MudItem xs="11">
-            <MudAutocomplete T="string" Label="Ragione Sociale" @bind-Value="" SearchFunc="@Search"
+            <MudItem xs="10" md="10" xl="6">
+                <MudAutocomplete T="string" Label="Ragione Sociale" @bind-Value="Cliente.ragioneSociale" SearchFunc="@Search"
                              ResetValueOnEmptyText="true"
                              Clearable="true"
                              CoerceValue="true"
                              AdornmentIcon="@Icons.Material.Filled.Search"
                              AdornmentColor="Color.Primary" />
-        </MudItem>*@
+            </MudItem>
+
+            <MudItem xs="12" md="12" xl="4">
+                <MudDateRangePicker Label="Data" Clearable="true" DateFormat="dd/MM/yyy"/>
+            </MudItem>
+
+            @if (_ListaRichieste is null)
+            {
+                <MudItem xs="12" Style="display:flex; justify-content:center; align-items:center;">
+                    <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+                </MudItem>
+            }
+            else
+            {
+                <MudItem xs="12">
+                    <MudTable Elevation="4" Items="_ListaRichieste" Height="100" Breakpoint="Breakpoint.Sm" Striped="true" Virtualize="true" FixedHeader="true">
+                        <HeaderContent>
+                            <MudTh>Ragione Sociale</MudTh>
+                            <MudTh>Indirizzo</MudTh>
+                            <MudTh>Creazione Richiesta</MudTh>
+                            <MudTh>E-Mail</MudTh>
+                            <MudTh>Telefono</MudTh>
+                            <MudTh>Data Intervento</MudTh>
+                            <MudTh>Visualizza</MudTh>
+                            <MudTh>Elimina</MudTh>
+                            <MudTh>Crea Rapporto</MudTh>
+                        </HeaderContent>
+                        <RowTemplate>
+                            <MudTd DataLabel="Ragione Sociale">@_ListaClienti.Find(c=> c.id == context.Clienteid).ragioneSociale</MudTd>
+                            <MudTd DataLabel="Indirizzo">@_ListaClienti.Find(c=> c.id == context.Clienteid).Indirizzo</MudTd>
+                            <MudTd DataLabel="Data Creazione">@context.Data.ToString("dd/MM/yyyy")</MudTd>
+                            <MudTd DataLabel="E-Mail">@_ListaClienti.Find(c=> c.id == context.Clienteid).email</MudTd>
+                            <MudTd DataLabel="Telefono">@_ListaClienti.Find(c=> c.id == context.Clienteid).telefono</MudTd>
+                            <MudTd DataLabel="Data Intervento">@context.DataIntervento.Value.ToString("dd/MM/yyyy")</MudTd>
+                            <MudTd DataLabel="Modifica">
+                                <MudIconButton Icon="@Icons.Material.Filled.RemoveRedEye" Color="Color.Primary" aria-label="github" OnClick="@(()=>{ModificaRichiesta(context);})"></MudIconButton>
+                            </MudTd>
+                            <MudTd DataLabel="Elimina">
+                                <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" aria-label="github" @onclick="@(()=>{OpenDialog(context);})"></MudIconButton>
+                            </MudTd>
+                            <MudTd DataLabel="Crea Rapporto">
+                                <MudIconButton Icon="@Icons.Material.Filled.Add" Color="Color.Primary" aria-label="github" @onclick="@(()=>{})"></MudIconButton>
+                            </MudTd>
+                        </RowTemplate>
+                    </MudTable>
+
+                </MudItem>
+            }
+        }
     </MudGrid>
 </MudContainer>
 
 @code {
+    private string[] ArrClienti;
+    private DateRange _dateRange = new DateRange(DateTime.Now.AddMonths(-1).Date, DateTime.Now.AddMonths(1).Date);
 
+    public Cliente Cliente { get; set; } = new Cliente();
+    public Richiesta Richiesta { get; set; } = new Richiesta();
+    public bool EditRichiesta { get; set; } = false;
+
+    private List<Cliente> _FilteredList;
+    private List<Cliente> _ListaClienti;
+    private List<Richiesta> _ListaRichieste;
+
+    private bool NuovaRichiesta = false;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        _ListaRichieste = await RichiesteService.GetRichieste();
+        _ListaClienti = await ClientiService.GetClienti();
+        ArrClienti = await ClientiService.GetArrayClienti() ;
+    }
+
+    private async Task ShowHide()
+    {
+        NuovaRichiesta = !NuovaRichiesta;
+        _ListaRichieste = await RichiesteService.GetRichieste();
+        StateHasChanged();
+    }
+    private async Task ShowHideEdit()
+    {
+        EditRichiesta = !EditRichiesta;
+        _ListaRichieste = await RichiesteService.GetRichieste();
+        StateHasChanged();
+    }
+
+    //metodo per la ricerca tra tutte le ragioni sociali
+    private async Task<IEnumerable<string>> Search(string value)
+    {
+        //if text is null or empty, don't return values (drop-down will not open)
+        if (string.IsNullOrEmpty(value))
+        {
+            _FilteredList = _ListaClienti;
+            StateHasChanged();
+            return new string[0];
+        }
+
+
+        _FilteredList = _ListaClienti.Where(x => x.ragioneSociale.Contains(value, StringComparison.InvariantCultureIgnoreCase)).ToList();
+        return ArrClienti.Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
+    }
+
+    private async void OpenDialog(Richiesta richiesta)
+    {
+        var cliente = _ListaClienti.First(c => c.id == richiesta.Clienteid);
+        var parameters = new DialogParameters<Dialog>();
+        parameters.Add(x => x.ContentText, $"Vuoi veramente eliminare la richiesta di {cliente.ragioneSociale} dalla lista? Questa operazione non potrà essere annullata.");
+        parameters.Add(x => x.ButtonText, "ELIMINA");
+        parameters.Add(x => x.Color, Color.Error);
+
+
+        var options = new DialogOptions() { CloseButton = true, MaxWidth = MaxWidth.ExtraSmall };
+
+        var dialog = await DialogService.ShowAsync<Dialog>("ATTENZIONE", parameters, options);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            await RichiesteService.DeleteRichiesta(richiesta.id);
+            _ListaRichieste = await RichiesteService.GetRichieste();
+            StateHasChanged();
+        }
+    }
+
+    private void ModificaRichiesta(Richiesta richiesta)
+    {
+        Richiesta = richiesta;
+        Cliente = _ListaClienti.FirstOrDefault(c => c.id == richiesta.Clienteid);
+        EditRichiesta = !EditRichiesta;
+    }
 }

@@ -19,14 +19,21 @@ namespace RapportiWeb.Client.Services.Richieste
         public string[] RagioniSociali { get; set; }
 
 
-        public Task CreateRichiesta(Richiesta Richiesta)
+        public async Task CreateRichiesta(Richiesta Richiesta)
         {
-            throw new NotImplementedException();
+            await _http.PostAsJsonAsync<Richiesta>("/api/richieste", Richiesta);
         }
 
-        public Task DeleteRichiesta(int id)
+        public async Task DeleteRichiesta(int id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                await _http.DeleteAsync($"/api/richieste/{id}");
+            }catch(Exception ex)
+            { 
+                Console.WriteLine(ex.Message);
+            }
+
         }
 
         public Task<List<Richiesta>> GetFilteredRichieste(DateTime startDateFilter, DateTime endDateFilter)
@@ -56,9 +63,11 @@ namespace RapportiWeb.Client.Services.Richieste
             throw new NotImplementedException();
         }
 
-        public Task<List<Richiesta>> GetRichieste()
+        public async Task<List<Richiesta>> GetRichieste()
         {
-            throw new NotImplementedException();
+            var result = await _http.GetFromJsonAsync<List<Richiesta>>("api/Richieste");
+
+            return result.ToList();
         }
 
         public Task SearchRichieste(string query)
@@ -66,9 +75,9 @@ namespace RapportiWeb.Client.Services.Richieste
             throw new NotImplementedException();
         }
 
-        public Task UpdateRichiesta(int id, Richiesta Richiesta)
+        public async Task UpdateRichiesta(int id, Richiesta Richiesta)
         {
-            throw new NotImplementedException();
-        }
+			await _http.PutAsJsonAsync("api/Richieste", Richiesta);
+		}
     }
 }

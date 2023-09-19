@@ -11,10 +11,11 @@ namespace RapportiWeb.Shared
         public string Descrizione { get; set; }
         public string FiguraProfessionale { get; set; }
         public string TipologiaIntervento { get; set; }
-        public DateTime DataIntervento { get; set; }
+        public DateTime? DataIntervento { get; set; }
         public string DurataIntervento { get; set; }
         public bool Firma { get; set; }
         public bool visible { get; set; }
+        //public string Creator { get; set; }
 
 
         public Richiesta()
