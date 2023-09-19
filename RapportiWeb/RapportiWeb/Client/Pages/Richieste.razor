@@ -119,6 +119,8 @@
     {
         EditRichiesta = !EditRichiesta;
         _ListaRichieste = await RichiesteService.GetRichieste();
+        Cliente = new Cliente();
+        Richiesta = new Richiesta();
         StateHasChanged();
     }
 
