@@ -127,17 +127,11 @@
     //metodo per la ricerca tra tutte le ragioni sociali
     private async Task<IEnumerable<string>> Search(string value)
     {
-        //if text is null or empty, don't return values (drop-down will not open)
+        var clienti = await ClientiService.GetArrayClienti();
+
         if (string.IsNullOrEmpty(value))
-        {
-            _FilteredList = _ListaClienti;
-            StateHasChanged();
             return new string[0];
-        }
-
-
-        _FilteredList = _ListaClienti.Where(x => x.ragioneSociale.Contains(value, StringComparison.InvariantCultureIgnoreCase)).ToList();
-        return ArrClienti.Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
+        return clienti.Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
     }
 
     private async void OpenDialog(Richiesta richiesta)

@@ -22,7 +22,18 @@ namespace RapportiWeb.Server.Controllers
         {
             var richieste = await _context.Richieste.ToListAsync();
 
-            return Ok(richieste.OrderByDescending(r=> r.Data));
+            return Ok(richieste.OrderByDescending(r => r.Data));
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<List<Richiesta>>> RichiesteByRagSoc(string ragsoc)
+        {
+            var clienti = await _context.Clienti.ToListAsync();
+            var richieste = await _context.Richieste.ToListAsync();
+
+            var ricerca = richieste.Where(r=> r.Clienteid == clienti.FirstOrDefault(c=>))
+
+            return Ok(richieste.OrderByDescending(r => r.Data));
         }
 
         [HttpGet]
