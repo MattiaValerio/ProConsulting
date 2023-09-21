@@ -25,13 +25,16 @@ namespace RapportiWeb.Server.Controllers
             return Ok(richieste.OrderByDescending(r => r.Data));
         }
 
-        [HttpGet]
+        [HttpGet("{ragsoc}")]
         public async Task<ActionResult<List<Richiesta>>> RichiesteByRagSoc(string ragsoc)
         {
             var clienti = await _context.Clienti.ToListAsync();
             var richieste = await _context.Richieste.ToListAsync();
 
-            var ricerca = richieste.Where(r=> r.Clienteid == clienti.FirstOrDefault(c=>))
+            var cliente = clienti.Where(c => c.ragioneSociale == ragsoc).FirstOrDefault();
+
+            if(cliente != null)
+                richieste = richieste.Where(r => r.Clienteid == cliente.id).ToList();
 
             return Ok(richieste.OrderByDescending(r => r.Data));
         }

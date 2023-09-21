@@ -29,7 +29,7 @@
             </MudItem>
 
             <MudItem xs="10" md="10" xl="6">
-                <MudAutocomplete T="string" Label="Ragione Sociale" @bind-Value="Cliente.ragioneSociale" SearchFunc="@Search"
+                <MudAutocomplete T="string" Label="Ragione Sociale" @bind-Value="Cliente.ragioneSociale" SearchFunc="@Search" OnAdornmentClick="@(()=>{Search2(Cliente.ragioneSociale);})"
                              ResetValueOnEmptyText="true"
                              Clearable="true"
                              CoerceValue="true"
@@ -132,6 +132,14 @@
         if (string.IsNullOrEmpty(value))
             return new string[0];
         return clienti.Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
+    }
+
+    private async Task Search2(string value )
+    {
+        var nomecliente = Search(value);
+
+        _ListaRichieste = await RichiesteService.GetRichiestaByRagSoc(value);
+        StateHasChanged();
     }
 
     private async void OpenDialog(Richiesta richiesta)

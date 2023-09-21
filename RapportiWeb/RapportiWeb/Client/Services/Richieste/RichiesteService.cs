@@ -63,6 +63,13 @@ namespace RapportiWeb.Client.Services.Richieste
             throw new NotImplementedException();
         }
 
+        public async Task<List<Richiesta>> GetRichiestaByRagSoc(string ragsoc)
+        {
+            var result = await _http.GetFromJsonAsync<List<Richiesta>>($"api/richieste/{ragsoc}");
+
+            return result.ToList();
+        }
+
         public async Task<List<Richiesta>> GetRichieste()
         {
             var result = await _http.GetFromJsonAsync<List<Richiesta>>("api/Richieste");

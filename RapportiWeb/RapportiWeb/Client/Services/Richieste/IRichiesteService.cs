@@ -14,6 +14,7 @@ namespace RapportiWeb.Client.Services.Richieste
         Task<string[]> GetRagioniSociali();
 
         Task<Richiesta?> GetRichiestaById(int id);
+        Task<List<Richiesta>> GetRichiestaByRagSoc(string ragsoc);
 
         Task CreateRichiesta(Richiesta Richiesta);
 
