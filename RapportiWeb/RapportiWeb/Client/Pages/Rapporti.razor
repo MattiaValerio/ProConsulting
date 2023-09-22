@@ -1,0 +1,182 @@
+﻿@page "/rapporti"
+@inject IClientiService ClientiService
+@inject IRichiesteService RichiesteService
+@inject IRapportiService RapportiService
+@inject IDialogService DialogService
+
+
+<MudContainer>
+	<MudGrid Justify="Justify.Center">
+
+		<MudItem xs="12">
+			<MudText Align="Align.Center" Typo="Typo.h2">RAPPORTI</MudText>
+		</MudItem>
+
+		@if (NuovoRapporto)
+		{
+			<NewRapporto Annulla="AnnullaEdit" ShowHidePopUp="@(()=>{ShowHide();})" />
+		}
+		else if (EditRapporto)
+		{
+			<NewRapporto Annulla="AnnullaEdit" Richiesta="Richiesta" Cliente="Cliente" Edit="true" ShowHidePopUp="@(()=>{ShowHideEdit();})" />
+		}
+		else
+		{
+			<MudItem xs="1" md="1" Class="d-flex flex-column align-items-center justify-center">
+				<MudIconButton Icon="@Icons.Material.Filled.Add" Color="Color.Primary" aria-label="github" OnClick="@(()=>{NuovoRapporto = !NuovoRapporto;})"></MudIconButton>
+			</MudItem>
+
+			<MudItem xs="1" md="1" Class="d-flex flex-column align-items-center justify-center">
+				<MudIconButton Icon="@Icons.Material.Filled.RemoveRedEye" Color="Color.Primary" aria-label="github" OnClick="@(()=>{})"></MudIconButton>
+			</MudItem>
+
+			<MudItem xs="10" md="10" xl="6">
+				<MudAutocomplete T="string" Label="Ragione Sociale" @bind-Value="Cliente.ragioneSociale" SearchFunc="@Search" OnAdornmentClick="@(()=>{Search2(Cliente.ragioneSociale);})"
+							 ResetValueOnEmptyText="true"
+							 Clearable="true"
+							 CoerceValue="true"
+							 AdornmentIcon="@Icons.Material.Filled.Search"
+							 AdornmentColor="Color.Primary" />
+			</MudItem>
+
+			@*<MudItem xs="12" md="12" xl="4">
+				<MudDateRangePicker Label="Data" Clearable="true" DateFormat="dd/MM/yyy" />
+			</MudItem>*@
+
+			@if (_ListaRapporti is null)
+			{
+				<MudItem xs="12" Style="display:flex; justify-content:center; align-items:center;">
+					<MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+				</MudItem>
+			}
+			else
+			{
+				<MudItem xs="12">
+					<MudTable Elevation="4" Items="_ListaRapporti" Height="100" Breakpoint="Breakpoint.Sm" Striped="true" Virtualize="true" FixedHeader="true">
+						<HeaderContent>
+							<MudTh>Ragione Sociale</MudTh>
+							<MudTh>Indirizzo</MudTh>
+							<MudTh>Creazione Rapporto</MudTh>
+							<MudTh>E-Mail</MudTh>
+							<MudTh>Telefono</MudTh>
+							<MudTh>Data Intervento</MudTh>
+							<MudTh>Visualizza</MudTh>
+							<MudTh>Elimina</MudTh>
+						</HeaderContent>
+						<RowTemplate>
+							<MudTd DataLabel="Ragione Sociale">@_ListaClienti.Find(c=> c.id == context.Clienteid).ragioneSociale</MudTd>
+							<MudTd DataLabel="Indirizzo">@_ListaClienti.Find(c=> c.id == context.Clienteid).Indirizzo</MudTd>
+							<MudTd DataLabel="Data Creazione">@context.dataCreazioneRapporto.ToString("dd/MM/yyyy")</MudTd>
+							<MudTd DataLabel="E-Mail">@_ListaClienti.Find(c=> c.id == context.Clienteid).email</MudTd>
+							<MudTd DataLabel="Telefono">@_ListaClienti.Find(c=> c.id == context.Clienteid).telefono</MudTd>
+							<MudTd DataLabel="Data Intervento">@context.DataIntervento.Value.ToString("dd/MM/yyyy")</MudTd>
+							<MudTd DataLabel="Modifica">
+								<MudIconButton Icon="@Icons.Material.Filled.RemoveRedEye" Color="Color.Primary" aria-label="github" OnClick="@(()=>{ModificaRapporto(context);})"></MudIconButton>
+							</MudTd>
+							<MudTd DataLabel="Elimina">
+								<MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" aria-label="github" @onclick="@(()=>{OpenDialog(context);})"></MudIconButton>
+							</MudTd>
+						</RowTemplate>
+					</MudTable>
+
+				</MudItem>
+			}
+		}
+
+
+
+
+	</MudGrid>
+</MudContainer>
+
+@code {
+	private bool NuovoRapporto = false;
+	public bool EditRapporto { get; set; } = false;
+
+	private List<Cliente>? _ListaClienti;
+	private List<Rapporto>? _ListaRapporti;
+
+	public Cliente Cliente { get; set; } = new Cliente();
+	public Rapporto Rapporto { get; set; } = new Rapporto();
+
+	protected override async Task OnInitializedAsync()
+	{
+		_ListaRapporti = await RapportiService.GetRapporti();
+		_ListaClienti = await ClientiService.GetClienti();
+	}
+
+
+	//metodo per la ricerca tra tutte le ragioni sociali
+	private async Task<IEnumerable<string>> Search(string value)
+	{
+		var clienti = await ClientiService.GetArrayClienti();
+
+		if (string.IsNullOrEmpty(value))
+			return new string[0];
+		return clienti.Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
+	}
+
+	//Modifica la lista dei rapporti in base alla ricerca del cliente
+	private async Task Search2(string value)
+	{
+		var nomecliente = Search(value);
+
+		_ListaRapporti = await RapportiService.GetRapportiByRagSoc(value);
+		StateHasChanged();
+	}
+
+	private async void OpenDialog(Rapporto rapporto)
+	{
+		var cliente = _ListaClienti.First(c => c.id == rapporto.Clienteid);
+		var parameters = new DialogParameters<Dialog>();
+		parameters.Add(x => x.ContentText, $"Vuoi veramente eliminare il rapporto di {cliente.ragioneSociale} dalla lista? Questa operazione non potrà essere annullata.");
+		parameters.Add(x => x.ButtonText, "ELIMINA");
+		parameters.Add(x => x.Color, Color.Error);
+
+
+		var options = new DialogOptions() { CloseButton = true, MaxWidth = MaxWidth.ExtraSmall };
+
+		var dialog = await DialogService.ShowAsync<Dialog>("ATTENZIONE", parameters, options);
+		var result = await dialog.Result;
+
+		if (!result.Canceled)
+		{
+			await RapportiService.DeleteRapporto(rapporto.id);
+			_ListaRapporti = await RapportiService.GetRapporti();
+			StateHasChanged();
+		}
+	}
+
+	private void ModificaRapporto(Rapporto rapporto)
+	{
+		Rapporto = rapporto;
+		Cliente = _ListaClienti.FirstOrDefault(c => c.id == rapporto.Clienteid);
+		EditRapporto = !EditRapporto;
+	}
+
+
+	private async Task ShowHide()
+	{
+		NuovoRapporto = !NuovoRapporto;
+		_ListaRapporti = await RapportiService.GetRapporti();
+		StateHasChanged();
+	}
+
+	private async Task AnnullaEdit()
+	{
+		EditRapporto = !EditRapporto;
+		Cliente = new Cliente();
+		Rapporto = new Rapporto();
+	}
+
+	private async Task ShowHideEdit()
+	{
+		EditRapporto = !EditRapporto;
+		_ListaRapporti = await RapportiService.GetRapporti();
+		Cliente = new Cliente();
+		Rapporto = new Rapporto();
+		StateHasChanged();
+	}
+
+
+}

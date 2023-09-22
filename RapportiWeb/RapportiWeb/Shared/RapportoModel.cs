@@ -15,11 +15,11 @@ namespace RapportiWeb.Shared
 
         public string Incaricato { get; set; }
 
-        public DateOnly DataIntervento { get; set; }
+        public DateTime? DataIntervento { get; set; }
 
-        public string MetodoIntervento { get; set; }
+        public string LuogoIntervento { get; set; }
 
-        public string IdCollegamento { get; set; }
+        public string? IdCollegamento { get; set; }
 
         public string Descrizione { get; set; }
 
@@ -27,12 +27,12 @@ namespace RapportiWeb.Shared
 
         public string DurataIntervento { get; set; }
 
-        public DateOnly dataCreazioneRapporto { get; set; }
+        public DateTime dataCreazioneRapporto { get; set; }
 
 
         public Rapporto()
         {
-            dataCreazioneRapporto = DateOnly.FromDateTime(DateTime.Now);
+            dataCreazioneRapporto = DateTime.Now;
         }
     }
 }

@@ -103,28 +103,28 @@ namespace RapportiWeb.Server.Controllers
         }
 
 
-        //[HttpPut]
-        //public async Task<ActionResult<Cliente>> UpdateCliente(Cliente cliente)
-        //{
-        //    var dbCliente = _context.Clienti.FirstOrDefault(c => c.id == cliente.id);
+        [HttpPut]
+        public async Task<ActionResult<Cliente>> UpdateCliente(Cliente cliente)
+        {
+            var dbCliente = _context.Clienti.FirstOrDefault(c => c.id == cliente.id);
 
-        //    if (dbCliente == null)
-        //        return NotFound("CLIENTE NON TROVATO");
+            if (dbCliente == null)
+                return NotFound("CLIENTE NON TROVATO");
 
-        //    dbCliente.ragioneSociale = cliente.ragioneSociale;
-        //    dbCliente.email = cliente.email;
-        //    dbCliente.Citta = cliente.Citta;
-        //    dbCliente.Indirizzo = cliente.Indirizzo;
-        //    dbCliente.Provincia = cliente.Provincia;
-        //    dbCliente.Stato = cliente.Stato;
-        //    dbCliente.telefono = cliente.telefono;
-        //    dbCliente.CAP = cliente.CAP;
-        //    dbCliente.email = cliente.email;
+            dbCliente.ragioneSociale = cliente.ragioneSociale;
+            dbCliente.email = cliente.email;
+            dbCliente.Citta = cliente.Citta;
+            dbCliente.Indirizzo = cliente.Indirizzo;
+            dbCliente.Provincia = cliente.Provincia;
+            dbCliente.Stato = cliente.Stato;
+            dbCliente.telefono = cliente.telefono;
+            dbCliente.CAP = cliente.CAP;
+            dbCliente.email = cliente.email;
 
-        //    await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
 
-        //    return Ok(dbCliente);
+            return Ok(dbCliente);
 
-        //}
+        }
     }
 }

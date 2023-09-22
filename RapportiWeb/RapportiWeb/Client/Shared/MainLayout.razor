@@ -11,6 +11,7 @@
     <MudAppBar Color="Color.Primary" Fixed="false">
         <MudImage Src="\img\logo.png" Fluid="true" Width="250" @onclick="@(()=>{nav.NavigateTo("/");})" />
         <MudSpacer />
+        <MudIconButton Icon="@Icons.Material.Filled.Home" Color="Color.Inherit" @onclick="@(()=>{nav.NavigateTo("/");})" />
         <MudIconButton Icon="@Icons.Material.Filled.Logout" Color="Color.Inherit" @onclick="@(()=>{nav.NavigateTo("/login");})" />
     </MudAppBar>
 

@@ -12,11 +12,11 @@
         
         @if (NuovaRichiesta)
         {
-            <NewRichiesta ShowHidePopUp="@(()=>{ShowHide();})" />
+            <NewRichiesta Annulla="AnnullaEdit" ShowHidePopUp="@(()=>{ShowHide();})" />
         }
         else if (EditRichiesta)
         {
-            <NewRichiesta Richiesta="Richiesta" Cliente="Cliente" Edit="true" ShowHidePopUp="@(()=>{ShowHideEdit();})" />
+            <NewRichiesta Annulla="AnnullaEdit" Richiesta="Richiesta" Cliente="Cliente" Edit="true" ShowHidePopUp="@(()=>{ShowHideEdit();})" />
         }
         else
         {
@@ -37,9 +37,9 @@
                              AdornmentColor="Color.Primary" />
             </MudItem>
 
-            <MudItem xs="12" md="12" xl="4">
+@*            <MudItem xs="12" md="12" xl="4">
                 <MudDateRangePicker Label="Data" Clearable="true" DateFormat="dd/MM/yyy"/>
-            </MudItem>
+            </MudItem>*@
 
             @if (_ListaRichieste is null)
             {
@@ -115,6 +115,14 @@
         _ListaRichieste = await RichiesteService.GetRichieste();
         StateHasChanged();
     }
+
+    private async Task AnnullaEdit()
+    {
+        EditRichiesta = !EditRichiesta;
+        Cliente = new Cliente();
+        Richiesta = new Richiesta();
+    }
+
     private async Task ShowHideEdit()
     {
         EditRichiesta = !EditRichiesta;

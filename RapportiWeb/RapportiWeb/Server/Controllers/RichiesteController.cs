@@ -56,7 +56,7 @@ namespace RapportiWeb.Server.Controllers
         }
 
 		[HttpPost]
-		public async Task<ActionResult<Cliente>> CreateRichiesta(Richiesta richiesta)
+		public async Task<ActionResult<Richiesta>> CreateRichiesta(Richiesta richiesta)
 		{
 			_context.Richieste.Add(richiesta);
 

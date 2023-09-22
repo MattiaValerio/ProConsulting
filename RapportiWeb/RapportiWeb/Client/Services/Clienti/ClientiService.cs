@@ -41,7 +41,7 @@ namespace RapportiWeb.Client.Services.Clienti
         {
             var result = await _http.GetFromJsonAsync<List<Cliente>>("api/Clienti");
 
-            return result.ToList();
+            return result;
         }
 
         public async Task<List<Cliente>> SearchClienti(string query)
