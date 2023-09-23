@@ -7,10 +7,14 @@ namespace RapportiWeb.Client.Services.Richieste
         List<Richiesta> ListaRichieste { get; set; }
         List<Richiesta> SearchedRichieste { get; set; }
         List<Richiesta> Filter { get; set; }
+        string[] RagioniSociali { get; set; }
         
         Task<List<Richiesta>> GetRichieste();
 
+        Task<string[]> GetRagioniSociali();
+
         Task<Richiesta?> GetRichiestaById(int id);
+        Task<List<Richiesta>> GetRichiestaByRagSoc(string ragsoc);
 
         Task CreateRichiesta(Richiesta Richiesta);
 

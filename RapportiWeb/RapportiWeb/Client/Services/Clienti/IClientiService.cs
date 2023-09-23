@@ -8,10 +8,13 @@ namespace RapportiWeb.Client.Services.Clienti
 
         List<Cliente> SearchedClienti { get; set; }
 
+        Task<string[]> GetArrayClienti();
 
-        Task<List<Cliente>> GetClienti();
+		Task<List<Cliente>> GetClienti();
 
-        Task CreateCliente(Cliente Cliente);
+		Task<Cliente> GetCliente(string ragsoc);
+
+		Task CreateCliente(Cliente Cliente);
 
         Task UpdateCliente(Cliente Cliente);
 
