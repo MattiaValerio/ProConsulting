@@ -95,6 +95,7 @@ namespace RapportiWeb.Server.Controllers
             dbRichiesta.DurataIntervento = richiesta.DurataIntervento;
             dbRichiesta.DataIntervento = richiesta.DataIntervento;
             dbRichiesta.Descrizione = richiesta.Descrizione;
+            dbRichiesta.RapportoCreato = richiesta.RapportoCreato;
 
 			await _context.SaveChangesAsync();
 

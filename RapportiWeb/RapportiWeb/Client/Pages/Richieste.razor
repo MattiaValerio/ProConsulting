@@ -18,6 +18,10 @@
         {
             <NewRichiesta Annulla="AnnullaEdit" Richiesta="Richiesta" Cliente="Cliente" Edit="true" ShowHidePopUp="@(()=>{ShowHideEdit();})" />
         }
+        else if (CreateRapporto)
+        {
+            <NewRapporto Annulla="AnnullaEdit" Richiesta="Richiesta" Rapporto="Rapporto" Cliente="Cliente" RapportoCreation="true" ShowHidePopUp="@(()=>{ShowHideCreation();})" />
+        }
         else
         {
             <MudItem xs="1" md="1" Class="d-flex flex-column align-items-center justify-center">
@@ -76,7 +80,10 @@
                                 <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" aria-label="github" @onclick="@(()=>{OpenDialog(context);})"></MudIconButton>
                             </MudTd>
                             <MudTd DataLabel="Crea Rapporto">
-                                <MudIconButton Icon="@Icons.Material.Filled.Add" Color="Color.Primary" aria-label="github" @onclick="@(()=>{})"></MudIconButton>
+                                @if (context.RapportoCreato == false)
+                                {
+                                    <MudIconButton Icon="@Icons.Material.Filled.Add" Color="Color.Primary" aria-label="github" @onclick="@(()=>{GeneraRapporto(context);})"></MudIconButton>
+                                }
                             </MudTd>
                         </RowTemplate>
                     </MudTable>
@@ -93,6 +100,7 @@
 
     public Cliente Cliente { get; set; } = new Cliente();
     public Richiesta Richiesta { get; set; } = new Richiesta();
+    public Rapporto Rapporto { get; set; } = new Rapporto();
     public bool EditRichiesta { get; set; } = false;
 
     private List<Cliente> _FilteredList;
@@ -100,6 +108,7 @@
     private List<Richiesta> _ListaRichieste;
 
     private bool NuovaRichiesta = false;
+    private bool CreateRapporto = false;
 
 
     protected override async Task OnInitializedAsync()
@@ -130,6 +139,14 @@
         Cliente = new Cliente();
         Richiesta = new Richiesta();
         StateHasChanged();
+    }
+
+    private async Task ShowHideCreation()
+    {
+        CreateRapporto = !CreateRapporto;
+        Cliente = new Cliente();
+        Rapporto = new Rapporto();
+
     }
 
     //metodo per la ricerca tra tutte le ragioni sociali
@@ -177,5 +194,21 @@
         Richiesta = richiesta;
         Cliente = _ListaClienti.FirstOrDefault(c => c.id == richiesta.Clienteid);
         EditRichiesta = !EditRichiesta;
+    }
+
+    private void GeneraRapporto(Richiesta richiesta)
+    {
+        Cliente = _ListaClienti.Find(c => richiesta.Clienteid == c.id);
+        Richiesta = richiesta; 
+
+        CreateRapporto = !CreateRapporto;
+        Rapporto.RichiestaId = richiesta.id;
+        Rapporto.Clienteid = richiesta.Clienteid;
+        Rapporto.RespRic = richiesta.ResponsabileRic;
+        Rapporto.Descrizione = richiesta.Descrizione;
+        Rapporto.DurataIntervento = richiesta.DurataIntervento;
+        Rapporto.TipoIntervento = richiesta.TipologiaIntervento;
+        Rapporto.DataIntervento = richiesta.DataIntervento;
+
     }
 }

@@ -2,6 +2,7 @@
 using RapportiWeb.Shared;
 using System.Net.Http.Json;
 
+
 namespace RapportiWeb.Client.Services.Clienti
 {
     public class ClientiService : IClientiService
@@ -22,7 +23,7 @@ namespace RapportiWeb.Client.Services.Clienti
 
         public async Task<string[]> GetArrayClienti()
         {
-            var lista = await _http.GetFromJsonAsync<string[]>("api/clienti/ragsoc");
+            var lista = await _http.GetFromJsonAsync<string[]>($"/api/clienti/ragsoc");
 
             return lista;
         }

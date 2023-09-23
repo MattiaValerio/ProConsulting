@@ -1,93 +1,171 @@
 ﻿@inject IRichiesteService RichiesteService
 @inject IClientiService ClientiService
 
-<MudItem xs="12">
-	<MudPaper Class="pa-6" Elevation="5">
-		<MudGrid Justify="Justify.Center">
+@if(Richiesta.RapportoCreato){
+	<MudItem xs="12">
+		<MudPaper Class="pa-6" Elevation="5">
+			<MudGrid Justify="Justify.Center">
 
-			@if(Edit)
-			{
-				<MudItem xs="12" sm="12" md="12">
-					<MudAutocomplete Disabled="true" @bind-Value="Cliente.ragioneSociale" Required="true" RequiredError="Selezionare un cliente" T="string" Label="Cliente" SearchFunc="Search" ShowProgressIndicator="true">
-						<ProgressIndicatorTemplate>
-							<MudProgressLinear Size="Size.Small" Indeterminate="true" Color="Color.Primary" />
-						</ProgressIndicatorTemplate>
-					</MudAutocomplete>
+					<MudItem xs="12" sm="12" md="12">
+						<MudAutocomplete Disabled="true" @bind-Value="Cliente.ragioneSociale" Required="true" RequiredError="Selezionare un cliente" T="string" Label="Cliente" SearchFunc="Search" ShowProgressIndicator="true">
+							<ProgressIndicatorTemplate>
+								<MudProgressLinear Size="Size.Small" Indeterminate="true" Color="Color.Primary" />
+							</ProgressIndicatorTemplate>
+						</MudAutocomplete>
+					</MudItem>
+
+				<MudItem xs="12" md="6">
+					<MudText>Figura professionale richiesta:</MudText>
+					<MudDivider Light="true" />
+					<MudRadioGroup Disabled="true" @bind-SelectedOption="Richiesta.FiguraProfessionale">
+						<MudRadio Color="Color.Primary" Option="@("Sistemista Senior/Tecnico ERP")">Sistemista Senior/Tecnico ERP</MudRadio>
+						<MudRadio Color="Color.Primary" Option="@("Consulente Applicativo Senior")">Consulente Applicativo Senior</MudRadio>
+						<MudRadio Color="Color.Primary" Option="@("Consulente Master")">Consulente Master</MudRadio>
+						<MudRadio Color="Color.Primary" Option="@("Project Manager")">Project Manager</MudRadio>
+					</MudRadioGroup>
 				</MudItem>
-			}
-			else
-			{
-				<MudItem xs="12" sm="12" md="12">
-					<MudAutocomplete @bind-Value="Cliente.ragioneSociale" Required="true" RequiredError="Selezionare un cliente" T="string" Label="Cliente" SearchFunc="Search" ShowProgressIndicator="true">
-						<ProgressIndicatorTemplate>
-							<MudProgressLinear Size="Size.Small" Indeterminate="true" Color="Color.Primary" />
-						</ProgressIndicatorTemplate>
-					</MudAutocomplete>
+
+				<MudItem xs="12" md="6">
+					<MudText>Intervento:</MudText>
+					<MudDivider Light="true" />
+					<MudSelect Disabled="true" Required="true" @bind-Value="Richiesta.TipologiaIntervento" T="string" Label="Tipologia Intervento" AnchorOrigin="Origin.BottomCenter">
+						<MudSelectItem Value="@("Contratto")" />
+						<MudSelectItem Value="@("In Garanzia")" />
+						<MudSelectItem Value="@("Rif.Offerta/C.O.")" />
+						<MudSelectItem Value="@("Altro")" />
+					</MudSelect>
+					@if (Richiesta.TipologiaIntervento == "Rif.Offerta/C.O." || Richiesta.TipologiaIntervento == "Altro")
+					{
+						<MudTextField @bind-Value="Richiesta.TipologiaIntervento" Label="Specificare Offerta/Altro" Variant="Variant.Text"></MudTextField>
+					}
 				</MudItem>
-			}
 
-			<MudItem xs="12" md="6">
-				<MudText>Figura professionale richiesta:</MudText>
-				<MudDivider Light="true" />
-				<MudRadioGroup @bind-SelectedOption="Richiesta.FiguraProfessionale">
-					<MudRadio Color="Color.Primary" Option="@("Sistemista Senior/Tecnico ERP")">Sistemista Senior/Tecnico ERP</MudRadio>
-					<MudRadio Color="Color.Primary" Option="@("Consulente Applicativo Senior")">Consulente Applicativo Senior</MudRadio>
-					<MudRadio Color="Color.Primary" Option="@("Consulente Master")">Consulente Master</MudRadio>
-					<MudRadio Color="Color.Primary" Option="@("Project Manager")">Project Manager</MudRadio>
-				</MudRadioGroup>
-			</MudItem>
+				<MudItem xs="12" md="4">
+					<MudTextField Disabled="true" @bind-Value="Richiesta.ResponsabileRic" T="string" Label="Responsabile richiesta" Required="true" RequiredError="Campo obbligatorio!" />
+				</MudItem>
 
-			<MudItem xs="12" md="6">
-				<MudText>Intervento:</MudText>
-				<MudDivider Light="true" />
-				<MudSelect @bind-Value="Richiesta.TipologiaIntervento" T="string" Label="Tipologia Intervento" AnchorOrigin="Origin.BottomCenter">
-					<MudSelectItem Value="@("Contratto")" />
-					<MudSelectItem Value="@("In Garanzia")" />
-					<MudSelectItem Value="@("Rif.Offerta/C.O.")" />
-					<MudSelectItem Value="@("Altro")" />
-				</MudSelect>
-				@if (Richiesta.TipologiaIntervento == "Rif.Offerta/C.O." || Richiesta.TipologiaIntervento == "Altro")
+				<MudItem xs="12" md="4">
+					<MudDatePicker Disabled="true" DateFormat="dd/MM/yyyy" Label="Data intervento" Required="true" @bind-Date="Richiesta.DataIntervento" />
+				</MudItem>
+
+				<MudItem xs="12" md="4">
+					<MudSelect Disabled="true" Required="true" T="string" Label="Durata intervento" @bind-Value="Richiesta.DurataIntervento" AnchorOrigin="Origin.BottomCenter">
+						<MudSelectItem Value="@("Mezza giornata")" />
+						<MudSelectItem Value="@("Giornata intera")" />
+						<MudSelectItem Value="@("Mezza Giornata straordinario")" />
+						<MudSelectItem Value="@("Giornata Intera straordinario")" />
+					</MudSelect>
+				</MudItem>
+
+				<MudItem xs="12">
+					<MudTextField Disabled="true" @bind-Value="Richiesta.Descrizione" T="string" Label="Descrizione intervento" Variant="Variant.Text" Lines="15" />
+				</MudItem>
+
+				@if (Edit)
 				{
-					<MudTextField @bind-Value="Richiesta.TipologiaIntervento" Label="Specificare Offerta/Altro" Variant="Variant.Text"></MudTextField>
+					<MudItem xs="12" Class="d-flex justify-content-around">
+						<MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="@(()=>{Annulla.InvokeAsync();})">Annulla</MudButton>
+					</MudItem>
 				}
-			</MudItem>
+			</MudGrid>
+		</MudPaper>
+	</MudItem>
 
-			<MudItem xs="12" md="4">
-				<MudTextField @bind-Value="Richiesta.ResponsabileRic" T="string" Label="Responsabile richiesta" Required="true" RequiredError="Campo obbligatorio!" />
-			</MudItem>
+}
+else
+{
+	<MudItem xs="12">
+		<MudPaper Class="pa-6" Elevation="5">
+			<MudGrid Justify="Justify.Center">
 
-			<MudItem xs="12" md="4">
-				<MudSelect T="string" Label="Durata intervento" @bind-Value="Richiesta.DurataIntervento" AnchorOrigin="Origin.BottomCenter">
-					<MudSelectItem Value="@("Mezza giornata")" />
-					<MudSelectItem Value="@("Giornata intera")" />
-					<MudSelectItem Value="@("Mezza Giornata straordinario")" />
-					<MudSelectItem Value="@("Giornata Intera straordinario")" />
-				</MudSelect>
-			</MudItem>
+				@if (Edit)
+				{
+					<MudItem xs="12" sm="12" md="12">
+						<MudAutocomplete Disabled="true" @bind-Value="Cliente.ragioneSociale" Required="true" RequiredError="Selezionare un cliente" T="string" Label="Cliente" SearchFunc="Search" ShowProgressIndicator="true">
+							<ProgressIndicatorTemplate>
+								<MudProgressLinear Size="Size.Small" Indeterminate="true" Color="Color.Primary" />
+							</ProgressIndicatorTemplate>
+						</MudAutocomplete>
+					</MudItem>
+				}
+				else
+				{
+					<MudItem xs="12" sm="12" md="12">
+						<MudAutocomplete @bind-Value="Cliente.ragioneSociale" Required="true" RequiredError="Selezionare un cliente" T="string" Label="Cliente" SearchFunc="Search" ShowProgressIndicator="true">
+							<ProgressIndicatorTemplate>
+								<MudProgressLinear Size="Size.Small" Indeterminate="true" Color="Color.Primary" />
+							</ProgressIndicatorTemplate>
+						</MudAutocomplete>
+					</MudItem>
+				}
 
-			<MudItem xs="12" md="4">
-				<MudDatePicker Label="Data intervento" Required="true" @bind-Date="Richiesta.DataIntervento" />
-			</MudItem>
-
-			<MudItem xs="12">
-				<MudTextField @bind-Value="Richiesta.Descrizione" T="string" Label="Descrizione intervento" Variant="Variant.Text" Lines="15" />
-			</MudItem>
-
-			@if (Edit)
-			{
-				<MudItem xs="12" Class="d-flex justify-content-around">
-					<MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="@(()=>{Annulla.InvokeAsync();})">Annulla</MudButton>
-					<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(()=>{EditRichiesta(Richiesta);})">Modifica Richiesta</MudButton>
+				<MudItem xs="12" md="6">
+					<MudText>Figura professionale richiesta:</MudText>
+					<MudDivider Light="true" />
+					<MudRadioGroup @bind-SelectedOption="Richiesta.FiguraProfessionale">
+						<MudRadio Color="Color.Primary" Option="@("Sistemista Senior/Tecnico ERP")">Sistemista Senior/Tecnico ERP</MudRadio>
+						<MudRadio Color="Color.Primary" Option="@("Consulente Applicativo Senior")">Consulente Applicativo Senior</MudRadio>
+						<MudRadio Color="Color.Primary" Option="@("Consulente Master")">Consulente Master</MudRadio>
+						<MudRadio Color="Color.Primary" Option="@("Project Manager")">Project Manager</MudRadio>
+					</MudRadioGroup>
 				</MudItem>
-			}else{
-			<MudItem xs="12" Class="d-flex justify-content-around">
-				<MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="@(()=>{ShowHidePopUp.InvokeAsync();})">Annulla</MudButton>
-				<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(()=>{CreateRichiesta(Richiesta);})">Crea Richiesta</MudButton>
-			</MudItem>
-			}
-		</MudGrid>
-	</MudPaper>
-</MudItem>
+
+				<MudItem xs="12" md="6">
+					<MudText>Intervento:</MudText>
+					<MudDivider Light="true" />
+					<MudSelect Required="true" @bind-Value="Richiesta.TipologiaIntervento" T="string" Label="Tipologia Intervento" AnchorOrigin="Origin.BottomCenter">
+						<MudSelectItem Value="@("Contratto")" />
+						<MudSelectItem Value="@("In Garanzia")" />
+						<MudSelectItem Value="@("Rif.Offerta/C.O.")" />
+						<MudSelectItem Value="@("Altro")" />
+					</MudSelect>
+					@if (Richiesta.TipologiaIntervento == "Rif.Offerta/C.O." || Richiesta.TipologiaIntervento == "Altro")
+					{
+						<MudTextField @bind-Value="Richiesta.TipologiaIntervento" Label="Specificare Offerta/Altro" Variant="Variant.Text"></MudTextField>
+					}
+				</MudItem>
+
+				<MudItem xs="12" md="4">
+					<MudTextField @bind-Value="Richiesta.ResponsabileRic" T="string" Label="Responsabile richiesta" Required="true" RequiredError="Campo obbligatorio!" />
+				</MudItem>
+
+				<MudItem xs="12" md="4">
+					<MudDatePicker DateFormat="dd/MM/yyyy" Label="Data intervento" Required="true" @bind-Date="Richiesta.DataIntervento" />
+				</MudItem>
+
+				<MudItem xs="12" md="4">
+					<MudSelect Required="true" T="string" Label="Durata intervento" @bind-Value="Richiesta.DurataIntervento" AnchorOrigin="Origin.BottomCenter">
+						<MudSelectItem Value="@("Mezza giornata")" />
+						<MudSelectItem Value="@("Giornata intera")" />
+						<MudSelectItem Value="@("Mezza Giornata straordinario")" />
+						<MudSelectItem Value="@("Giornata Intera straordinario")" />
+					</MudSelect>
+				</MudItem>
+
+				<MudItem xs="12">
+					<MudTextField @bind-Value="Richiesta.Descrizione" T="string" Label="Descrizione intervento" Variant="Variant.Text" Lines="15" />
+				</MudItem>
+
+				@if (Edit)
+				{
+					<MudItem xs="12" Class="d-flex justify-content-around">
+						<MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="@(()=>{Annulla.InvokeAsync();})">Annulla</MudButton>
+						<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(()=>{EditRichiesta(Richiesta);})">Modifica Richiesta</MudButton>
+					</MudItem>
+				}
+				else
+				{
+					<MudItem xs="12" Class="d-flex justify-content-around">
+						<MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="@(()=>{ShowHidePopUp.InvokeAsync();})">Annulla</MudButton>
+						<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(()=>{CreateRichiesta(Richiesta);})">Crea Richiesta</MudButton>
+					</MudItem>
+				}
+			</MudGrid>
+		</MudPaper>
+	</MudItem>
+
+}
+
 
 @code {
 	[Parameter]

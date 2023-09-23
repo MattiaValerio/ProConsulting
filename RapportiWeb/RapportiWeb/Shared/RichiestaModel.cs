@@ -15,6 +15,7 @@ namespace RapportiWeb.Shared
         public string DurataIntervento { get; set; }
         public bool Firma { get; set; }
         public bool visible { get; set; }
+        public bool RapportoCreato { get; set; }
         //public string Creator { get; set; }
 
 
