@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using RapportiWeb.Client.Pages;
 using RapportiWeb.Server.Data;
 using RapportiWeb.Shared;
 
@@ -102,5 +103,19 @@ namespace RapportiWeb.Server.Controllers
 			return Ok(richiesta);
 
 		}
+
+        [HttpGet("data")]
+        public async Task<List<Richiesta>> FiltraRichiesteByDate([System.Web.Http.FromUri] DateTime start, [System.Web.Http.FromUri] DateTime end)
+        {
+            var richieste = _context.Richieste.ToList();
+
+            if (richieste != null)
+            {
+                var filteredRichieste = richieste.Where(r => r.Data >= start && r.Data <= end).ToList();
+                return filteredRichieste;
+            }
+
+            return new List<Richiesta>();
+        }
 	}
 }

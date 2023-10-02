@@ -1,4 +1,5 @@
-﻿using RapportiWeb.Shared;
+﻿using MudBlazor;
+using RapportiWeb.Shared;
 
 namespace RapportiWeb.Client.Services.Richieste
 {
@@ -14,16 +15,15 @@ namespace RapportiWeb.Client.Services.Richieste
         Task<string[]> GetRagioniSociali();
 
         Task<Richiesta?> GetRichiestaById(int id);
+        
         Task<List<Richiesta>> GetRichiestaByRagSoc(string ragsoc);
 
         Task CreateRichiesta(Richiesta Richiesta);
 
         Task UpdateRichiesta(int id, Richiesta Richiesta);
-
-        Task SearchRichieste(string query);
-
-        Task<List<Richiesta>> GetFilteredRichieste(DateTime startDateFilter, DateTime endDateFilter);
         
         Task DeleteRichiesta(int id);
+
+        Task<List<Richiesta>> RicercaPerData(DateTime? start, DateTime? end);
     }
 }

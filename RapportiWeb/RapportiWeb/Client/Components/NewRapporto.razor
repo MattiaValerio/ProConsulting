@@ -30,7 +30,7 @@
 				</MudItem>
 
 				<MudItem xs="12" md="12">
-					<MudSelect T="string" Label="Luogo Intervento" @bind-Value="Rapporto.LuogoIntervento" AnchorOrigin="Origin.BottomCenter">
+					<MudSelect T="string" Label="Luogo Intervento" Required="true" @bind-Value="Rapporto.LuogoIntervento" AnchorOrigin="Origin.BottomCenter">
 						<MudSelectItem Value="@("Intervento presso il cliente")" />
 						<MudSelectItem Value="@("Intervento Assistenza remota")" />
 					</MudSelect>
@@ -163,7 +163,7 @@ else
 				{
 					<MudItem xs="12" Class="d-flex justify-content-around">
 						<MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="@(()=>{Annulla.InvokeAsync();})">Annulla</MudButton>
-						<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(()=>{EditRapporto(Rapporto);})">Modifica Richiesta</MudButton>
+						<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(()=>{EditRapporto(Rapporto);})">Modifica Rapporto</MudButton>
 					</MudItem>
 				}
 				else
@@ -242,10 +242,8 @@ else
 		try
 		{
 			var cliente = await ClientiService.GetCliente(Cliente.ragioneSociale);
-			richiesta.RapportoCreato = true;
 			Rapporto.Clienteid = cliente.id;
-			await RichiesteService.UpdateRichiesta(Richiesta.id, richiesta);
-			await RapportiService.CreateRapporto(rapporto);
+			await RapportiService.GenerateRapporto(richiesta, rapporto);
 			await ShowHidePopUp.InvokeAsync();
 
 		}

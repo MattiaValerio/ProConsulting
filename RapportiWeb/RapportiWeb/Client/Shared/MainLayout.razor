@@ -2,7 +2,7 @@
 @inject NavigationManager nav
 
 
-<MudThemeProvider />
+<MudThemeProvider Theme="MyCustomTheme"/>
 <MudDialogProvider />
 <MudSnackbarProvider />
 
@@ -20,3 +20,13 @@
     </MudMainContent>
 
 </MudLayout>
+
+@code {
+    MudTheme MyCustomTheme = new MudTheme()
+        {
+            Palette = new PaletteLight()
+            {
+                Primary = "#337ab7",
+            },
+        };
+}

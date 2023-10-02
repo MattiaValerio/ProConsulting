@@ -39,9 +39,12 @@
 							 AdornmentColor="Color.Primary" />
 			</MudItem>
 
-			@*<MudItem xs="12" md="12" xl="4">
-				<MudDateRangePicker Label="Data" Clearable="true" DateFormat="dd/MM/yyy" />
-			</MudItem>*@
+            <MudItem xs="12" md="12" xl="4">
+                <MudDateRangePicker Label="Data" Clearable="true" DateFormat="dd/MM/yyy"
+                @bind-DateRange="_dateRange"
+                                    PickerClosed="@(async ()=>{await RicercaPerData(_dateRange);})" />
+
+            </MudItem>
 
 			@if (_ListaRapporti is null)
 			{
@@ -92,6 +95,7 @@
 @code {
 	private bool NuovoRapporto = false;
 	public bool EditRapporto { get; set; } = false;
+	private DateRange? _dateRange = new DateRange();
 
 	private List<Cliente>? _ListaClienti;
 	private List<Rapporto>? _ListaRapporti;
@@ -176,6 +180,15 @@
 		Cliente = new Cliente();
 		Rapporto = new Rapporto();
 		StateHasChanged();
+	}
+
+	private async Task<List<Rapporto>> RicercaPerData(DateRange dateRange)
+	{
+		var rapporti = await RapportiService.RicercaPerData(dateRange.Start, dateRange.End);
+
+		_ListaRapporti = rapporti;
+
+		return _ListaRapporti;
 	}
 
 

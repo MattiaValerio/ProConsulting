@@ -22,6 +22,10 @@
         {
             <NewRapporto Annulla="AnnullaEdit" Richiesta="Richiesta" Rapporto="Rapporto" Cliente="Cliente" RapportoCreation="true" ShowHidePopUp="@(()=>{ShowHideCreation();})" />
         }
+        else if (RedirectRapporto)
+        {
+            
+        }
         else
         {
             <MudItem xs="1" md="1" Class="d-flex flex-column align-items-center justify-center">
@@ -41,9 +45,12 @@
                              AdornmentColor="Color.Primary" />
             </MudItem>
 
-@*            <MudItem xs="12" md="12" xl="4">
-                <MudDateRangePicker Label="Data" Clearable="true" DateFormat="dd/MM/yyy"/>
-            </MudItem>*@
+            <MudItem xs="12" md="12" xl="4">
+                <MudDateRangePicker Label="Data" Clearable="true" DateFormat="dd/MM/yyy"
+                        @bind-DateRange="_dateRange"
+                        PickerClosed="@(async ()=>{await RicercaPerData(_dateRange);})" />
+                        
+            </MudItem>
 
             @if (_ListaRichieste is null)
             {
@@ -84,6 +91,10 @@
                                 {
                                     <MudIconButton Icon="@Icons.Material.Filled.Add" Color="Color.Primary" aria-label="github" @onclick="@(()=>{GeneraRapporto(context);})"></MudIconButton>
                                 }
+                                else
+                                {
+                                    <MudIconButton Icon="@Icons.Material.Filled.ArrowCircleRight" Color="Color.Primary" aria-label="github" @onclick="@(()=>{RedirectToRapporto();})" />
+                                }
                             </MudTd>
                         </RowTemplate>
                     </MudTable>
@@ -95,8 +106,8 @@
 </MudContainer>
 
 @code {
-    private string[] ArrClienti;
-    private DateRange _dateRange = new DateRange(DateTime.Now.AddMonths(-1).Date, DateTime.Now.AddMonths(1).Date);
+    private string[]? ArrClienti;
+    private DateRange? _dateRange = new DateRange();
 
     public Cliente Cliente { get; set; } = new Cliente();
     public Richiesta Richiesta { get; set; } = new Richiesta();
@@ -109,6 +120,7 @@
 
     private bool NuovaRichiesta = false;
     private bool CreateRapporto = false;
+    private bool RedirectRapporto = false;
 
 
     protected override async Task OnInitializedAsync()
@@ -146,13 +158,12 @@
         CreateRapporto = !CreateRapporto;
         Cliente = new Cliente();
         Rapporto = new Rapporto();
-
     }
 
     //metodo per la ricerca tra tutte le ragioni sociali
     private async Task<IEnumerable<string>> Search(string value)
     {
-        var clienti = await ClientiService.GetArrayClienti();
+        var clienti = ArrClienti;
 
         if (string.IsNullOrEmpty(value))
             return new string[0];
@@ -210,5 +221,19 @@
         Rapporto.TipoIntervento = richiesta.TipologiaIntervento;
         Rapporto.DataIntervento = richiesta.DataIntervento;
 
+    }
+
+    private void RedirectToRapporto()
+    {
+        
+    }
+
+    private async Task<List<Richiesta>> RicercaPerData(DateRange dateRange)
+    {
+        var richieste = await RichiesteService.RicercaPerData(dateRange.Start, dateRange.End);
+
+        _ListaRichieste = richieste; 
+
+        return _ListaRichieste;
     }
 }
