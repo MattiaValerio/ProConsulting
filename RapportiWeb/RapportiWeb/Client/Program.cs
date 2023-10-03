@@ -20,6 +20,7 @@ builder.Services.AddScoped<IRichiesteService, RichiesteService>();
 builder.Services.AddScoped<IRapportiService, RapportiService>();
 builder.Services.AddScoped<IPdfService, PdfService>();
 
+
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
 //builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:443/") });

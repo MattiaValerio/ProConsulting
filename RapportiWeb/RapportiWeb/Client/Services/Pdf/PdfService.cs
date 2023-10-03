@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 using RapportiWeb.Shared;
 using System.Diagnostics;
 using System.Net.Http;
@@ -18,28 +19,29 @@ namespace RapportiWeb.Client.Services.Pdf
 		}
 
 
-		public async Task DownloadRichiesta(Richiesta ric)
+		public async Task DownloadRichiesta(Cliente cliente, Richiesta ric)
 		{
-			var response = await _http.PostAsJsonAsync("api/PDF/DownloadRichiesta", ric);
-			if (response.IsSuccessStatusCode)
+			try
 			{
-				var pdfFileName = await response.Content.ReadAsStringAsync();
-				var pdfUrl = $"../PDFs/{pdfFileName}";
-
-				using (Process p = new Process())
+				var response = await _http.PostAsJsonAsync("api/PDF/DownloadRichiesta", ric);
+				if (response.IsSuccessStatusCode)
 				{
-					var path = Path.GetDirectoryName(pdfUrl);
+					var pdfFileName = await response.Content.ReadAsStringAsync();
+					var pdfUrl = $"../PDF/{pdfFileName}";
 
-					p.StartInfo = new ProcessStartInfo()
-					{
-						CreateNoWindow = true,
-						UseShellExecute = true,
-
-						FileName = pdfUrl
-					};
-					p.Start();
 				}
 			}
+			catch (Exception e)
+			{
+				Console.WriteLine(e);
+				throw;
+			}
+			
+		}
+
+		public async Task GetFile(string filename)
+		{
+			await _http.GetAsync($"pdf/{filename}");
 		}
 	}
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.JSInterop;
 using RapportiWeb.Server.Data;
 using RapportiWeb.Shared;
 
@@ -12,7 +13,7 @@ namespace RapportiWeb.Server.Controllers
     {
         private readonly DataContext _context;
 
-        public ClientiController(DataContext context)
+		public ClientiController(DataContext context)
         {
             _context = context;
         }

@@ -2,12 +2,14 @@
 
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
+		<StartWorkingDirectory>$(MSBuildProjectDirectory)</StartWorkingDirectory>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<EnvironmentName>Development</EnvironmentName>
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="BlazorDownloadFile" Version="2.4.0.2" />
 		<PackageReference Include="Microsoft.AspNet.WebApi.Core" Version="5.2.9" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="6.0.15" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.9" />
@@ -22,10 +24,6 @@
 	<ItemGroup>
 		<ProjectReference Include="..\Client\RapportiWeb.Client.csproj" />
 		<ProjectReference Include="..\Shared\RapportiWeb.Shared.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="PDF\" />
 	</ItemGroup>
 
 

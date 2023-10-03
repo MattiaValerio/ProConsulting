@@ -1,6 +1,7 @@
 ﻿@inject IRichiesteService RichiesteService
 @inject IClientiService ClientiService
 @inject IPdfService PdfService
+@inject IJSRuntime JSRuntime;
 
 @if(Richiesta.RapportoCreato){
 	<MudItem xs="12">
@@ -68,10 +69,6 @@
 						<MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="@(()=>{Annulla.InvokeAsync();})">Annulla</MudButton>
 					</MudItem>
 				}
-
-				<MudItem xs="12" Class="d-flex justify-content-around">
-					<MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="@(()=>{Annulla.InvokeAsync();})">Annulla</MudButton>
-				</MudItem>
 			</MudGrid>
 		</MudPaper>
 	</MudItem>
@@ -245,6 +242,7 @@ else
 
 	private async Task DownloadPDF(Richiesta ric)
 	{
-		await PdfService.DownloadRichiesta(ric);
+		await PdfService.DownloadRichiesta(Cliente, ric);
+		await JSRuntime.InvokeAsync<object>("open", $"/pdf/ric{Richiesta.id}.pdf", "_blank");
 	}
 }

@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query.Internal;
+using Microsoft.JSInterop;
 using QuestPDF.Drawing;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
+using RapportiWeb.Client.Pages;
 using RapportiWeb.Server.Data;
 using RapportiWeb.Shared;
 using System.Security.Cryptography.X509Certificates;
@@ -16,12 +18,15 @@ namespace RapportiWeb.Server.Controllers
     [Route("api/[controller]")]
     public class PDFController : ControllerBase
     {
+		//await JSRuntime.InvokeAsync<object>("open", $"https://localhost:7124/PDF/{Cliente.ragioneSociale}_ric{Richiesta.id}.pdf", "_blank");
 
 		private readonly DataContext _context;
+		private IJSRuntime _jsRunTime;
 
-		public PDFController(DataContext context)
+		public PDFController(DataContext context, IJSRuntime jsRuntime)
 		{
 			_context = context;
+            _jsRunTime = jsRuntime;
 		}
 
 		[HttpPost("DownloadRichiesta")]
@@ -33,18 +38,24 @@ namespace RapportiWeb.Server.Controllers
             // Generate the PDF for Richiesta and save it on the server
             var pdfDocument = CreateRichiestaPdf(richiesta);
             var pdfBytes = (await pdfDocument).GeneratePdf();
-            var pdfFileName = $"{cliente.ragioneSociale}_ric{richiesta.id}.pdf";
+            var pdfFileName = $"ric{richiesta.id}.pdf";
 
-            var pdfFolder = Path.Combine(Directory.GetCurrentDirectory(), "PDF");
+            var pdfFolder = "../Client/wwwroot/PDF";
             Directory.CreateDirectory(pdfFolder);
             var pdfFilePath = Path.Combine(pdfFolder, pdfFileName);
 
             System.IO.File.WriteAllBytes(pdfFilePath, pdfBytes);
 
-            return Ok(pdfFileName);
+			return Ok(pdfFileName);
         }
 
-        [HttpPost("DownloadRapporto")]
+        [HttpGet("{FileName}")]
+        public async Task GetFile(string filename)
+        {
+			await _jsRunTime.InvokeAsync<object>("open", $"/PDF/{filename}", "_blank");
+		}
+
+		[HttpPost("DownloadRapporto")]
         public async Task<IActionResult> DownloadRapporto(Rapporto rapporto)
         {
             var listaClienti = await _context.Clienti.ToListAsync();
