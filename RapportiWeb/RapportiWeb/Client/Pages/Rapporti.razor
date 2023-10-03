@@ -125,8 +125,37 @@
 	{
 		var nomecliente = Search(value);
 
-		_ListaRapporti = await RapportiService.GetRapportiByRagSoc(value);
-		StateHasChanged();
+		if (_dateRange.End.HasValue && _dateRange.Start.HasValue)
+		{
+			_ListaRapporti = await RapportiService.GetRapportiByRagSoc(value);
+			_ListaRapporti = await RapportiService.RicercaPerData(_dateRange.Start, _dateRange.End);
+
+			_ListaRapporti = _ListaRapporti.FindAll(r => r.Clienteid == _ListaClienti.FirstOrDefault(c => c.ragioneSociale == value).id);
+			StateHasChanged();
+		}
+		else
+		{
+			_ListaRapporti = await RapportiService.GetRapportiByRagSoc(value);
+			StateHasChanged();
+		}
+	}
+
+	private async Task<List<Rapporto>> RicercaPerData(DateRange dateRange)
+	{
+		if (Cliente.ragioneSociale == string.Empty || Cliente.ragioneSociale is null)
+		{
+			_ListaRapporti = await RapportiService.RicercaPerData(dateRange.Start, dateRange.End);
+		}
+		else if (Cliente.ragioneSociale is not null)
+		{
+			_ListaRapporti = await RapportiService.GetRapportiByRagSoc(Cliente.ragioneSociale);
+			_ListaRapporti = await RapportiService.RicercaPerData(dateRange.Start, dateRange.End);
+
+			_ListaRapporti = _ListaRapporti.FindAll(r => r.Clienteid == _ListaClienti.FirstOrDefault(c => c.ragioneSociale == Cliente.ragioneSociale).id);
+		}
+
+
+		return _ListaRapporti;
 	}
 
 	private async void OpenDialog(Rapporto rapporto)
@@ -180,15 +209,6 @@
 		Cliente = new Cliente();
 		Rapporto = new Rapporto();
 		StateHasChanged();
-	}
-
-	private async Task<List<Rapporto>> RicercaPerData(DateRange dateRange)
-	{
-		var rapporti = await RapportiService.RicercaPerData(dateRange.Start, dateRange.End);
-
-		_ListaRapporti = rapporti;
-
-		return _ListaRapporti;
 	}
 
 
