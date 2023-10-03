@@ -1,4 +1,6 @@
 ﻿
+using System.ComponentModel.DataAnnotations;
+
 namespace RapportiWeb.Shared
 {
     public class Richiesta
@@ -7,12 +9,17 @@ namespace RapportiWeb.Shared
         //public string CustomCodice { get; set; } //codice univoco di 10 caratteri creabile dall'utente
         public DateTime Data { get; set; }
         public int Clienteid { get; set; }
-        public string ResponsabileRic { get; set; }
+		[Required(ErrorMessage = "Campo obbligatorio")]
+		public string ResponsabileRic { get; set; }
+        [Required(ErrorMessage = "Campo obbligatorio")]
         public string Descrizione { get; set; }
-        public string FiguraProfessionale { get; set; }
-        public string TipologiaIntervento { get; set; }
+		[Required(ErrorMessage = "Campo obbligatorio")]
+		public string FiguraProfessionale { get; set; }
+		[Required(ErrorMessage = "Campo obbligatorio")]
+		public string TipologiaIntervento { get; set; }
         public DateTime? DataIntervento { get; set; }
-        public string DurataIntervento { get; set; }
+		[Required(ErrorMessage = "Campo obbligatorio")]
+		public string DurataIntervento { get; set; }
         public bool Firma { get; set; }
         public bool visible { get; set; }
         public bool RapportoCreato { get; set; }

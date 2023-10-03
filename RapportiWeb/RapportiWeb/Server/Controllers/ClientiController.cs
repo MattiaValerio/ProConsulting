@@ -120,6 +120,7 @@ namespace RapportiWeb.Server.Controllers
             dbCliente.telefono = cliente.telefono;
             dbCliente.CAP = cliente.CAP;
             dbCliente.email = cliente.email;
+            dbCliente.NomeAbbreviato = cliente.NomeAbbreviato;
 
             await _context.SaveChangesAsync();
 

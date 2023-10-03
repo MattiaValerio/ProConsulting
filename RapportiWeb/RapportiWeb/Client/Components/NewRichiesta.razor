@@ -1,5 +1,6 @@
 ﻿@inject IRichiesteService RichiesteService
 @inject IClientiService ClientiService
+@inject IPdfService PdfService
 
 @if(Richiesta.RapportoCreato){
 	<MudItem xs="12">
@@ -67,6 +68,10 @@
 						<MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="@(()=>{Annulla.InvokeAsync();})">Annulla</MudButton>
 					</MudItem>
 				}
+
+				<MudItem xs="12" Class="d-flex justify-content-around">
+					<MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="@(()=>{Annulla.InvokeAsync();})">Annulla</MudButton>
+				</MudItem>
 			</MudGrid>
 		</MudPaper>
 	</MudItem>
@@ -151,6 +156,7 @@ else
 					<MudItem xs="12" Class="d-flex justify-content-around">
 						<MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="@(()=>{Annulla.InvokeAsync();})">Annulla</MudButton>
 						<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(()=>{EditRichiesta(Richiesta);})">Modifica Richiesta</MudButton>
+						<MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="@(()=>{DownloadPDF(Richiesta);})">Download</MudButton>
 					</MudItem>
 				}
 				else
@@ -158,8 +164,10 @@ else
 					<MudItem xs="12" Class="d-flex justify-content-around">
 						<MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="@(()=>{ShowHidePopUp.InvokeAsync();})">Annulla</MudButton>
 						<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(()=>{CreateRichiesta(Richiesta);})">Crea Richiesta</MudButton>
+						<MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="@(()=>{DownloadPDF(Richiesta);})">Download</MudButton>
 					</MudItem>
 				}
+
 			</MudGrid>
 		</MudPaper>
 	</MudItem>
@@ -233,5 +241,10 @@ else
 		{
 			Console.WriteLine("CLIENTE NON PRESENTE NEL DB");
 		}
+	}
+
+	private async Task DownloadPDF(Richiesta ric)
+	{
+		await PdfService.DownloadRichiesta(ric);
 	}
 }

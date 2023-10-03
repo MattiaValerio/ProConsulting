@@ -13,7 +13,8 @@
                 <MudPaper Class="pa-6" Elevation="5">
                     <MudForm @ref="form" @bind-IsValid="@success">
 
-                        <MudTextField @bind-Value="Cliente.ragioneSociale" T="string" Label="Ragione Sociale" Required="true" RequiredError="Ragione sociale obbligatoria!" />
+                    <MudTextField @bind-Value="Cliente.ragioneSociale" T="string" Label="Ragione Sociale" Required="true" RequiredError="Ragione sociale obbligatoria!" />
+                    <MudTextField @bind-Value="Cliente.NomeAbbreviato" T="string" Label="Nome Abbreviato" Required="true" RequiredError="Campo obbligatorio!" />
                         <MudTextField @bind-Value="Cliente.email" T="string" Label="Email" Required="true" RequiredError="Email obbligatoria!"
                                       Validation="@(new EmailAddressAttribute() {ErrorMessage = "Indirizzo Email non valido"})" />
                         <MudTextField @bind-Value="Cliente.telefono" T="string" Label="Telefono" Required="true" RequiredError="Numero di telefono obbligatorio!"

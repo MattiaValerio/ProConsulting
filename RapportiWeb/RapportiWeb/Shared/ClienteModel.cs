@@ -7,10 +7,13 @@ namespace RapportiWeb.Shared
     {
         public int id { get; set; }
 
-        [Required(ErrorMessage = "Campo obbligatorio")]
-        public string ragioneSociale { get; set; }
+		[Required(ErrorMessage = "Campo obbligatorio")]
+		public string ragioneSociale { get; set; }
 
-        [Required(ErrorMessage = "Campo obbligatorio")]
+		[Required(ErrorMessage = "Campo obbligatorio")]
+		public string NomeAbbreviato { get; set; }
+
+		[Required(ErrorMessage = "Campo obbligatorio")]
         public string Indirizzo { get; set; }
          
         [Required(ErrorMessage = "Campo obbligatorio")]
