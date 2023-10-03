@@ -1,14 +1,24 @@
 ﻿@page "/richieste"
 @inject IClientiService ClientiService
 @inject IRichiesteService RichiesteService
+@inject IRapportiService RapportiService
 @inject IDialogService DialogService
 
 
 <MudContainer>
     <MudGrid Justify="Justify.Center">
-        <MudItem xs="12">
-            <MudText Align="Align.Center" Typo="Typo.h2">RICHIESTE</MudText>
-        </MudItem>
+        @if (RedirectRapporto)
+        {
+            <MudItem xs="12">
+                <MudText Align="Align.Center" Typo="Typo.h2">RAPPORTI</MudText>
+            </MudItem>
+        }
+        else
+        {
+            <MudItem xs="12">
+                <MudText Align="Align.Center" Typo="Typo.h2">RICHIESTE</MudText>
+            </MudItem>
+        }
         
         @if (NuovaRichiesta)
         {
@@ -20,11 +30,11 @@
         }
         else if (CreateRapporto)
         {
-            <NewRapporto Annulla="AnnullaEdit" Richiesta="Richiesta" Rapporto="Rapporto" Cliente="Cliente" RapportoCreation="true" ShowHidePopUp="@(()=>{ShowHideCreation();})" />
+            <NewRapporto Annulla="AnnullaGenerate" Richiesta="Richiesta" Rapporto="Rapporto" Cliente="Cliente" RapportoCreation="true" ShowHidePopUp="@(()=>{ShowHideCreation();})" />
         }
         else if (RedirectRapporto)
         {
-            
+            <NewRapporto Annulla="AnnullaRedirect" Rapporto="Rapporto" Cliente="Cliente" Edit="true" ShowHidePopUp="@(()=>{ShowHideRedirect();})" />
         }
         else
         {
@@ -86,14 +96,14 @@
                             <MudTd DataLabel="Elimina">
                                 <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" aria-label="github" @onclick="@(()=>{OpenDialog(context);})"></MudIconButton>
                             </MudTd>
-                            <MudTd DataLabel="Crea Rapporto">
+                            <MudTd DataLabel="Crea/Visualizza Rapporto">
                                 @if (context.RapportoCreato == false)
                                 {
-                                    <MudIconButton Icon="@Icons.Material.Filled.Add" Color="Color.Primary" aria-label="github" @onclick="@(()=>{GeneraRapporto(context);})"></MudIconButton>
+                                    <MudIconButton Icon="@Icons.Material.Filled.Add" Color="Color.Primary" aria-label="github" @onclick="@(()=>{GeneraRapporto(context);})"/>
                                 }
                                 else
                                 {
-                                    <MudIconButton Icon="@Icons.Material.Filled.ArrowCircleRight" Color="Color.Primary" aria-label="github" @onclick="@(()=>{RedirectToRapporto();})" />
+                                    <MudIconButton Icon="@Icons.Material.Filled.CallMade" Color="Color.Primary" aria-label="github" @onclick="@(()=>{RedirectToRapporto(context);})"/>
                                 }
                             </MudTd>
                         </RowTemplate>
@@ -144,6 +154,20 @@
         Richiesta = new Richiesta();
     }
 
+    private async Task AnnullaGenerate()
+    {
+        CreateRapporto = !CreateRapporto;
+        Cliente = new Cliente();
+        Richiesta = new Richiesta();
+    }
+
+    private async Task AnnullaRedirect()
+    {
+        RedirectRapporto = !RedirectRapporto;
+        Cliente = new Cliente();
+        Rapporto = new Rapporto();
+    }
+
     private async Task ShowHideEdit()
     {
         EditRichiesta = !EditRichiesta;
@@ -160,6 +184,21 @@
         Rapporto = new Rapporto();
     }
 
+    private async Task ShowHideRedirect()
+    {
+        RedirectRapporto = !RedirectRapporto;
+        Cliente = new Cliente();
+        Rapporto = new Rapporto();
+    }
+
+    private async Task RedirectToRapporto(Richiesta ric)
+    {
+        Rapporto = await RapportiService.GetRapportoByRichiesta(ric);
+        Cliente = _ListaClienti.First(c => c.id == ric.Clienteid);
+        RedirectRapporto = !RedirectRapporto;
+        StateHasChanged();
+    }
+
     //metodo per la ricerca tra tutte le ragioni sociali
     private async Task<IEnumerable<string>> Search(string value)
     {
@@ -174,8 +213,37 @@
     {
         var nomecliente = Search(value);
 
-        _ListaRichieste = await RichiesteService.GetRichiestaByRagSoc(value);
-        StateHasChanged();
+        if(_dateRange.End.HasValue && _dateRange.Start.HasValue)
+        {
+            _ListaRichieste = await RichiesteService.GetRichiestaByRagSoc(value);
+            _ListaRichieste = await RichiesteService.RicercaPerData(_dateRange.Start, _dateRange.End);
+
+            _ListaRichieste = _ListaRichieste.FindAll(r => r.Clienteid == _ListaClienti.FirstOrDefault(c => c.ragioneSociale == value).id);
+            StateHasChanged();
+        }
+        else
+        {
+            _ListaRichieste = await RichiesteService.GetRichiestaByRagSoc(value);
+            StateHasChanged();
+        }
+    }
+
+    private async Task<List<Richiesta>> RicercaPerData(DateRange dateRange)
+    {
+        if (Cliente.ragioneSociale == string.Empty || Cliente.ragioneSociale is null)
+        {
+            _ListaRichieste = await RichiesteService.RicercaPerData(dateRange.Start, dateRange.End);
+        }
+        else if(Cliente.ragioneSociale is not null)
+        {
+            _ListaRichieste = await RichiesteService.GetRichiestaByRagSoc(Cliente.ragioneSociale);
+            _ListaRichieste = await RichiesteService.RicercaPerData(dateRange.Start, dateRange.End);
+
+            _ListaRichieste = _ListaRichieste.FindAll(r => r.Clienteid == _ListaClienti.FirstOrDefault(c => c.ragioneSociale == Cliente.ragioneSociale).id);
+        }
+
+
+        return _ListaRichieste;
     }
 
     private async void OpenDialog(Richiesta richiesta)
@@ -223,17 +291,5 @@
 
     }
 
-    private void RedirectToRapporto()
-    {
-        
-    }
-
-    private async Task<List<Richiesta>> RicercaPerData(DateRange dateRange)
-    {
-        var richieste = await RichiesteService.RicercaPerData(dateRange.Start, dateRange.End);
-
-        _ListaRichieste = richieste; 
-
-        return _ListaRichieste;
-    }
+    
 }

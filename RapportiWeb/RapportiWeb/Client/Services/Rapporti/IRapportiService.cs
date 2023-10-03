@@ -12,10 +12,12 @@ namespace RapportiWeb.Client.Services.Rapporti
         public Task UpdateRapporto(Rapporto rapporto, int id);
         public Task DeleteRapporto(int id);
 
-        //permette di ottenere i rapporti di un cliente in base alla ragione sociale
-        Task<List<Rapporto>> GetRapportiByRagSoc(string ragsoc);
+        public Task<Rapporto> GetRapportoByRichiesta(Richiesta ric);
 
-        Task<List<Rapporto>> RicercaPerData(DateTime? start, DateTime? end);
+        //permette di ottenere i rapporti di un cliente in base alla ragione sociale
+        public Task<List<Rapporto>> GetRapportiByRagSoc(string ragsoc);
+
+        public Task<List<Rapporto>> RicercaPerData(DateTime? start, DateTime? end);
 
     }
 }

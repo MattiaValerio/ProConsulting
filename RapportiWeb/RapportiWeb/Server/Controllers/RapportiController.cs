@@ -101,5 +101,21 @@ namespace RapportiWeb.Server.Controllers
             return new List<Rapporto>();
         }
 
+
+        [HttpGet("ric")]
+        public async Task <ActionResult<List<Rapporto>>> GetRapportoByRichiesta([System.Web.Http.FromUri] int RichiestaId)
+        {
+            var richieste = await _context.Richieste.ToListAsync();
+
+            var rapporti = await _context.Rapporti.ToListAsync();
+
+            var rapporto = rapporti.Where(rap => rap.RichiestaId == RichiestaId).ToList();
+
+            return Ok(rapporto);
+
+        }
+
+
+
     }
 }

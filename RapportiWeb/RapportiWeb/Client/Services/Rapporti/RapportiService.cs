@@ -82,5 +82,23 @@ namespace RapportiWeb.Client.Services.Rapporti
 
             return new List<Rapporto>();
         }
+
+        public async Task<Rapporto> GetRapportoByRichiesta(Richiesta ric)
+        {
+            try
+            {
+                var rap = await _http.GetFromJsonAsync<List<Rapporto>>($"/api/rapporti/ric?RichiestaId={ric.id}");
+
+                if (rap is not null)
+                    return rap.FirstOrDefault();
+
+                return new Rapporto();
+            }catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return new Rapporto();
+            }
+
+        }
     }
 }
