@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace RapportiWeb.Shared
 {
-    public class Rapporto
+    public class Rapporto : ICloneable
     {
         public int id { get; set; }
 
@@ -35,6 +35,11 @@ namespace RapportiWeb.Shared
         public Rapporto()
         {
             dataCreazioneRapporto = DateTime.Now;
+        }
+
+        public object Clone()
+        {
+            return this.MemberwiseClone();
         }
     }
 }

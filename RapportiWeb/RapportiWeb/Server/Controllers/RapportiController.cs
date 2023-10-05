@@ -38,12 +38,8 @@ namespace RapportiWeb.Server.Controllers
         [HttpPut]
         public async Task<ActionResult<Rapporto>> UpdateRapporto(Rapporto rapporto)
         {
-            var dbRapporto = _context.Rapporti.FirstOrDefault(c => c.id == rapporto.id);
 
-            if (dbRapporto == null)
-                return NotFound("RAPPORTO NON TROVATO");
-
-            dbRapporto = rapporto;
+            _context.Update(rapporto);
 
             await _context.SaveChangesAsync(); //salvo i cambiamenti che effettuo nel DB
 

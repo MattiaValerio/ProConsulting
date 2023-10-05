@@ -135,7 +135,9 @@ else
                     </MudItem>
 
                     <MudItem xs="12" md="4">
-                        <MudTextField For="@(()=> Richiesta.ResponsabileRic)" @bind-Value="Richiesta.ResponsabileRic" T="string" Label="Responsabile richiesta" Required="true" RequiredError="Campo obbligatorio!" />
+                        <MudTextField For="@(()=> Richiesta.ResponsabileRic)" @bind-Value="Richiesta.ResponsabileRic" 
+                            T="string" Label="Responsabile richiesta" 
+                            Required="true" RequiredError="Campo obbligatorio!" Text="@(async ()=>{await Cliente.ragioneSociale})"/>
                     </MudItem>
 
                     <MudItem xs="12" md="4">
@@ -160,7 +162,7 @@ else
                     @if (Edit)
                     {
                         <MudItem xs="12" Class="d-flex justify-content-around">
-                            <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="@(()=>{Annulla.InvokeAsync();})">Annulla</MudButton>
+                            <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="@(()=>{ShowHidePopUp.InvokeAsync();})">Annulla</MudButton>
                             <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(()=>{EditRichiesta(Richiesta);})">Modifica Richiesta</MudButton>
                             <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="@(()=>{DownloadPDF(Richiesta);})">Download</MudButton>
                         </MudItem>

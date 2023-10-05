@@ -66,7 +66,7 @@ namespace RapportiWeb.Client.Services.Rapporti
 
         public async Task UpdateRapporto(Rapporto rapporto)
         {
-            await _http.PutAsJsonAsync("api/Rapporti", rapporto);
+            await _http.PutAsJsonAsync("/api/rapporti", rapporto);
         }
 
         public async Task<List<Rapporto>> RicercaPerData(DateTime? start, DateTime? end)

@@ -59,7 +59,8 @@ namespace RapportiWeb.Server.Controllers
 		[HttpPost]
 		public async Task<ActionResult<Richiesta>> CreateRichiesta(Richiesta richiesta)
 		{
-			_context.Richieste.Add(richiesta);
+
+            await _context.AddAsync(richiesta); //la richiesta viene aggiunta al DB
 
 			await _context.SaveChangesAsync(); //salvo i cambiamenti che effettuo nel DB
 
@@ -85,18 +86,7 @@ namespace RapportiWeb.Server.Controllers
 		[HttpPut]
 		public async Task<ActionResult<Richiesta>> UpdateRichiesta(Richiesta richiesta)
 		{
-			var dbRichiesta = _context.Richieste.FirstOrDefault(c => c.id == richiesta.id);
-
-			if (dbRichiesta == null)
-				return NotFound("RICHIESTA NON TROVATA");
-
-            dbRichiesta.FiguraProfessionale = richiesta.FiguraProfessionale;
-            dbRichiesta.TipologiaIntervento = richiesta.TipologiaIntervento;
-            dbRichiesta.ResponsabileRic = richiesta.ResponsabileRic;
-            dbRichiesta.DurataIntervento = richiesta.DurataIntervento;
-            dbRichiesta.DataIntervento = richiesta.DataIntervento;
-            dbRichiesta.Descrizione = richiesta.Descrizione;
-            dbRichiesta.RapportoCreato = richiesta.RapportoCreato;
+            _context.Update(richiesta);
 
 			await _context.SaveChangesAsync();
 
