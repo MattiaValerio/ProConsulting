@@ -9,7 +9,7 @@ namespace RapportiWeb.Client.Services.Rapporti
         public Task CreateRapporto(Rapporto rapporto);
         public Task GenerateRapporto(Richiesta ric, Rapporto rap);
         public Task<List<Rapporto>> GetRapporti();
-        public Task UpdateRapporto(Rapporto rapporto, int id);
+        public Task UpdateRapporto(Rapporto rapporto);
         public Task DeleteRapporto(int id);
 
         public Task<Rapporto> GetRapportoByRichiesta(Richiesta ric);

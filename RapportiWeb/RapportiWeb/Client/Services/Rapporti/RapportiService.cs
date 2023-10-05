@@ -64,9 +64,9 @@ namespace RapportiWeb.Client.Services.Rapporti
             return result.ToList();
         }
 
-        public async Task UpdateRapporto(Rapporto rapporto, int id)
+        public async Task UpdateRapporto(Rapporto rapporto)
         {
-            throw new NotImplementedException();
+            await _http.PutAsJsonAsync("api/Rapporti", rapporto);
         }
 
         public async Task<List<Rapporto>> RicercaPerData(DateTime? start, DateTime? end)

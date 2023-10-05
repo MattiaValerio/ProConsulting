@@ -16,7 +16,7 @@ namespace RapportiWeb.Server.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite(_conf.GetConnectionString("DataBase")); //ci colleghiamo al DB Sqlite
+            optionsBuilder.UseSqlServer(_conf.GetConnectionString("DataBase")); //ci colleghiamo al DB
         }
 
         public DbSet<Cliente> Clienti { get; set; } //DBSet che contiene tutti i clienti

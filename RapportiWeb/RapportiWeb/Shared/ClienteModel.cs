@@ -19,20 +19,20 @@ namespace RapportiWeb.Shared
         [Required(ErrorMessage = "Campo obbligatorio")]
         public string Citta { get; set; }
 
-        [Required(ErrorMessage = "Campo obbligatorio")]
-        public string Provincia { get; set; }
+        public string? Provincia { get; set; }
 
         [Required(ErrorMessage = "Campo obbligatorio")]
         public int CAP { get; set; }
 
-        [Required(ErrorMessage = "Campo obbligatorio")]
-        public string Stato { get; set; }
+        public string? Stato { get; set; }
 
         [Required(ErrorMessage = "Campo obbligatorio")]
         public string telefono { get; set; }
 
         [Required(ErrorMessage = "Campo obbligatorio")]
         public string email { get; set; }
+
+        public string? Responsabile { get; set; }
 
         public List<Richiesta>? Richieste { get; set; }
 

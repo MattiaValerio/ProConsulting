@@ -9,7 +9,7 @@
 	<MudGrid Justify="Justify.Center">
 
 		<MudItem xs="12">
-			<MudText Align="Align.Center" Typo="Typo.h2">RAPPORTI</MudText>
+			<MudText Align="Align.Center" Typo="Typo.h2">RAPPORTI DI INTERVENTO</MudText>
 		</MudItem>
 
 		@if (NuovoRapporto)
@@ -40,9 +40,9 @@
 			</MudItem>
 
             <MudItem xs="12" md="12" xl="4">
-                <MudDateRangePicker Label="Data" Clearable="true" DateFormat="dd/MM/yyy"
-                @bind-DateRange="_dateRange"
-                                    PickerClosed="@(async ()=>{await RicercaPerData(_dateRange);})" />
+				<MudDateRangePicker Label="Data" Clearable="true" DateFormat="dd/MM/yyy"
+									DateRange="_dateRange"
+									DateRangeChanged="RicercaPerData" />
 
             </MudItem>
 
@@ -150,18 +150,34 @@
 
 	private async Task<List<Rapporto>> RicercaPerData(DateRange dateRange)
 	{
+		_dateRange = dateRange;
+
 		if (Cliente.ragioneSociale == string.Empty || Cliente.ragioneSociale is null)
 		{
-			_ListaRapporti = await RapportiService.RicercaPerData(dateRange.Start, dateRange.End);
+			if (dateRange.Start is null && dateRange.End is null)
+			{
+				_ListaRapporti = await RapportiService.GetRapporti();
+			}
+			else
+			{
+				_ListaRapporti = await RapportiService.RicercaPerData(dateRange.Start, dateRange.End);
+			}
 		}
 		else if (Cliente.ragioneSociale is not null)
 		{
-			_ListaRapporti = await RapportiService.GetRapportiByRagSoc(Cliente.ragioneSociale);
-			_ListaRapporti = await RapportiService.RicercaPerData(dateRange.Start, dateRange.End);
+			if (dateRange.Start is null && dateRange.End is null)
+			{
+				_ListaRapporti = await RapportiService.GetRapportiByRagSoc(Cliente.ragioneSociale);
+				//_ListaRichieste = await RichiesteService.RicercaPerData(dateRange.Start, dateRange.End);
+			}
+			else
+			{
+				_ListaRapporti = await RapportiService.GetRapportiByRagSoc(Cliente.ragioneSociale);
+				_ListaRapporti = await RapportiService.RicercaPerData(dateRange.Start, dateRange.End);
 
-			_ListaRapporti = _ListaRapporti.FindAll(r => r.Clienteid == _ListaClienti.FirstOrDefault(c => c.ragioneSociale == Cliente.ragioneSociale).id);
+				_ListaRapporti = _ListaRapporti.FindAll(r => r.Clienteid == _ListaClienti.FirstOrDefault(c => c.ragioneSociale == Cliente.ragioneSociale).id);
+			}
 		}
-
 
 		return _ListaRapporti;
 	}

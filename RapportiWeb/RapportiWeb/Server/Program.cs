@@ -9,8 +9,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
-var connectionString = builder.Configuration.GetConnectionString("ProjectDB"); //mi collego alla stringa di connessione 
-builder.Services.AddDbContextFactory<DataContext>(options => options.UseSqlite(connectionString)); //creiamo il nostro DBContext e lo rendiamo disponibile nella nostra applicazione
+//creiamo il nostro DBContext e lo rendiamo disponibile nella nostra applicazione
+builder.Services.AddDbContext<DataContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DataBase"));
+});
 
 
 var app = builder.Build();
