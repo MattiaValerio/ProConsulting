@@ -106,21 +106,6 @@ namespace RapportiWeb.Server.Controllers
                              $"                               Data intervento : {richiesta.DataIntervento?.ToString("dd/MM/yyyy")}").Bold().FontSize((float) 14.5);
 
                      });
-                    //.Grid(grid =>
-                    //{
-                    //    grid.Item(5).AlignCenter().Image("../Client/wwwroot/img/logo.png");
-                    //    grid.Item(1).Text("");
-                    //    grid.Item(5).AlignCenter().Text("MODULO RICHIESTA DI INTERVENTO PRESSO IL CLIENTE:").Bold().FontSize((float) 12.5);
-
-                    //    grid.Item(6).AlignCenter().Text("");
-                    //    grid.Item(1).Text("");
-                    //    grid.Item(4).AlignCenter().Border((float) 0.5).Padding(3).Text($"DATA RICHIESTA:    {richiesta.DataIntervento?.ToString("dd/MM/yyyy")}").Bold().FontSize((float) 12.5);
-
-                    //    grid.Item(6).AlignCenter().Text("");
-                    //    grid.Item(1).Text("");
-                    //    grid.Item(4).AlignCenter().MinWidth(100000).MaxWidth(10000000).Border((float) 0.5).Padding(3).Text($"CODICE DELLA RICHIESTA:   {richiesta.id}").Bold().FontSize((float) 12.5);
-
-                    //});
 
                     page.Content()
                  .PaddingVertical(1, Unit.Centimetre)
@@ -146,24 +131,7 @@ namespace RapportiWeb.Server.Controllers
 
                      grid.Item(5).Background(Colors.White).Border((float) 0.5).Padding(3).AlignLeft().Text($"{richiesta.FiguraProfessionale}");
                      grid.Item(5).Background(Colors.White).Border((float) 0.5).Padding(3).AlignLeft().Text($"{richiesta.TipologiaIntervento}");
-                     //grid.Item(4).Background(Colors.White).Border((float) 0.5).Padding(3).AlignLeft().Text("Sistema Senior/Tecnico ERP");
-                     //grid.Item(1).Background(Colors.White).Border((float) 0.5).Padding(3).AlignLeft().Text("");
-                     //grid.Item(4).Background(Colors.White).Border((float) 0.5).Padding(3).AlignLeft().Text("Rif.Offerta/C.O.");
 
-                     //grid.Item(1).Background(Colors.White).Border((float) 0.5).Padding(3).AlignLeft().Text("");
-                     //grid.Item(4).Background(Colors.White).Border((float) 0.5).Padding(3).AlignLeft().Text("Consulente Applicativo Senior");
-                     //grid.Item(1).Background(Colors.White).Border((float) 0.5).Padding(3).AlignLeft().Text("");
-                     //grid.Item(4).Background(Colors.White).Border((float) 0.5).Padding(3).AlignLeft().Text("Contratto");
-
-                     //grid.Item(1).Background(Colors.White).Border((float) 0.5).Padding(3).AlignLeft().Text("");
-                     //grid.Item(4).Background(Colors.White).Border((float) 0.5).Padding(3).AlignLeft().Text("Consulente Master");
-                     //grid.Item(1).Background(Colors.White).Border((float) 0.5).Padding(3).AlignLeft().Text("");
-                     //grid.Item(4).Background(Colors.White).Border((float) 0.5).Padding(3).AlignLeft().Text("In Garanzia");
-
-                     //grid.Item(1).Background(Colors.White).Border((float) 0.5).Padding(3).AlignLeft().Text("");
-                     //grid.Item(4).Background(Colors.White).Border((float) 0.5).Padding(3).AlignLeft().Text("Project Manager");
-                     //grid.Item(1).Background(Colors.White).Border((float) 0.5).Padding(3).AlignLeft().Text("");
-                     //grid.Item(4).Background(Colors.White).Border((float) 0.5).Padding(3).AlignLeft().Text("Altro");
 
                      grid.Item(5).Background(Colors.Grey.Lighten2).Border((float) 0.5).Padding(3).AlignLeft().Text($"Data di intervento").FontSize((float) 9.5);
                      grid.Item(5).Background(Colors.Grey.Lighten2).Border((float) 0.5).Padding(3).AlignLeft().Text($"Durata di intervento").FontSize((float) 9.5);
@@ -171,11 +139,6 @@ namespace RapportiWeb.Server.Controllers
                      grid.Item(5).Background(Colors.White).Border((float) 0.5).Padding(3).AlignLeft().Text($"{richiesta.DataIntervento}").FontSize((float) 9.5);
 
                      grid.Item(5).Background(Colors.White).Border((float) 0.5).Padding(3).AlignLeft().Text($"{richiesta.DurataIntervento}");
-
-                     //grid.Item(1).Background(Colors.White).Border((float) 0.5).Padding(3).AlignLeft().Checkbox();
-                     //grid.Item(4).Background(Colors.White).Border((float) 0.5).Padding(3).AlignLeft().Text("Mattino");
-                     //grid.Item(1).Background(Colors.White).Border((float) 0.5).Padding(3).AlignLeft().Checkbox();
-                     //grid.Item(4).Background(Colors.White).Border((float) 0.5).Padding(3).AlignLeft().Text("Intera Giornata");
 
 
 
@@ -193,95 +156,7 @@ namespace RapportiWeb.Server.Controllers
 
 
                  });
-                    //.Column(x =>
-                    //{
-                    //    x.Item().Border((float) 0.5).Padding(3).AlignLeft().Text(t =>
-                    //    {
-                    //        t.Span($"Ragione Sociale:  {cliente.ragioneSociale}").FontSize((float) 10.5);
-
-                    //    });
-                    //    x.Item().Border((float) 0.5).Padding(3).AlignLeft().Text(t =>
-                    //    {
-                    //        t.Span($"Responsabile richiesta Sig./ra:  {richiesta.ResponsabileRic}").FontSize((float) 10.5);
-
-                    //    });
-                    //    x.Item().Border((float) 0.5).Padding(3).Text(t =>
-                    //    {
-                    //        t.Span($"Indirizzo del cliente : {cliente.Indirizzo} {cliente.Citta}, {cliente.Provincia}, {cliente.Stato}").FontSize((float) 10.5);
-                    //        t.EmptyLine();
-                    //        t.Span($"Telefono: {cliente.telefono}").FontSize((float) 10.5);
-
-                    //    });
-                    //    x.Item().Border((float) 0.5).Background(Colors.Grey.Lighten2).AlignCenter().Text(t =>
-                    //    {
-
-                    //        t.Span("Descrizione intervento richiesta:").FontSize((float) 10.8);
-
-                    //    });
-                    //    x.Item().Border((float) 0.5).Text(t =>
-                    //    {
-                    //        t.Span($"{richiesta.Descrizione}").FontSize(10);
-
-                    //        t.EmptyLine();
-
-                    //    });
-
-
-                    //    x.Item().Border((float) 0.5).Background(Colors.Grey.Lighten2).AlignLeft().Text(t =>
-                    //    {
-                    //        t.
-                    //        t.Span($"Tipologia Intervento                                                                                                 |                                                           Figura Professionale Richiesta ").FontSize(10);
-
-                    //    });
-                    //    x.Item().Border((float) 0.5).Text(t =>
-                    //    {
-                    //        t.Span($"{richiesta.TipologiaIntervento}                                                                                                                                                                        {richiesta.FiguraProfessionale} ").FontSize(11);
-                    //    });
-
-                    //    x.Item().Border((float) 0.5).Background(Colors.Grey.Lighten2).AlignLeft().Text(t =>
-                    //    {
-
-                    //        t.Span($" Data di Intervento                                                                                                     |                                                                             Durata").FontSize(10);
-
-                    //    });
-                    //    x.Item().Border((float) 0.5).Text(t =>
-                    //    {
-                    //        t.Span($" data : {richiesta.DataIntervento?.ToString("dd/MM/yy")}                                                                                                                                                              {richiesta.DurataIntervento}").FontSize(11);
-                    //        t.Span($"");
-                    //    });
-
-                    //    x.Item().Border((float) 0.5).Background(Colors.Grey.Lighten2).AlignCenter().Text(t =>
-                    //    {
-                    //        t.Span("Note").FontSize((float) 10.8);
-
-                    //    });
-
-                    //    x.Item().Border((float) 0.5).Text(t =>
-                    //    {
-                    //        t.Span("Il Cliente dichiara di aver letto attentamente e di accettare ai sensi" +
-                    //            " e per gli effetti degli artt. 1341 e 1342 c.c. le presente Condizioni" +
-                    //            "Generali (con particolare attenzione agli artt. 3,4,5,) e si impegna nei confronti di " +
-                    //            "Pro Consulting Srl a rispettarle.").FontSize(9);
-
-
-                    //    });
-                    //    x.Item().Border((float) 0.5).Text(t =>
-                    //    {
-                    //        t.EmptyLine();
-                    //        t.EmptyLine();
-                    //        t.Span("Data e luogo_____________________________________________________").FontSize((float) 9);
-                    //        t.Span("Timbro e Firma incaricato___________________________________________________").FontSize((float) 9);
-
-                    //    });
-                    //    x.Item().AlignCenter().Text(t =>
-                    //    {
-                    //        t.EmptyLine();
-                    //        t.EmptyLine();
-                    //        t.Span("PRO CONSULTING SRL- Viale Grigoletti 92/94 33170 Prodenone Tel +39 0434 555036 Fax +39 0434 55823   P.I. 01310340938").FontSize(10).Bold();
-                    //    });
-                    //});
-
-
+                   
 
                 });
             });
