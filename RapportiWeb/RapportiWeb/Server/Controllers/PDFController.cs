@@ -139,44 +139,50 @@ namespace RapportiWeb.Server.Controllers
 
 
                      grid.Item(10).Background(Colors.Grey.Lighten2).Border((float) 0.5).Padding(3).AlignCenter().Text($"Descrizione intervento richiesto: ").FontSize((float) 10.5);
-                     grid.Item(10).Background(Colors.White).Border((float) 0.5).Padding(3).Height(250).AlignLeft().Text($"{richiesta.Descrizione} ").FontSize((float) 10.5);
+                     grid.Item(10).Background(Colors.White).Border((float) 0.5).Padding(3).MinHeight(380).AlignLeft().Text($"{richiesta.Descrizione} ").FontSize((float) 10.5);
 
                      grid.Item(5).Background(Colors.Grey.Lighten2).Border((float) 0.5).Padding(3).AlignCenter().Text($"Figura Professionale Richiesta(barrare la casella) ").FontSize((float) 9.5);
                      grid.Item(5).Background(Colors.Grey.Lighten2).Border((float) 0.5).Padding(3).AlignCenter().Text($"Intervento (barrare la casella) ").FontSize((float) 9.5);
 
-                     grid.Item(1).Background(Colors.White).Border((float) 0.5).Padding(3).AlignLeft().Text("");
-                     grid.Item(4).Background(Colors.White).Border((float) 0.5).Padding(3).AlignLeft().Text("Sistema Senior/Tecnico ERP");
-                     grid.Item(1).Background(Colors.White).Border((float) 0.5).Padding(3).AlignLeft().Text("");
-                     grid.Item(4).Background(Colors.White).Border((float) 0.5).Padding(3).AlignLeft().Text("Rif.Offerta/C.O.");
+                     grid.Item(5).Background(Colors.White).Border((float) 0.5).Padding(3).AlignLeft().Text($"{richiesta.FiguraProfessionale}");
+                     grid.Item(5).Background(Colors.White).Border((float) 0.5).Padding(3).AlignLeft().Text($"{richiesta.TipologiaIntervento}");
+                     //grid.Item(4).Background(Colors.White).Border((float) 0.5).Padding(3).AlignLeft().Text("Sistema Senior/Tecnico ERP");
+                     //grid.Item(1).Background(Colors.White).Border((float) 0.5).Padding(3).AlignLeft().Text("");
+                     //grid.Item(4).Background(Colors.White).Border((float) 0.5).Padding(3).AlignLeft().Text("Rif.Offerta/C.O.");
 
-                     grid.Item(1).Background(Colors.White).Border((float) 0.5).Padding(3).AlignLeft().Text("");
-                     grid.Item(4).Background(Colors.White).Border((float) 0.5).Padding(3).AlignLeft().Text("Consulente Applicativo Senior");
-                     grid.Item(1).Background(Colors.White).Border((float) 0.5).Padding(3).AlignLeft().Text("");
-                     grid.Item(4).Background(Colors.White).Border((float) 0.5).Padding(3).AlignLeft().Text("Contratto");
+                     //grid.Item(1).Background(Colors.White).Border((float) 0.5).Padding(3).AlignLeft().Text("");
+                     //grid.Item(4).Background(Colors.White).Border((float) 0.5).Padding(3).AlignLeft().Text("Consulente Applicativo Senior");
+                     //grid.Item(1).Background(Colors.White).Border((float) 0.5).Padding(3).AlignLeft().Text("");
+                     //grid.Item(4).Background(Colors.White).Border((float) 0.5).Padding(3).AlignLeft().Text("Contratto");
 
-                     grid.Item(1).Background(Colors.White).Border((float) 0.5).Padding(3).AlignLeft().Text("");
-                     grid.Item(4).Background(Colors.White).Border((float) 0.5).Padding(3).AlignLeft().Text("Consulente Master");
-                     grid.Item(1).Background(Colors.White).Border((float) 0.5).Padding(3).AlignLeft().Text("");
-                     grid.Item(4).Background(Colors.White).Border((float) 0.5).Padding(3).AlignLeft().Text("In Garanzia");
+                     //grid.Item(1).Background(Colors.White).Border((float) 0.5).Padding(3).AlignLeft().Text("");
+                     //grid.Item(4).Background(Colors.White).Border((float) 0.5).Padding(3).AlignLeft().Text("Consulente Master");
+                     //grid.Item(1).Background(Colors.White).Border((float) 0.5).Padding(3).AlignLeft().Text("");
+                     //grid.Item(4).Background(Colors.White).Border((float) 0.5).Padding(3).AlignLeft().Text("In Garanzia");
 
-                     grid.Item(1).Background(Colors.White).Border((float) 0.5).Padding(3).AlignLeft().Text("");
-                     grid.Item(4).Background(Colors.White).Border((float) 0.5).Padding(3).AlignLeft().Text("Project Manager");
-                     grid.Item(1).Background(Colors.White).Border((float) 0.5).Padding(3).AlignLeft().Text("");
-                     grid.Item(4).Background(Colors.White).Border((float) 0.5).Padding(3).AlignLeft().Text("Altro");
+                     //grid.Item(1).Background(Colors.White).Border((float) 0.5).Padding(3).AlignLeft().Text("");
+                     //grid.Item(4).Background(Colors.White).Border((float) 0.5).Padding(3).AlignLeft().Text("Project Manager");
+                     //grid.Item(1).Background(Colors.White).Border((float) 0.5).Padding(3).AlignLeft().Text("");
+                     //grid.Item(4).Background(Colors.White).Border((float) 0.5).Padding(3).AlignLeft().Text("Altro");
 
-                     grid.Item(10).Background(Colors.Grey.Lighten2).Border((float) 0.5).Padding(3).AlignLeft().Text($"Data di intervento e durata").FontSize((float) 9.5);
+                     grid.Item(5).Background(Colors.Grey.Lighten2).Border((float) 0.5).Padding(3).AlignLeft().Text($"Data di intervento").FontSize((float) 9.5);
+                     grid.Item(5).Background(Colors.Grey.Lighten2).Border((float) 0.5).Padding(3).AlignLeft().Text($"Durata di intervento").FontSize((float) 9.5);
 
-                     grid.Item(10).Background(Colors.White).Border((float) 0.5).Padding(3).AlignLeft().Text($"{richiesta.DataIntervento}").FontSize((float) 9.5);
+                     grid.Item(5).Background(Colors.White).Border((float) 0.5).Padding(3).AlignLeft().Text($"{richiesta.DataIntervento}").FontSize((float) 9.5);
 
-                     grid.Item(1).Background(Colors.White).Border((float) 0.5).Padding(3).AlignLeft().Text("");
-                     grid.Item(4).Background(Colors.White).Border((float) 0.5).Padding(3).AlignLeft().Text("Mattino");
-                     grid.Item(1).Background(Colors.White).Border((float) 0.5).Padding(3).AlignLeft().Text("");
-                     grid.Item(4).Background(Colors.White).Border((float) 0.5).Padding(3).AlignLeft().Text("Intera Giornata");
+                     grid.Item(5).Background(Colors.White).Border((float) 0.5).Padding(3).AlignLeft().Text($"{richiesta.DurataIntervento}");
 
-                     grid.Item(1).Background(Colors.White).Border((float) 0.5).Padding(3).AlignLeft().Text("");
-                     grid.Item(4).Background(Colors.White).Border((float) 0.5).Padding(3).AlignLeft().Text("Pomeriggio");
-                     grid.Item(1).Background(Colors.White).Border((float) 0.5).Padding(3).AlignLeft().Text("");
-                     grid.Item(4).Background(Colors.White).Border((float) 0.5).Padding(3).AlignLeft().Text("Straordinario");
+                     //grid.Item(1).Background(Colors.White).Border((float) 0.5).Padding(3).AlignLeft().Checkbox();
+                     //grid.Item(4).Background(Colors.White).Border((float) 0.5).Padding(3).AlignLeft().Text("Mattino");
+                     //grid.Item(1).Background(Colors.White).Border((float) 0.5).Padding(3).AlignLeft().Checkbox();
+                     //grid.Item(4).Background(Colors.White).Border((float) 0.5).Padding(3).AlignLeft().Text("Intera Giornata");
+
+
+
+                     //grid.Item(1).Background(Colors.White).Border((float) 0.5).Padding(3).AlignLeft().Text("");
+                     //grid.Item(4).Background(Colors.White).Border((float) 0.5).Padding(3).AlignLeft().Text("Pomeriggio");
+                     //grid.Item(1).Background(Colors.White).Border((float) 0.5).Padding(3).AlignLeft().Text("");
+                     //grid.Item(4).Background(Colors.White).Border((float) 0.5).Padding(3).AlignLeft().Text("Straordinario");
 
                      grid.Item(5).Background(Colors.White).Border((float) 0.5).Height(50).Padding(3).AlignCenter().Text("Luogo e data").FontSize((float) 8.5);
                      grid.Item(5).Background(Colors.White).Border((float) 0.5).Height(50).Padding(3).AlignCenter().Text("TIMBRO E FIRMA (l'incaricato)").FontSize((float) 8.5);
