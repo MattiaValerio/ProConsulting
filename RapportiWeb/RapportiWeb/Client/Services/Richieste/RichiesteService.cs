@@ -1,4 +1,5 @@
-﻿using RapportiWeb.Client.Services.Clienti;
+﻿using MudBlazor.Extensions;
+using RapportiWeb.Client.Services.Clienti;
 using RapportiWeb.Shared;
 using System.Net.Http.Json;
 
@@ -34,11 +35,6 @@ namespace RapportiWeb.Client.Services.Richieste
                 Console.WriteLine(ex.Message);
             }
 
-        }
-
-        public Task<List<Richiesta>> GetFilteredRichieste(DateTime startDateFilter, DateTime endDateFilter)
-        {
-            throw new NotImplementedException();
         }
 
         public async Task<string[]> GetRagioniSociali()
@@ -77,9 +73,18 @@ namespace RapportiWeb.Client.Services.Richieste
             return result.ToList();
         }
 
-        public Task SearchRichieste(string query)
+        public async Task<List<Richiesta>> RicercaPerData(DateTime? start, DateTime? end)
         {
-            throw new NotImplementedException();
+
+            var s = start?.Date.ToString("yyyy-MM-dd");
+            var e = end?.Date.ToString("yyyy-MM-dd");
+
+            var richieste = await _http.GetFromJsonAsync<List<Richiesta>>($"/api/richieste/data?start={s}&end={e}");
+
+            if(richieste != null)
+                return richieste.ToList();
+
+            return new List<Richiesta>();
         }
 
         public async Task UpdateRichiesta(int id, Richiesta Richiesta)

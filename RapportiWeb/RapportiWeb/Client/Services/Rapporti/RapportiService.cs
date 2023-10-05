@@ -27,7 +27,18 @@ namespace RapportiWeb.Client.Services.Rapporti
             await _http.DeleteAsync($"api/rapporti/{id}");
         }
 
-        public async Task<List<Rapporto>> GetRapporti()
+		public async Task GenerateRapporto(Richiesta ric, Rapporto rap)
+		{
+            var postRap = await _http.PostAsJsonAsync("/api/rapporti", rap);
+
+            if (postRap.IsSuccessStatusCode)
+            {
+                ric.RapportoCreato = true;
+                await _http.PutAsJsonAsync("/api/richieste", ric);
+            }
+		}
+
+		public async Task<List<Rapporto>> GetRapporti()
         {
             var req =  await _http.GetFromJsonAsync<List<Rapporto>>("api/rapporti");
 
@@ -53,9 +64,41 @@ namespace RapportiWeb.Client.Services.Rapporti
             return result.ToList();
         }
 
-        public async Task UpdateRapporto(Rapporto rapporto, int id)
+        public async Task UpdateRapporto(Rapporto rapporto)
         {
-            throw new NotImplementedException();
+            await _http.PutAsJsonAsync("api/Rapporti", rapporto);
+        }
+
+        public async Task<List<Rapporto>> RicercaPerData(DateTime? start, DateTime? end)
+        {
+
+            var s = start?.ToString("yyyy-MM-ddTHH:mm:ss");
+            var e = end?.ToString("yyyy-MM-ddTHH:mm:ss");
+
+            var rapporti = await _http.GetFromJsonAsync<List<Rapporto>>($"/api/rapporti/data?start={s}&end={e}");
+
+            if (rapporti != null)
+                return rapporti.ToList();
+
+            return new List<Rapporto>();
+        }
+
+        public async Task<Rapporto> GetRapportoByRichiesta(Richiesta ric)
+        {
+            try
+            {
+                var rap = await _http.GetFromJsonAsync<List<Rapporto>>($"/api/rapporti/ric?RichiestaId={ric.id}");
+
+                if (rap is not null)
+                    return rap.FirstOrDefault();
+
+                return new Rapporto();
+            }catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return new Rapporto();
+            }
+
         }
     }
 }

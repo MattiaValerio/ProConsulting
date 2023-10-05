@@ -1,14 +1,24 @@
 ﻿@page "/richieste"
 @inject IClientiService ClientiService
 @inject IRichiesteService RichiesteService
+@inject IRapportiService RapportiService
 @inject IDialogService DialogService
 
 
 <MudContainer>
     <MudGrid Justify="Justify.Center">
-        <MudItem xs="12">
-            <MudText Align="Align.Center" Typo="Typo.h2">RICHIESTE</MudText>
-        </MudItem>
+        @if (RedirectRapporto)
+        {
+            <MudItem xs="12">
+                <MudText Align="Align.Center" Typo="Typo.h2">RAPPORTI</MudText>
+            </MudItem>
+        }
+        else
+        {
+            <MudItem xs="12">
+                <MudText Align="Align.Center" Typo="Typo.h2">RICHIESTE INTERVENTO</MudText>
+            </MudItem>
+        }
         
         @if (NuovaRichiesta)
         {
@@ -20,7 +30,11 @@
         }
         else if (CreateRapporto)
         {
-            <NewRapporto Annulla="AnnullaEdit" Richiesta="Richiesta" Rapporto="Rapporto" Cliente="Cliente" RapportoCreation="true" ShowHidePopUp="@(()=>{ShowHideCreation();})" />
+            <NewRapporto Annulla="AnnullaGenerate" Richiesta="Richiesta" Rapporto="Rapporto" Cliente="Cliente" RapportoCreation="true" ShowHidePopUp="@(()=>{ShowHideCreation();})" />
+        }
+        else if (RedirectRapporto)
+        {
+            <NewRapporto Annulla="AnnullaRedirect" Rapporto="Rapporto" Cliente="Cliente" Edit="true" ShowHidePopUp="@(()=>{ShowHideRedirect();})" />
         }
         else
         {
@@ -29,7 +43,7 @@
             </MudItem>
 
             <MudItem xs="1" md="1" Class="d-flex flex-column align-items-center justify-center">
-                <MudIconButton Icon="@Icons.Material.Filled.RemoveRedEye" Color="Color.Primary" aria-label="github" OnClick="@(()=>{})"></MudIconButton>
+                <MudIconButton Icon="@Icons.Material.Filled.RemoveRedEye" Color="Color.Primary" aria-label="github" OnClick="@(()=>{ShowHideRagioniSociali();})"></MudIconButton>
             </MudItem>
 
             <MudItem xs="10" md="10" xl="6">
@@ -41,9 +55,13 @@
                              AdornmentColor="Color.Primary" />
             </MudItem>
 
-@*            <MudItem xs="12" md="12" xl="4">
-                <MudDateRangePicker Label="Data" Clearable="true" DateFormat="dd/MM/yyy"/>
-            </MudItem>*@
+            <MudItem xs="12" md="12" xl="4">
+
+                <MudDateRangePicker Label="Data" Clearable="true" DateFormat="dd/MM/yyy"
+                                DateRange="_dateRange"
+                                DateRangeChanged="RicercaPerData" />
+                        
+            </MudItem>
 
             @if (_ListaRichieste is null)
             {
@@ -64,10 +82,17 @@
                             <MudTh>Data Intervento</MudTh>
                             <MudTh>Visualizza</MudTh>
                             <MudTh>Elimina</MudTh>
-                            <MudTh>Crea Rapporto</MudTh>
+                            <MudTh>Crea/Visualizza Rapporto</MudTh>
                         </HeaderContent>
                         <RowTemplate>
-                            <MudTd DataLabel="Ragione Sociale">@_ListaClienti.Find(c=> c.id == context.Clienteid).ragioneSociale</MudTd>
+                            @if (ShowRagSoc)
+                            {
+                                <MudTd DataLabel="Ragione Sociale">@_ListaClienti.Find(c=> c.id == context.Clienteid).ragioneSociale</MudTd>
+                            }
+                            else
+                            {
+                                <MudTd DataLabel="Ragione Sociale">@_ListaClienti.Find(c=> c.id == context.Clienteid).NomeAbbreviato</MudTd>
+                            }
                             <MudTd DataLabel="Indirizzo">@_ListaClienti.Find(c=> c.id == context.Clienteid).Indirizzo</MudTd>
                             <MudTd DataLabel="Data Creazione">@context.Data.ToString("dd/MM/yyyy")</MudTd>
                             <MudTd DataLabel="E-Mail">@_ListaClienti.Find(c=> c.id == context.Clienteid).email</MudTd>
@@ -79,10 +104,14 @@
                             <MudTd DataLabel="Elimina">
                                 <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" aria-label="github" @onclick="@(()=>{OpenDialog(context);})"></MudIconButton>
                             </MudTd>
-                            <MudTd DataLabel="Crea Rapporto">
+                            <MudTd DataLabel="Crea/Visualizza Rapporto">
                                 @if (context.RapportoCreato == false)
                                 {
-                                    <MudIconButton Icon="@Icons.Material.Filled.Add" Color="Color.Primary" aria-label="github" @onclick="@(()=>{GeneraRapporto(context);})"></MudIconButton>
+                                    <MudIconButton Icon="@Icons.Material.Filled.Add" Color="Color.Primary" aria-label="github" @onclick="@(()=>{GeneraRapporto(context);})"/>
+                                }
+                                else
+                                {
+                                    <MudIconButton Icon="@Icons.Material.Filled.CallMade" Color="Color.Primary" aria-label="github" @onclick="@(()=>{RedirectToRapporto(context);})"/>
                                 }
                             </MudTd>
                         </RowTemplate>
@@ -95,8 +124,8 @@
 </MudContainer>
 
 @code {
-    private string[] ArrClienti;
-    private DateRange _dateRange = new DateRange(DateTime.Now.AddMonths(-1).Date, DateTime.Now.AddMonths(1).Date);
+    private string[]? ArrClienti;
+    private DateRange? _dateRange = new DateRange();
 
     public Cliente Cliente { get; set; } = new Cliente();
     public Richiesta Richiesta { get; set; } = new Richiesta();
@@ -109,7 +138,14 @@
 
     private bool NuovaRichiesta = false;
     private bool CreateRapporto = false;
+    private bool RedirectRapporto = false;
+    private bool ShowRagSoc = false;
 
+
+    private void onchange(EventArgs args)
+    {
+        Console.WriteLine("CCC");
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -132,6 +168,25 @@
         Richiesta = new Richiesta();
     }
 
+    private async Task AnnullaGenerate()
+    {
+        CreateRapporto = !CreateRapporto;
+        Cliente = new Cliente();
+        Richiesta = new Richiesta();
+    }
+
+    private async Task AnnullaRedirect()
+    {
+        RedirectRapporto = !RedirectRapporto;
+        Cliente = new Cliente();
+        Rapporto = new Rapporto();
+    }
+
+    private void ShowHideRagioniSociali()
+    {
+        ShowRagSoc = !ShowRagSoc;
+    }
+
     private async Task ShowHideEdit()
     {
         EditRichiesta = !EditRichiesta;
@@ -146,13 +201,27 @@
         CreateRapporto = !CreateRapporto;
         Cliente = new Cliente();
         Rapporto = new Rapporto();
+    }
 
+    private async Task ShowHideRedirect()
+    {
+        RedirectRapporto = !RedirectRapporto;
+        Cliente = new Cliente();
+        Rapporto = new Rapporto();
+    }
+
+    private async Task RedirectToRapporto(Richiesta ric)
+    {
+        Rapporto = await RapportiService.GetRapportoByRichiesta(ric);
+        Cliente = _ListaClienti.First(c => c.id == ric.Clienteid);
+        RedirectRapporto = !RedirectRapporto;
+        StateHasChanged();
     }
 
     //metodo per la ricerca tra tutte le ragioni sociali
     private async Task<IEnumerable<string>> Search(string value)
     {
-        var clienti = await ClientiService.GetArrayClienti();
+        var clienti = ArrClienti;
 
         if (string.IsNullOrEmpty(value))
             return new string[0];
@@ -163,8 +232,53 @@
     {
         var nomecliente = Search(value);
 
-        _ListaRichieste = await RichiesteService.GetRichiestaByRagSoc(value);
-        StateHasChanged();
+        if(_dateRange.End.HasValue && _dateRange.Start.HasValue)
+        {
+            _ListaRichieste = await RichiesteService.GetRichiestaByRagSoc(value);
+            _ListaRichieste = await RichiesteService.RicercaPerData(_dateRange.Start, _dateRange.End);
+
+            _ListaRichieste = _ListaRichieste.FindAll(r => r.Clienteid == _ListaClienti.FirstOrDefault(c => c.ragioneSociale == value).id);
+            StateHasChanged();
+        }
+        else
+        {
+            _ListaRichieste = await RichiesteService.GetRichiestaByRagSoc(value);
+            StateHasChanged();
+        }
+    }
+
+    private async Task<List<Richiesta>> RicercaPerData(DateRange dateRange)
+    {
+        _dateRange = dateRange;
+
+        if (Cliente.ragioneSociale == string.Empty || Cliente.ragioneSociale is null)
+        {
+            if (dateRange.Start is null && dateRange.End is null)
+            {
+                _ListaRichieste = await RichiesteService.GetRichieste();
+            }
+            else
+            {
+                _ListaRichieste = await RichiesteService.RicercaPerData(dateRange.Start, dateRange.End);
+            }
+        }
+        else if(Cliente.ragioneSociale is not null)
+        {
+            if (dateRange.Start is null && dateRange.End is null)
+            {
+                _ListaRichieste = await RichiesteService.GetRichiestaByRagSoc(Cliente.ragioneSociale);
+                //_ListaRichieste = await RichiesteService.RicercaPerData(dateRange.Start, dateRange.End);
+            }
+            else
+            {
+                _ListaRichieste = await RichiesteService.GetRichiestaByRagSoc(Cliente.ragioneSociale);
+                _ListaRichieste = await RichiesteService.RicercaPerData(dateRange.Start, dateRange.End);
+
+                _ListaRichieste = _ListaRichieste.FindAll(r => r.Clienteid == _ListaClienti.FirstOrDefault(c => c.ragioneSociale == Cliente.ragioneSociale).id);
+            }
+        }
+
+        return _ListaRichieste;
     }
 
     private async void OpenDialog(Richiesta richiesta)
@@ -211,4 +325,6 @@
         Rapporto.DataIntervento = richiesta.DataIntervento;
 
     }
+
+    
 }

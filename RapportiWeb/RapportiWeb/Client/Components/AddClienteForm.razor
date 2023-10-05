@@ -13,15 +13,17 @@
                 <MudPaper Class="pa-6" Elevation="5">
                     <MudForm @ref="form" @bind-IsValid="@success">
 
-                        <MudTextField @bind-Value="Cliente.ragioneSociale" T="string" Label="Ragione Sociale" Required="true" RequiredError="Ragione sociale obbligatoria!" />
+                    <MudTextField @bind-Value="Cliente.ragioneSociale" T="string" Label="Ragione Sociale" Required="true" RequiredError="Ragione sociale obbligatoria!" />
+                    <MudTextField @bind-Value="Cliente.NomeAbbreviato" T="string" Label="Nome Abbreviato" Required="true" RequiredError="Campo obbligatorio!" />
+                    <MudTextField @bind-Value="Cliente.Responsabile" T="string" Label="Responsabile"/>
                         <MudTextField @bind-Value="Cliente.email" T="string" Label="Email" Required="true" RequiredError="Email obbligatoria!"
                                       Validation="@(new EmailAddressAttribute() {ErrorMessage = "Indirizzo Email non valido"})" />
                         <MudTextField @bind-Value="Cliente.telefono" T="string" Label="Telefono" Required="true" RequiredError="Numero di telefono obbligatorio!"
                                       Validation="@(new PhoneAttribute() {ErrorMessage = "Telefono non valido"})" />
                     <MudTextField @bind-Value="Cliente.Indirizzo" T="string" Label="Indirizzo" Required="true" RequiredError="Indirizzo obbligatorio!" />
                     <MudTextField @bind-Value="Cliente.Citta" T="string" Label="Città" Required="true" RequiredError="Città obbligatoria!" />
-                    <MudTextField @bind-Value="Cliente.Provincia" T="string" Label="Provincia" Required="true" RequiredError="Provincia obbligatoria!" />
-                    <MudTextField @bind-Value="Cliente.Stato" T="string" Label="Stato" Required="true" RequiredError="Stato obbligatorio!" />
+                    <MudTextField @bind-Value="Cliente.Provincia" T="string" Label="Provincia"/>
+                    <MudTextField @bind-Value="Cliente.Stato" T="string" Label="Stato" />
 
                         <div class="d-flex justify-content-around">
                             <MudButton Variant="Variant.Filled" Color="Color.Info" Class="mt-5" OnClick="@(()=>{ViewTable.InvokeAsync();})">Annulla</MudButton>

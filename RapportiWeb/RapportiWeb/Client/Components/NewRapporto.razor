@@ -5,270 +5,286 @@
 
 @if (RapportoCreation)
 {
-	<MudItem xs="12">
-		<MudPaper Class="pa-6" Elevation="5">
-			<MudGrid Justify="Justify.Center">
+    <MudItem xs="12">
+        <MudPaper Class="pa-6" Elevation="5">
 
-					<MudItem xs="12" sm="12" md="12">
-						<MudAutocomplete Disabled="true" @bind-Value="Cliente.ragioneSociale" Required="true" RequiredError="Selezionare un cliente" T="string" Label="Cliente" SearchFunc="Search" ShowProgressIndicator="true">
-							<ProgressIndicatorTemplate>
-								<MudProgressLinear Size="Size.Small" Indeterminate="true" Color="Color.Primary" />
-							</ProgressIndicatorTemplate>
-						</MudAutocomplete>
-					</MudItem>
+            <MudForm Model="Rapporto" @ref="form">
+                <MudGrid Justify="Justify.Center">
 
-				<MudItem xs="12" md="4">
-					<MudTextField @bind-Value="Rapporto.RespRic" T="string" Label="Responsabile richiesta" Required="true" RequiredError="Campo obbligatorio!" />
-				</MudItem>
+                    <MudItem xs="12" sm="12" md="12">
+                        <MudAutocomplete Disabled="true" @bind-Value="Cliente.ragioneSociale"
+                            Required="true" RequiredError="Selezionare un cliente" For="@(() => Cliente.ragioneSociale)"
+                            T="string" Label="Cliente" SearchFunc="Search" 
+                            ShowProgressIndicator="true">
+                                <ProgressIndicatorTemplate>
+                                    <MudProgressLinear Size="Size.Small" Indeterminate="true" Color="Color.Primary" />
+                                </ProgressIndicatorTemplate>
+                        </MudAutocomplete>
+                    </MudItem>
 
-				<MudItem xs="12" md="4">
-					<MudTextField @bind-Value="Rapporto.RespInt" T="string" Label="Responsabile Intervento" Required="true" RequiredError="Campo obbligatorio!" />
-				</MudItem>
+                    <MudItem xs="12" md="4">
+                        <MudTextField @bind-Value="Rapporto.RespRic" T="string" Label="Responsabile richiesta"
+                            Required="true" RequiredError="Campo obbligatorio!" For="@(() => Rapporto.RespRic)" />
+                    </MudItem>
 
-				<MudItem xs="12" md="4">
-					<MudTextField @bind-Value="Rapporto.Incaricato" T="string" Label="Incaricato dell'Intervento" Required="true" RequiredError="Campo obbligatorio!" />
-				</MudItem>
+                    <MudItem xs="12" md="4">
+                        <MudTextField @bind-Value="Rapporto.RespInt" For="@(() => Rapporto.RespInt)" T="string" Label="Responsabile Intervento" Required="true" RequiredError="Campo obbligatorio!" />
+                    </MudItem>
 
-				<MudItem xs="12" md="12">
-					<MudSelect T="string" Label="Luogo Intervento" @bind-Value="Rapporto.LuogoIntervento" AnchorOrigin="Origin.BottomCenter">
-						<MudSelectItem Value="@("Intervento presso il cliente")" />
-						<MudSelectItem Value="@("Intervento Assistenza remota")" />
-					</MudSelect>
-					@if (Rapporto.LuogoIntervento == "Intervento Assistenza remota")
-					{
-						<MudTextField @bind-Value="Rapporto.IdCollegamento" T="string" Label="ID Collegamento" Required="true" RequiredError="Campo obbligatorio!" />
-					}
-				</MudItem>
+                    <MudItem xs="12" md="4">
+                        <MudTextField @bind-Value="Rapporto.Incaricato" For="@(() => Rapporto.Incaricato)" T="string" Label="Incaricato dell'Intervento" Required="true" RequiredError="Campo obbligatorio!" />
+                    </MudItem>
 
-				<MudItem xs="12" md="12">
-					<MudSelect @bind-Value="Rapporto.TipoIntervento" T="string" Label="Tipologia Intervento" AnchorOrigin="Origin.BottomCenter">
-						<MudSelectItem Value="@("Contratto")" />
-						<MudSelectItem Value="@("In Garanzia")" />
-						<MudSelectItem Value="@("Rif.Offerta/C.O.")" />
-						<MudSelectItem Value="@("Altro: ")" />
-					</MudSelect>
-					@if (Rapporto.TipoIntervento == "Rif.Offerta/C.O." || Rapporto.TipoIntervento == "Altro: ")
-					{
-						<MudTextField @bind-Value="Rapporto.TipoIntervento" Label="Specificare Offerta/Altro" Variant="Variant.Text"></MudTextField>
-					}
-				</MudItem>
+                    <MudItem xs="12" md="12">
+                        <MudSelect T="string" For="@(() => Rapporto.LuogoIntervento)" Label="Luogo Intervento" Required="true" RequiredError="Campo obbligatorio!" @bind-Value="Rapporto.LuogoIntervento" AnchorOrigin="Origin.BottomCenter">
+                            <MudSelectItem Value="@("Intervento presso il cliente")" />
+                            <MudSelectItem Value="@("Intervento Assistenza remota")" />
+                        </MudSelect>
+                        @if (Rapporto.LuogoIntervento == "Intervento Assistenza remota")
+                        {
+                            <MudTextField @bind-Value="Rapporto.IdCollegamento" T="string" Label="ID Collegamento" Required="true" RequiredError="Campo obbligatorio!" />
+                        }
+                    </MudItem>
 
-				<MudItem xs="12" md="6">
-					<MudDatePicker DateFormat="dd/MM/yyyy" Label="Data intervento" Required="true" @bind-Date="Rapporto.DataIntervento" />
-				</MudItem>
+                    <MudItem xs="12" md="12">
+                        <MudSelect @bind-Value="Rapporto.TipoIntervento" For="@(() => Rapporto.TipoIntervento)" Required="true" RequiredError="Campo obbligatorio!" T="string" Label="Tipologia Intervento" AnchorOrigin="Origin.BottomCenter">
+                            <MudSelectItem Value="@("Contratto")" />
+                            <MudSelectItem Value="@("In Garanzia")" />
+                            <MudSelectItem Value="@("Rif.Offerta/C.O.")" />
+                            <MudSelectItem Value="@("Altro: ")" />
+                        </MudSelect>
+                        @if (Rapporto.TipoIntervento == "Rif.Offerta/C.O." || Rapporto.TipoIntervento == "Altro: ")
+                        {
+                            <MudTextField @bind-Value="Rapporto.TipoIntervento" Label="Specificare Offerta/Altro" Variant="Variant.Text"></MudTextField>
+                        }
+                    </MudItem>
 
-				<MudItem xs="12" md="6">
-					<MudSelect T="string" Label="Durata intervento" @bind-Value="Rapporto.DurataIntervento" AnchorOrigin="Origin.BottomCenter">
-						<MudSelectItem Value="@("Mezza giornata")" />
-						<MudSelectItem Value="@("Giornata intera")" />
-						<MudSelectItem Value="@("Mezza Giornata straordinario")" />
-						<MudSelectItem Value="@("Giornata Intera straordinario")" />
-					</MudSelect>
-				</MudItem>
+                    <MudItem xs="12" md="6">
+                        <MudDatePicker DateFormat="dd/MM/yyyy" Label="Data intervento" Required="true" RequiredError="Campo obbligatorio!" @bind-Date="Rapporto.DataIntervento" For="@(() => Rapporto.DataIntervento)"/>
+                    </MudItem>
 
-				<MudItem xs="12">
-					<MudTextField @bind-Value="Rapporto.Descrizione" T="string" Label="Descrizione intervento" Variant="Variant.Text" Lines="15" />
-				</MudItem>
+                    <MudItem xs="12" md="6">
+                        <MudSelect T="string" Required="true" RequiredError="Campo obbligatorio!" Label="Durata intervento" For="@(() => Rapporto.DurataIntervento)" @bind-Value="Rapporto.DurataIntervento" AnchorOrigin="Origin.BottomCenter">
+                            <MudSelectItem Value="@("Mattina")" />
+                            <MudSelectItem Value="@("Pomeriggio")" />
+                            <MudSelectItem Value="@("Giornata intera")" />
+                            <MudSelectItem Value="@("Mattina straordinario")" />
+                            <MudSelectItem Value="@("Pomeriggio straordinario")" />
+                            <MudSelectItem Value="@("Giornata Intera straordinario")" />
+                        </MudSelect>
+                    </MudItem>
 
-					<MudItem xs="12" Class="d-flex justify-content-around">
-						<MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="@(()=>{Annulla.InvokeAsync();})">Annulla</MudButton>
-						<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(()=>{GenerateRapporto(Rapporto, Richiesta);})">Crea Rapporto</MudButton>
-					</MudItem>
-			</MudGrid>
-		</MudPaper>
-	</MudItem>
+                    <MudItem xs="12">
+                        <MudTextField @bind-Value="Rapporto.Descrizione" T="string" Label="Descrizione intervento" Variant="Variant.Text" Lines="15" />
+                    </MudItem>
+
+                    <MudItem xs="12" Class="d-flex justify-content-around">
+                        <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="@(()=>{Annulla.InvokeAsync();})">Annulla</MudButton>
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(()=>{GenerateRapporto(Rapporto, Richiesta);})">Crea Rapporto</MudButton>
+                    </MudItem>
+                </MudGrid>
+            </MudForm>
+
+        </MudPaper>
+    </MudItem>
 
 }
 else
 {
-	<MudItem xs="12">
-		<MudPaper Class="pa-6" Elevation="5">
-			<MudGrid Justify="Justify.Center">
+    <MudItem xs="12">
+        <MudPaper Class="pa-6" Elevation="5">
+            <MudGrid Justify="Justify.Center">
 
-				@if (Edit)
-				{
-					<MudItem xs="12" sm="12" md="12">
-						<MudAutocomplete Disabled="true" @bind-Value="Cliente.ragioneSociale" Required="true" RequiredError="Selezionare un cliente" T="string" Label="Cliente" SearchFunc="Search" ShowProgressIndicator="true">
-							<ProgressIndicatorTemplate>
-								<MudProgressLinear Size="Size.Small" Indeterminate="true" Color="Color.Primary" />
-							</ProgressIndicatorTemplate>
-						</MudAutocomplete>
-					</MudItem>
-				}
-				else
-				{
-					<MudItem xs="12" sm="12" md="12">
-						<MudAutocomplete @bind-Value="Cliente.ragioneSociale" Required="true" RequiredError="Selezionare un cliente" T="string" Label="Cliente" SearchFunc="Search" ShowProgressIndicator="true">
-							<ProgressIndicatorTemplate>
-								<MudProgressLinear Size="Size.Small" Indeterminate="true" Color="Color.Primary" />
-							</ProgressIndicatorTemplate>
-						</MudAutocomplete>
-					</MudItem>
-				}
+                @if (Edit)
+                {
+                    <MudItem xs="12" sm="12" md="12">
+                        <MudAutocomplete Disabled="true" @bind-Value="Cliente.ragioneSociale" Required="true" RequiredError="Selezionare un cliente" T="string" Label="Cliente" SearchFunc="Search" ShowProgressIndicator="true">
+                            <ProgressIndicatorTemplate>
+                                <MudProgressLinear Size="Size.Small" Indeterminate="true" Color="Color.Primary" />
+                            </ProgressIndicatorTemplate>
+                        </MudAutocomplete>
+                    </MudItem>
+                }
+                else
+                {
+                    <MudItem xs="12" sm="12" md="12">
+                        <MudAutocomplete @bind-Value="Cliente.ragioneSociale" Required="true" RequiredError="Selezionare un cliente" T="string" Label="Cliente" SearchFunc="Search" ShowProgressIndicator="true">
+                            <ProgressIndicatorTemplate>
+                                <MudProgressLinear Size="Size.Small" Indeterminate="true" Color="Color.Primary" />
+                            </ProgressIndicatorTemplate>
+                        </MudAutocomplete>
+                    </MudItem>
+                }
 
-				<MudItem xs="12" md="4">
-					<MudTextField @bind-Value="Rapporto.RespRic" T="string" Label="Responsabile richiesta" Required="true" RequiredError="Campo obbligatorio!" />
-				</MudItem>
+                <MudItem xs="12" md="4">
+                    <MudTextField @bind-Value="Rapporto.RespRic" T="string" Label="Responsabile richiesta" Required="true" RequiredError="Campo obbligatorio!" />
+                </MudItem>
 
-				<MudItem xs="12" md="4">
-					<MudTextField @bind-Value="Rapporto.RespInt" T="string" Label="Responsabile Intervento" Required="true" RequiredError="Campo obbligatorio!" />
-				</MudItem>
+                <MudItem xs="12" md="4">
+                    <MudTextField @bind-Value="Rapporto.RespInt" T="string" Label="Responsabile Intervento" Required="true" RequiredError="Campo obbligatorio!" />
+                </MudItem>
 
-				<MudItem xs="12" md="4">
-					<MudTextField @bind-Value="Rapporto.Incaricato" T="string" Label="Incaricato dell'Intervento" Required="true" RequiredError="Campo obbligatorio!" />
-				</MudItem>
+                <MudItem xs="12" md="4">
+                    <MudTextField @bind-Value="Rapporto.Incaricato" T="string" Label="Incaricato dell'Intervento" Required="true" RequiredError="Campo obbligatorio!" />
+                </MudItem>
 
-				<MudItem xs="12" md="12">
-					<MudSelect T="string" Label="Luogo Intervento" @bind-Value="Rapporto.LuogoIntervento" AnchorOrigin="Origin.BottomCenter">
-						<MudSelectItem Value="@("Intervento presso il cliente")" />
-						<MudSelectItem Value="@("Intervento Assistenza remota")" />
-					</MudSelect>
-					@if (Rapporto.LuogoIntervento == "Intervento Assistenza remota")
-					{
-						<MudTextField @bind-Value="Rapporto.IdCollegamento" T="string" Label="ID Collegamento" Required="true" RequiredError="Campo obbligatorio!" />
-					}
-				</MudItem>
+                <MudItem xs="12" md="12">
+                    <MudSelect T="string" Label="Luogo Intervento" @bind-Value="Rapporto.LuogoIntervento" AnchorOrigin="Origin.BottomCenter">
+                        <MudSelectItem Value="@("Intervento presso il cliente")" />
+                        <MudSelectItem Value="@("Intervento Assistenza remota")" />
+                    </MudSelect>
+                    @if (Rapporto.LuogoIntervento == "Intervento Assistenza remota")
+                    {
+                        <MudTextField @bind-Value="Rapporto.IdCollegamento" T="string" Label="ID Collegamento" Required="true" RequiredError="Campo obbligatorio!" />
+                    }
+                </MudItem>
 
-				<MudItem xs="12" md="12">
-					<MudSelect @bind-Value="Rapporto.TipoIntervento" T="string" Label="Tipologia Intervento" AnchorOrigin="Origin.BottomCenter">
-						<MudSelectItem Value="@("Contratto")" />
-						<MudSelectItem Value="@("In Garanzia")" />
-						<MudSelectItem Value="@("Rif.Offerta/C.O.")" />
-						<MudSelectItem Value="@("Altro: ")" />
-					</MudSelect>
-					@if (Rapporto.TipoIntervento == "Rif.Offerta/C.O." || Rapporto.TipoIntervento == "Altro: ")
-					{
-						<MudTextField @bind-Value="Rapporto.TipoIntervento" Label="Specificare Offerta/Altro" Variant="Variant.Text"></MudTextField>
-					}
-				</MudItem>
+                <MudItem xs="12" md="12">
+                    <MudSelect @bind-Value="Rapporto.TipoIntervento" T="string" Label="Tipologia Intervento" AnchorOrigin="Origin.BottomCenter">
+                        <MudSelectItem Value="@("Contratto")" />
+                        <MudSelectItem Value="@("In Garanzia")" />
+                        <MudSelectItem Value="@("Rif.Offerta/C.O.")" />
+                        <MudSelectItem Value="@("Altro: ")" />
+                    </MudSelect>
+                    @if (Rapporto.TipoIntervento == "Rif.Offerta/C.O." || Rapporto.TipoIntervento == "Altro: ")
+                    {
+                        <MudTextField @bind-Value="Rapporto.TipoIntervento" Label="Specificare Offerta/Altro" Variant="Variant.Text"></MudTextField>
+                    }
+                </MudItem>
 
-				<MudItem xs="12" md="6">
-					<MudDatePicker DateFormat="dd/MM/yyyy" Label="Data intervento" Required="true" @bind-Date="Rapporto.DataIntervento" />
-				</MudItem>
+                <MudItem xs="12" md="6">
+                    <MudDatePicker DateFormat="dd/MM/yyyy" Label="Data intervento" Required="true" @bind-Date="Rapporto.DataIntervento" />
+                </MudItem>
 
-				<MudItem xs="12" md="6">
-					<MudSelect T="string" Label="Durata intervento" @bind-Value="Rapporto.DurataIntervento" AnchorOrigin="Origin.BottomCenter">
-						<MudSelectItem Value="@("Mezza giornata")" />
-						<MudSelectItem Value="@("Giornata intera")" />
-						<MudSelectItem Value="@("Mezza Giornata straordinario")" />
-						<MudSelectItem Value="@("Giornata Intera straordinario")" />
-					</MudSelect>
-				</MudItem>
+                <MudItem xs="12" md="6">
+                    <MudSelect T="string" Label="Durata intervento" @bind-Value="Rapporto.DurataIntervento" AnchorOrigin="Origin.BottomCenter">
+                        <MudSelectItem Value="@("Mattina")" />
+                        <MudSelectItem Value="@("Pomeriggio")" />
+                        <MudSelectItem Value="@("Giornata intera")" />
+                        <MudSelectItem Value="@("Mattina straordinario")" />
+                        <MudSelectItem Value="@("Pomeriggio straordinario")" />
+                        <MudSelectItem Value="@("Giornata Intera straordinario")" />
+                    </MudSelect>
+                </MudItem>
 
-				<MudItem xs="12">
-					<MudTextField @bind-Value="Rapporto.Descrizione" T="string" Label="Descrizione intervento" Variant="Variant.Text" Lines="15" />
-				</MudItem>
+                <MudItem xs="12">
+                    <MudTextField @bind-Value="Rapporto.Descrizione" T="string" Label="Descrizione intervento" Variant="Variant.Text" Lines="15" />
+                </MudItem>
 
-				@if (Edit)
-				{
-					<MudItem xs="12" Class="d-flex justify-content-around">
-						<MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="@(()=>{Annulla.InvokeAsync();})">Annulla</MudButton>
-						<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(()=>{EditRapporto(Rapporto);})">Modifica Richiesta</MudButton>
-					</MudItem>
-				}
-				else
-				{
-					<MudItem xs="12" Class="d-flex justify-content-around">
-						<MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="@(()=>{ShowHidePopUp.InvokeAsync();})">Annulla</MudButton>
-						<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(()=>{CreateRapporto(Rapporto);})">Crea Richiesta</MudButton>
-					</MudItem>
-				}
-			</MudGrid>
-		</MudPaper>
-	</MudItem>
+                @if (Edit)
+                {
+                    <MudItem xs="12" Class="d-flex justify-content-around">
+                        <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="@(()=>{Annulla.InvokeAsync();})">Annulla</MudButton>
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(()=>{EditRapporto(Rapporto);})">Modifica Rapporto</MudButton>
+                    </MudItem>
+                }
+                else
+                {
+                    <MudItem xs="12" Class="d-flex justify-content-around">
+                        <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="@(()=>{ShowHidePopUp.InvokeAsync();})">Annulla</MudButton>
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(()=>{CreateRapporto(Rapporto);})">Crea Richiesta</MudButton>
+                    </MudItem>
+                }
+            </MudGrid>
+        </MudPaper>
+    </MudItem>
 
 }
 
 
 
 @code {
-	[Parameter]
-	public Rapporto Rapporto { get; set; } = new Rapporto();
+    [Parameter]
+    public Rapporto Rapporto { get; set; } = new Rapporto();
 
-	[Parameter]
-	public Richiesta Richiesta { get; set; } = new Richiesta();
+    [Parameter]
+    public Richiesta Richiesta { get; set; } = new Richiesta();
 
-	[Parameter]
-	public Cliente Cliente { get; set; } = new Cliente();
+    [Parameter]
+    public Cliente Cliente { get; set; } = new Cliente();
 
-	public DateTime Date { get; set; }
+    public DateTime Date { get; set; }
 
-	[Parameter]
-	public EventCallback ShowHidePopUp { get; set; }
+    [Parameter]
+    public EventCallback ShowHidePopUp { get; set; }
 
-	[Parameter]
-	public EventCallback Annulla { get; set; }
+    [Parameter]
+    public EventCallback Annulla { get; set; }
 
-	[Parameter]
-	public bool Edit { get; set; } = false;
+    [Parameter]
+    public bool Edit { get; set; } = false;
 
-	[Parameter]
-	public bool RapportoCreation { get; set; } = false;
-
-
-	private string[] ArrClienti;
+    [Parameter]
+    public bool RapportoCreation { get; set; } = false;
 
 
+    private string[] ArrClienti;
+
+    MudForm form;
 
 
-	private async Task<IEnumerable<string>> Search(string value)
-	{
-		ArrClienti = await ClientiService.GetArrayClienti();
 
-		// if text is null or empty, show complete list
-		if (string.IsNullOrEmpty(value))
-			return ArrClienti;
-		return ArrClienti.Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
-	}
 
-	private async Task CreateRapporto(Rapporto rapporto)
-	{
-		try
-		{
-			var cliente = await ClientiService.GetCliente(Cliente.ragioneSociale);
-			Rapporto.Clienteid = cliente.id;
-			await RapportiService.CreateRapporto(rapporto);
-			await ShowHidePopUp.InvokeAsync();
+    private async Task<IEnumerable<string>> Search(string value)
+    {
+        ArrClienti = await ClientiService.GetArrayClienti();
 
-		}
-		catch
-		{
-			Console.WriteLine("CLIENTE NON PRESENTE NEL DB");
-		}
-	}
+        // if text is null or empty, show complete list
+        if (string.IsNullOrEmpty(value))
+            return ArrClienti;
+        return ArrClienti.Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
+    }
 
-	private async Task GenerateRapporto(Rapporto rapporto, Richiesta richiesta)
-	{
-		try
-		{
-			var cliente = await ClientiService.GetCliente(Cliente.ragioneSociale);
-			richiesta.RapportoCreato = true;
-			Rapporto.Clienteid = cliente.id;
-			await RichiesteService.UpdateRichiesta(Richiesta.id, richiesta);
-			await RapportiService.CreateRapporto(rapporto);
-			await ShowHidePopUp.InvokeAsync();
+    private async Task CreateRapporto(Rapporto rapporto)
+    {
+        if (form.IsValid)
+        {
+            try
+            {
+                var cliente = await ClientiService.GetCliente(Cliente.ragioneSociale);
+                Rapporto.Clienteid = cliente.id;
+                await RapportiService.CreateRapporto(rapporto);
+                await ShowHidePopUp.InvokeAsync();
 
-		}
-		catch
-		{
-			Console.WriteLine("CLIENTE NON PRESENTE NEL DB");
-		}
-	}
+            }
+            catch
+            {
+                Console.WriteLine("CLIENTE NON PRESENTE NEL DB");
+            }
 
-	private async Task EditRapporto(Rapporto rapporto)
-	{
-		try
-		{
-			var cliente = await ClientiService.GetCliente(Cliente.ragioneSociale);
-			await RapportiService.UpdateRapporto(rapporto, Rapporto.id);
-			await ShowHidePopUp.InvokeAsync();
-			Rapporto = new Rapporto();
-			Cliente = new Cliente();
+        }
+    }
 
-		}
-		catch
-		{
-			Console.WriteLine("CLIENTE NON PRESENTE NEL DB");
-		}
-	}
+    private async Task GenerateRapporto(Rapporto rapporto, Richiesta richiesta)
+    {
+        try
+        {
+            var cliente = await ClientiService.GetCliente(Cliente.ragioneSociale);
+            Rapporto.Clienteid = cliente.id;
+            await RapportiService.GenerateRapporto(richiesta, rapporto);
+            await ShowHidePopUp.InvokeAsync();
+
+        }
+        catch
+        {
+            Console.WriteLine("CLIENTE NON PRESENTE NEL DB");
+        }
+    }
+
+    private async Task EditRapporto(Rapporto rapporto)
+    {
+        try
+        {
+            var cliente = await ClientiService.GetCliente(Cliente.ragioneSociale);
+            await RapportiService.UpdateRapporto(rapporto);
+            await ShowHidePopUp.InvokeAsync();
+            Rapporto = new Rapporto();
+            Cliente = new Cliente();
+
+        }
+        catch
+        {
+            Console.WriteLine("ERRORE NELLA MODIFICA DEL RAPPORTO");
+        }
+    }
 }

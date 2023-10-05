@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using MudBlazor.Services;
 using RapportiWeb.Client;
 using RapportiWeb.Client.Services.Clienti;
+using RapportiWeb.Client.Services.Pdf;
 using RapportiWeb.Client.Services.Rapporti;
 using RapportiWeb.Client.Services.Richieste;
 using RapportiWeb.Shared;
@@ -17,7 +18,12 @@ builder.Services.AddMudServices();
 builder.Services.AddScoped<IClientiService, ClientiService>();
 builder.Services.AddScoped<IRichiesteService, RichiesteService>();
 builder.Services.AddScoped<IRapportiService, RapportiService>();
+builder.Services.AddScoped<IPdfService, PdfService>();
+
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+
+//builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:443/") });
+
 
 await builder.Build().RunAsync();
