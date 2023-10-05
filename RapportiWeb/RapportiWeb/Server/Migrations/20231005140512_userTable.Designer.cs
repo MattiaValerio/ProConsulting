@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RapportiWeb.Server.Data;
 
@@ -11,9 +12,11 @@ using RapportiWeb.Server.Data;
 namespace RapportiWeb.Server.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20231005140512_userTable")]
+    partial class userTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -241,6 +244,9 @@ namespace RapportiWeb.Server.Migrations
                     b.Property<int>("Attivo")
                         .HasColumnType("int");
 
+                    b.Property<int?>("Clienteid")
+                        .HasColumnType("int");
+
                     b.Property<string>("Cognome")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -256,9 +262,6 @@ namespace RapportiWeb.Server.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Organizzazioneid")
-                        .HasColumnType("int");
-
                     b.Property<byte[]>("Salt")
                         .IsRequired()
                         .HasColumnType("varbinary(max)");
@@ -272,7 +275,7 @@ namespace RapportiWeb.Server.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Organizzazioneid");
+                    b.HasIndex("Clienteid");
 
                     b.ToTable("Utenti");
                 });
@@ -297,13 +300,9 @@ namespace RapportiWeb.Server.Migrations
 
             modelBuilder.Entity("RapportiWeb.Shared.User", b =>
                 {
-                    b.HasOne("RapportiWeb.Shared.Cliente", "Organizzazione")
+                    b.HasOne("RapportiWeb.Shared.Cliente", null)
                         .WithMany("Utenti")
-                        .HasForeignKey("Organizzazioneid")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Organizzazione");
+                        .HasForeignKey("Clienteid");
                 });
 
             modelBuilder.Entity("RapportiWeb.Shared.Cliente", b =>

@@ -12,7 +12,8 @@
                 <MudGrid Justify="Justify.Center">
 
                     <MudItem xs="12" sm="12" md="12">
-                        <MudAutocomplete Disabled="true" @bind-Value="Cliente.ragioneSociale" For="@(()=> Cliente.ragioneSociale)" Required="true" RequiredError="Selezionare un cliente" T="string" Label="Cliente" SearchFunc="Search" ShowProgressIndicator="true">
+                        <MudAutocomplete Disabled="true" @bind-Value="Cliente.ragioneSociale" For="@(()=> Cliente.ragioneSociale)" 
+                            Required="true" RequiredError="Selezionare un cliente" T="string" Label="Cliente" SelectOnClick="true" SearchFunc="Search" ShowProgressIndicator="true">
                             <ProgressIndicatorTemplate>
                                 <MudProgressLinear Size="Size.Small" Indeterminate="true" Color="Color.Primary" />
                             </ProgressIndicatorTemplate>
@@ -45,6 +46,7 @@
                         }
                     </MudItem>
 
+                    
                     <MudItem xs="12" md="4">
                         <MudTextField Disabled="true" For="@(()=> Richiesta.ResponsabileRic)" @bind-Value="Richiesta.ResponsabileRic" T="string" Label="Responsabile richiesta" Required="true" RequiredError="Campo obbligatorio!" />
                     </MudItem>
@@ -137,7 +139,7 @@ else
                     <MudItem xs="12" md="4">
                         <MudTextField For="@(()=> Richiesta.ResponsabileRic)" @bind-Value="Richiesta.ResponsabileRic" 
                             T="string" Label="Responsabile richiesta"
-                                      Required="true" RequiredError="Campo obbligatorio!" />
+                                      Required="true" RequiredError="Campo obbligatorio!" Text="" />
                     </MudItem>
 
                     <MudItem xs="12" md="4">
