@@ -19,27 +19,46 @@ namespace RapportiWeb.Client.Services.Pdf
 		}
 
 
-		public async Task DownloadRichiesta(Cliente cliente, Richiesta ric)
-		{
-			try
-			{
-				var response = await _http.PostAsJsonAsync("api/PDF/DownloadRichiesta", ric);
-				if (response.IsSuccessStatusCode)
-				{
-					var pdfFileName = await response.Content.ReadAsStringAsync();
-					var pdfUrl = $"../PDF/{pdfFileName}";
+        public async Task DownloadRichiesta(Cliente cliente, Richiesta ric)
+        {
+            try
+            {
+                var response = await _http.PostAsJsonAsync("api/PDF/DownloadRichiesta", ric);
+                if (response.IsSuccessStatusCode)
+                {
+                    var pdfFileName = await response.Content.ReadAsStringAsync();
+                    var pdfUrl = $"../PDF/{pdfFileName}";
 
-				}
-			}
-			catch (Exception e)
-			{
-				Console.WriteLine(e);
-				throw;
-			}
-			
-		}
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
 
-		public async Task GetFile(string filename)
+        }
+
+        public async Task DownloadRapporto(Cliente cliente, Rapporto rap)
+        {
+            try
+            {
+                var response = await _http.PostAsJsonAsync("api/PDF/DownloadRapporto", rap);
+                if (response.IsSuccessStatusCode)
+                {
+                    var pdfFileName = await response.Content.ReadAsStringAsync();
+                    var pdfUrl = $"../PDF/{pdfFileName}";
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+
+        }
+
+        public async Task GetFile(string filename)
 		{
 			await _http.GetAsync($"pdf/{filename}");
 		}

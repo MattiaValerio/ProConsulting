@@ -1,6 +1,8 @@
 ﻿@inject IRapportiService RapportiService
 @inject IRichiesteService RichiesteService
 @inject IClientiService ClientiService
+@inject IPdfService PDFService
+@inject IJSRuntime JSRuntime
 
 
 @if (RapportoCreation)
@@ -177,6 +179,7 @@ else
                         <MudItem xs="12" Class="d-flex justify-content-around">
                             <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="@(()=>{ShowHidePopUp.InvokeAsync();})">Annulla</MudButton>
                             <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(()=>{EditRapporto(Rapporto);})">Modifica Rapporto</MudButton>
+                            <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="@(()=>{DownloadPDF(Rapporto);})">Download</MudButton>
                         </MudItem>
                     }
                     else
@@ -296,5 +299,11 @@ else
 
 
         Console.WriteLine("FINE");
+    }
+
+    private async Task DownloadPDF(Rapporto rap)
+    {
+        await PDFService.DownloadRapporto(Cliente, rap);
+        await JSRuntime.InvokeAsync<object>("open", $"/pdf/rap{rap.id}.pdf", "_blank");
     }
 }

@@ -29,7 +29,7 @@ namespace RapportiWeb.Server.Controllers
             _jsRunTime = jsRuntime;
 		}
 
-		[HttpPost("DownloadRichiesta")]
+        [HttpPost("DownloadRichiesta")]
         public async Task<IActionResult> DownloadRichiesta(Richiesta richiesta)
         {
 
@@ -46,27 +46,21 @@ namespace RapportiWeb.Server.Controllers
 
             System.IO.File.WriteAllBytes(pdfFilePath, pdfBytes);
 
-			return Ok(pdfFileName);
+            return Ok(pdfFileName);
         }
 
-        [HttpGet("{FileName}")]
-        public async Task GetFile(string filename)
+        [HttpPost("DownloadRapporto")]
+        public async Task<IActionResult> DownloadRapporto(Rapporto rap)
         {
-			await _jsRunTime.InvokeAsync<object>("open", $"/PDF/{filename}", "_blank");
-		}
 
-		[HttpPost("DownloadRapporto")]
-        public async Task<IActionResult> DownloadRapporto(Rapporto rapporto)
-        {
             var listaClienti = await _context.Clienti.ToListAsync();
-            var cliente = listaClienti.Find(c => c.id == rapporto.Clienteid);
-
+            var cliente = listaClienti.Find(c => c.id == rap.Clienteid);
             // Generate the PDF for Richiesta and save it on the server
-            var pdfDocument = CreateRapportoPdf(rapporto);
+            var pdfDocument = CreateRapportoPdf(rap);
             var pdfBytes = (await pdfDocument).GeneratePdf();
-            var pdfFileName = $"{rapporto.Clienteid}_rapporto_{rapporto.id}.pdf";
+            var pdfFileName = $"rap{rap.id}.pdf";
 
-            var pdfFolder = Path.Combine(Directory.GetCurrentDirectory(), "PDFs");
+            var pdfFolder = "../Client/wwwroot/PDF";
             Directory.CreateDirectory(pdfFolder);
             var pdfFilePath = Path.Combine(pdfFolder, pdfFileName);
 
@@ -74,6 +68,12 @@ namespace RapportiWeb.Server.Controllers
 
             return Ok(pdfFileName);
         }
+
+  //      [HttpGet("{FileName}")]
+  //      public async Task GetFile(string filename)
+  //      {
+		//	await _jsRunTime.InvokeAsync<object>("open", $"/PDF/{filename}", "_blank");
+		//}
 
 
 
@@ -184,7 +184,7 @@ namespace RapportiWeb.Server.Controllers
                     page.Header()
                 .Row(row =>
                 {
-                    row.RelativeColumn(0.5f).Image("../Shared/img/logo.jpg");
+                    //row.RelativeColumn(0.5f).Image("/img/logo.png");
                     row.RelativeColumn(0.1f).Text("");
                     row.RelativeColumn(0.5f).Border((float) 0.5).AlignCenter().Text($"RELAZIONE DI INTERVENTO           Codice richiesta: {rapporto.id}").Bold().FontSize((float) 14.5);
 

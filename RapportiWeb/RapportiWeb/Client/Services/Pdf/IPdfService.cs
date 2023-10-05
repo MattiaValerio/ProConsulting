@@ -4,8 +4,9 @@ namespace RapportiWeb.Client.Services.Pdf
 {
 	public interface IPdfService
 	{
-		Task DownloadRichiesta(Cliente cliente, Richiesta ric);
+        Task DownloadRichiesta(Cliente cliente, Richiesta ric);
+        Task DownloadRapporto(Cliente cliente, Rapporto rap);
 
-		Task GetFile(string filename);
+        Task GetFile(string filename);
 	}
 }

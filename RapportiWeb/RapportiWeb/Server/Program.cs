@@ -9,6 +9,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
 //creiamo il nostro DBContext e lo rendiamo disponibile nella nostra applicazione
 builder.Services.AddDbContext<DataContext>(options =>
 {
@@ -18,7 +21,7 @@ builder.Services.AddDbContext<DataContext>(options =>
 
 var app = builder.Build();
 
-
+app.UseSwaggerUI();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -32,6 +35,7 @@ else
     app.UseHsts();
 }
 
+app.UseSwagger();
 app.UseHttpsRedirection();
 
 app.UseBlazorFrameworkFiles();
