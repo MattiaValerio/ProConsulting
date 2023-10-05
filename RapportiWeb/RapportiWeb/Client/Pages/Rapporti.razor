@@ -27,7 +27,7 @@
 			</MudItem>
 
 			<MudItem xs="1" md="1" Class="d-flex flex-column align-items-center justify-center">
-				<MudIconButton Icon="@Icons.Material.Filled.RemoveRedEye" Color="Color.Primary" aria-label="github" OnClick="@(()=>{})"></MudIconButton>
+				<MudIconButton Icon="@Icons.Material.Filled.RemoveRedEye" Color="Color.Primary" aria-label="github" OnClick="@(()=>{ShowHideRagioniSociali();})"></MudIconButton>
 			</MudItem>
 
 			<MudItem xs="10" md="10" xl="6">
@@ -67,8 +67,14 @@
 							<MudTh>Elimina</MudTh>
 						</HeaderContent>
 						<RowTemplate>
-							<MudTd DataLabel="Ragione Sociale">@_ListaClienti.Find(c=> c.id == context.Clienteid).ragioneSociale</MudTd>
-							<MudTd DataLabel="Indirizzo">@_ListaClienti.Find(c=> c.id == context.Clienteid).Indirizzo</MudTd>
+							@if (ShowRagSoc)
+							{
+								<MudTd DataLabel="Ragione Sociale">@_ListaClienti.Find(c=> c.id == context.Clienteid).ragioneSociale</MudTd>
+							}
+							else
+							{
+								<MudTd DataLabel="Ragione Sociale">@_ListaClienti.Find(c=> c.id == context.Clienteid).NomeAbbreviato</MudTd>
+							}							<MudTd DataLabel="Indirizzo">@_ListaClienti.Find(c=> c.id == context.Clienteid).Indirizzo</MudTd>
 							<MudTd DataLabel="Data Creazione">@context.dataCreazioneRapporto.ToString("dd/MM/yyyy")</MudTd>
 							<MudTd DataLabel="E-Mail">@_ListaClienti.Find(c=> c.id == context.Clienteid).email</MudTd>
 							<MudTd DataLabel="Telefono">@_ListaClienti.Find(c=> c.id == context.Clienteid).telefono</MudTd>
@@ -95,6 +101,8 @@
 @code {
 	private bool NuovoRapporto = false;
 	public bool EditRapporto { get; set; } = false;
+	private bool ShowRagSoc = false;
+
 	private DateRange? _dateRange = new DateRange();
 
 	private List<Cliente>? _ListaClienti;
@@ -210,6 +218,11 @@
 		Rapporto = new Rapporto();
 		StateHasChanged();
 	}
+
+	    private void ShowHideRagioniSociali()
+    {
+        ShowRagSoc = !ShowRagSoc;
+    }
 
 
 }

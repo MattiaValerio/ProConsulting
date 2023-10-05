@@ -43,7 +43,7 @@
             </MudItem>
 
             <MudItem xs="1" md="1" Class="d-flex flex-column align-items-center justify-center">
-                <MudIconButton Icon="@Icons.Material.Filled.RemoveRedEye" Color="Color.Primary" aria-label="github" OnClick="@(()=>{})"></MudIconButton>
+                <MudIconButton Icon="@Icons.Material.Filled.RemoveRedEye" Color="Color.Primary" aria-label="github" OnClick="@(()=>{ShowHideRagioniSociali();})"></MudIconButton>
             </MudItem>
 
             <MudItem xs="10" md="10" xl="6">
@@ -56,9 +56,10 @@
             </MudItem>
 
             <MudItem xs="12" md="12" xl="4">
+
                 <MudDateRangePicker Label="Data" Clearable="true" DateFormat="dd/MM/yyy"
-                        @bind-DateRange="_dateRange"
-                        PickerClosed="@(async ()=>{await RicercaPerData(_dateRange);})" />
+                                DateRange="_dateRange"
+                                DateRangeChanged="RicercaPerData" />
                         
             </MudItem>
 
@@ -84,7 +85,14 @@
                             <MudTh>Crea/Visualizza Rapporto</MudTh>
                         </HeaderContent>
                         <RowTemplate>
-                            <MudTd DataLabel="Ragione Sociale">@_ListaClienti.Find(c=> c.id == context.Clienteid).ragioneSociale</MudTd>
+                            @if (ShowRagSoc)
+                            {
+                                <MudTd DataLabel="Ragione Sociale">@_ListaClienti.Find(c=> c.id == context.Clienteid).ragioneSociale</MudTd>
+                            }
+                            else
+                            {
+                                <MudTd DataLabel="Ragione Sociale">@_ListaClienti.Find(c=> c.id == context.Clienteid).NomeAbbreviato</MudTd>
+                            }
                             <MudTd DataLabel="Indirizzo">@_ListaClienti.Find(c=> c.id == context.Clienteid).Indirizzo</MudTd>
                             <MudTd DataLabel="Data Creazione">@context.Data.ToString("dd/MM/yyyy")</MudTd>
                             <MudTd DataLabel="E-Mail">@_ListaClienti.Find(c=> c.id == context.Clienteid).email</MudTd>
@@ -131,7 +139,13 @@
     private bool NuovaRichiesta = false;
     private bool CreateRapporto = false;
     private bool RedirectRapporto = false;
+    private bool ShowRagSoc = false;
 
+
+    private void onchange(EventArgs args)
+    {
+        Console.WriteLine("CCC");
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -166,6 +180,11 @@
         RedirectRapporto = !RedirectRapporto;
         Cliente = new Cliente();
         Rapporto = new Rapporto();
+    }
+
+    private void ShowHideRagioniSociali()
+    {
+        ShowRagSoc = !ShowRagSoc;
     }
 
     private async Task ShowHideEdit()
@@ -230,18 +249,34 @@
 
     private async Task<List<Richiesta>> RicercaPerData(DateRange dateRange)
     {
+        _dateRange = dateRange;
+
         if (Cliente.ragioneSociale == string.Empty || Cliente.ragioneSociale is null)
         {
-            _ListaRichieste = await RichiesteService.RicercaPerData(dateRange.Start, dateRange.End);
+            if (dateRange.Start is null && dateRange.End is null)
+            {
+                _ListaRichieste = await RichiesteService.GetRichieste();
+            }
+            else
+            {
+                _ListaRichieste = await RichiesteService.RicercaPerData(dateRange.Start, dateRange.End);
+            }
         }
         else if(Cliente.ragioneSociale is not null)
         {
-            _ListaRichieste = await RichiesteService.GetRichiestaByRagSoc(Cliente.ragioneSociale);
-            _ListaRichieste = await RichiesteService.RicercaPerData(dateRange.Start, dateRange.End);
+            if (dateRange.Start is null && dateRange.End is null)
+            {
+                _ListaRichieste = await RichiesteService.GetRichiestaByRagSoc(Cliente.ragioneSociale);
+                //_ListaRichieste = await RichiesteService.RicercaPerData(dateRange.Start, dateRange.End);
+            }
+            else
+            {
+                _ListaRichieste = await RichiesteService.GetRichiestaByRagSoc(Cliente.ragioneSociale);
+                _ListaRichieste = await RichiesteService.RicercaPerData(dateRange.Start, dateRange.End);
 
-            _ListaRichieste = _ListaRichieste.FindAll(r => r.Clienteid == _ListaClienti.FirstOrDefault(c => c.ragioneSociale == Cliente.ragioneSociale).id);
+                _ListaRichieste = _ListaRichieste.FindAll(r => r.Clienteid == _ListaClienti.FirstOrDefault(c => c.ragioneSociale == Cliente.ragioneSociale).id);
+            }
         }
-
 
         return _ListaRichieste;
     }

@@ -76,8 +76,8 @@ namespace RapportiWeb.Client.Services.Richieste
         public async Task<List<Richiesta>> RicercaPerData(DateTime? start, DateTime? end)
         {
 
-            var s = start?.ToString("yyyy-MM-ddTHH:mm:ss");
-            var e = end?.ToString("yyyy-MM-ddTHH:mm:ss");
+            var s = start?.Date.ToString("yyyy-MM-dd");
+            var e = end?.Date.ToString("yyyy-MM-dd");
 
             var richieste = await _http.GetFromJsonAsync<List<Richiesta>>($"/api/richieste/data?start={s}&end={e}");
 

@@ -111,7 +111,7 @@ namespace RapportiWeb.Server.Controllers
 
             if (richieste != null)
             {
-                var filteredRichieste = richieste.Where(r => r.Data >= start && r.Data <= end).ToList();
+                var filteredRichieste = richieste.Where(r => r.Data.Date >= start.Date && r.Data.Date <= end.Date).ToList();
                 return filteredRichieste;
             }
 
