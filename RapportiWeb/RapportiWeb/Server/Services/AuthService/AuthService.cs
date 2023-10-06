@@ -16,7 +16,9 @@ namespace RapportiWeb.Server.Services.AuthService
             _context = context;
         }
 
-
+        //Esegue la registrazione di un utente
+        //Verifica che l'username non sia gia presente in DB e poi genera Hash e Salt per la password
+        //Aggiunge l'user al DB e ritorna un ServiceResponse con l'id del nuovo utente
         public async Task<ServiceResponse<int>> Register(User user, string password)
         {
             if(await UserExists(user.UserName))
@@ -24,7 +26,7 @@ namespace RapportiWeb.Server.Services.AuthService
                 return new ServiceResponse<int>
                 {
                     Success = false,
-                    Message = "Utente già registrato"
+                    Message = "Username già esistente"
                 };
             }
 
@@ -33,8 +35,12 @@ namespace RapportiWeb.Server.Services.AuthService
             user.Salt = passwordSalt;
             user.Hash = passwordHash;
 
+            //await _context.Database.ExecuteSqlAsync ($"SET IDENTITY_INSERT [dbo].[Utenti] ON");
+
             _context.Add(user);
             await _context.SaveChangesAsync();
+
+            //await _context.Database.ExecuteSqlAsync($"SET IDENTITY_INSERT [dbo].[Utenti] OFF");
 
             return new ServiceResponse<int>
             {
@@ -44,6 +50,7 @@ namespace RapportiWeb.Server.Services.AuthService
             };
         }
 
+        //Verifica se l'username di un utente è gia stato registrato
         public async Task<bool> UserExists(string username)
         {
             if (await _context.Utenti.AnyAsync(u=> u.UserName.ToLower() == username.ToLower()))
@@ -53,6 +60,7 @@ namespace RapportiWeb.Server.Services.AuthService
             return false;
         }
 
+        //generazione di Salt e Hash utilizando HMACSHA512
         private void CreatePassword(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
             using (var hmac = new HMACSHA512())

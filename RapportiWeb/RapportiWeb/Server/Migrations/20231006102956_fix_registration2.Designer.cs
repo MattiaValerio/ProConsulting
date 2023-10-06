@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RapportiWeb.Server.Data;
 
@@ -11,9 +12,11 @@ using RapportiWeb.Server.Data;
 namespace RapportiWeb.Server.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20231006102956_fix_registration2")]
+    partial class fix_registration2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -241,9 +244,6 @@ namespace RapportiWeb.Server.Migrations
                     b.Property<int>("Attivo")
                         .HasColumnType("int");
 
-                    b.Property<int>("ClienteId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Cognome")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -260,13 +260,15 @@ namespace RapportiWeb.Server.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("Organizzazioneid")
+                        .HasColumnType("int");
+
                     b.Property<byte[]>("Salt")
                         .IsRequired()
                         .HasColumnType("varbinary(max)");
 
-                    b.Property<string>("TipoUtente")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("TipoUtente")
+                        .HasColumnType("int");
 
                     b.Property<string>("UserName")
                         .IsRequired()
@@ -274,7 +276,7 @@ namespace RapportiWeb.Server.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ClienteId");
+                    b.HasIndex("Organizzazioneid");
 
                     b.ToTable("Utenti");
                 });
@@ -299,11 +301,13 @@ namespace RapportiWeb.Server.Migrations
 
             modelBuilder.Entity("RapportiWeb.Shared.User", b =>
                 {
-                    b.HasOne("RapportiWeb.Shared.Cliente", null)
+                    b.HasOne("RapportiWeb.Shared.Cliente", "Organizzazione")
                         .WithMany("Utenti")
-                        .HasForeignKey("ClienteId")
+                        .HasForeignKey("Organizzazioneid")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Organizzazione");
                 });
 
             modelBuilder.Entity("RapportiWeb.Shared.Cliente", b =>

@@ -99,7 +99,7 @@ namespace RapportiWeb.Server.Controllers
                     page.Header()
                      .Row(row =>
                      {
-                         row.RelativeColumn(0.5f).Image("../Client/wwwroot/img/logo.png");
+                         row.RelativeColumn(0.5f).Image("/wwwroot/img/logo.png");
                          row.RelativeColumn(0.1f).Text("");
                          row.RelativeColumn(0.5f).Border((float) 0.5).AlignCenter().Text($"MODULO RICHIESTA DI INTERVENTO PRESSO IL CLIENTE: " +
                              $"                      Codice richiesta: {richiesta.id}" +

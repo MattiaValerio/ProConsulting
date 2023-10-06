@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
+using RapportiWeb.Server.Services.AuthService;
 using RapportiWeb.Server.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,14 +13,18 @@ builder.Services.AddRazorPages();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+
 //creiamo il nostro DBContext e lo rendiamo disponibile nella nostra applicazione
 builder.Services.AddDbContext<DataContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DataBase"));
 });
 
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 var app = builder.Build();
+
+app.UseSwaggerUI();
 
 
 // Configure the HTTP request pipeline.

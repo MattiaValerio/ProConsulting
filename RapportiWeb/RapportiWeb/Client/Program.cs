@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using MudBlazor.Services;
 using RapportiWeb.Client;
+using RapportiWeb.Client.Services.Auth;
 using RapportiWeb.Client.Services.Clienti;
 using RapportiWeb.Client.Services.Pdf;
 using RapportiWeb.Client.Services.Rapporti;
@@ -19,6 +20,7 @@ builder.Services.AddScoped<IClientiService, ClientiService>();
 builder.Services.AddScoped<IRichiesteService, RichiesteService>();
 builder.Services.AddScoped<IRapportiService, RapportiService>();
 builder.Services.AddScoped<IPdfService, PdfService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
