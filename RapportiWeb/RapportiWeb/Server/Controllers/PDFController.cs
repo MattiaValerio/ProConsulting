@@ -40,7 +40,7 @@ namespace RapportiWeb.Server.Controllers
             var pdfBytes = (await pdfDocument).GeneratePdf();
             var pdfFileName = $"ric{richiesta.id}.pdf";
 
-            var pdfFolder = "../Client/wwwroot/PDF";
+            var pdfFolder = "/PDF";
             Directory.CreateDirectory(pdfFolder);
             var pdfFilePath = Path.Combine(pdfFolder, pdfFileName);
 
@@ -60,7 +60,7 @@ namespace RapportiWeb.Server.Controllers
             var pdfBytes = (await pdfDocument).GeneratePdf();
             var pdfFileName = $"rap{rap.id}.pdf";
 
-            var pdfFolder = "../Client/wwwroot/PDF";
+            var pdfFolder = "/PDF";
             Directory.CreateDirectory(pdfFolder);
             var pdfFilePath = Path.Combine(pdfFolder, pdfFileName);
 
@@ -99,7 +99,7 @@ namespace RapportiWeb.Server.Controllers
                     page.Header()
                      .Row(row =>
                      {
-                         row.RelativeColumn(0.5f).Image("/wwwroot/img/logo.png");
+                         row.RelativeColumn(0.5f).Image("/img/logo.png");
                          row.RelativeColumn(0.1f).Text("");
                          row.RelativeColumn(0.5f).Border((float) 0.5).AlignCenter().Text($"MODULO RICHIESTA DI INTERVENTO PRESSO IL CLIENTE: " +
                              $"                      Codice richiesta: {richiesta.id}" +
