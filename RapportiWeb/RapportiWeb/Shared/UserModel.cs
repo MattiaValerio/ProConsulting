@@ -13,7 +13,7 @@ namespace RapportiWeb.Shared
         public string NomeCompleto => Nome + " " + Cognome;
         public byte[] Hash { get; set; }
         public byte[] Salt { get; set; }
-        public string Figuraprof { get; set; }
+        public string Figuraprof { get; set; } = string.Empty;
         public int Amministratore { get; set; }
         public int Attivo { get; set; }
         public string TipoUtente { get; set; } = string.Empty; //0= tecnico 1=cliente

@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using RapportiWeb.Server.Services.AuthService;
 using RapportiWeb.Server.Data;
+using Blazored.LocalStorage;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +13,7 @@ builder.Services.AddRazorPages();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddBlazoredLocalStorage();
 
 
 //creiamo il nostro DBContext e lo rendiamo disponibile nella nostra applicazione

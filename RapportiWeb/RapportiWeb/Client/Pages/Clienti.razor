@@ -43,11 +43,11 @@
                 <MudItem xs="12">
                     <MudTable Elevation="4" Items="_FilteredList" Height="100" Breakpoint="Breakpoint.Sm" Striped="true" Virtualize="true" FixedHeader="true">
                         <HeaderContent>
-                            <MudTh>Ragione Sociale</MudTh>
-                            <MudTh>Indirizzo</MudTh>
-                            <MudTh>Città</MudTh>
-                            <MudTh>E-Mail</MudTh>
-                            <MudTh>Telefono</MudTh>
+                            <MudTh><MudTableSortLabel SortBy="new Func<Cliente, object>(x=>x.ragioneSociale)">Ragione Sociale</MudTableSortLabel></MudTh>
+                            <MudTh><MudTableSortLabel SortBy="new Func<Cliente, object>(x=>x.Indirizzo)">Indirizzo</MudTableSortLabel></MudTh>
+                            <MudTh><MudTableSortLabel SortBy="new Func<Cliente, object>(x=>x.Citta)">Città</MudTableSortLabel></MudTh>
+                            <MudTh><MudTableSortLabel SortBy="new Func<Cliente, object>(x=>x.email)">E-Mail</MudTableSortLabel></MudTh>
+                            <MudTh><MudTableSortLabel SortBy="new Func<Cliente, object>(x=>x.telefono)">Telefono</MudTableSortLabel></MudTh>
                             <MudTh>Modifica</MudTh>
                             <MudTh>Elimina</MudTh>
                         </HeaderContent>

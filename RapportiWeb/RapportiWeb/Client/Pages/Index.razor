@@ -1,119 +1,121 @@
 ﻿@page "/"
 @inject NavigationManager nav
 
+<AuthorizeView>
+    <PageTitle>Index</PageTitle>
 
-<PageTitle>Index</PageTitle>
+
+    <MudContainer Class="">
+        <MudText Typo="Typo.h3" Align="Align.Center" GutterBottom="true">BENVENUTO @context.User.Identity.Name.ToUpper()</MudText>
+        <MudGrid Class="mt-8">
+
+            <MudItem xs="12" sm="6" md="6">
+                <MudCard Elevation="5" Class="rounded-lg pb-4">
+                    <MudCardHeader>
+                        <CardHeaderContent>
+                            <MudText Typo="Typo.h5" Align="Align.Center">Clienti</MudText>
+                        </CardHeaderContent>
+                    </MudCardHeader>
+                    <MudCardContent>
+                        <div class="d-flex justify-center">
+                            <MudIcon Icon="@Icons.Material.Filled.Person" Size="Size.Large"></MudIcon>
+                        </div>
+                        <MudList Class="mx-auto mt-4" Style="width:300px;">
+                            <MudListItem Icon="@Icons.Material.Filled.Add">
+                                Aggiungi nuovi clienti
+                            </MudListItem>
+                            <MudListItem Icon="@Icons.Material.Filled.Edit">
+                                Modifica le loro informazioni
+                            </MudListItem>
+                        </MudList>
+                    </MudCardContent>
+                    <MudCardActions Class="d-flex justify-center">
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" Style="width:50%;" @onclick="@(()=>{nav.NavigateTo("/clienti");})">VAI</MudButton>
+                    </MudCardActions>
+                </MudCard>
+            </MudItem>
+
+            <MudItem xs="12" sm="6" md="6">
+                <MudCard Elevation="5" Class="rounded-lg pb-4">
+                    <MudCardHeader>
+                        <CardHeaderContent>
+                            <MudText Typo="Typo.h5" Align="Align.Center">Richieste d'assistenza</MudText>
+                        </CardHeaderContent>
+                    </MudCardHeader>
+                    <MudCardContent>
+                        <div class="d-flex justify-center">
+                            <MudIcon Icon="@Icons.Material.Filled.ContentPaste" Size="Size.Large"></MudIcon>
+                        </div>
+                        <MudList Class="mx-auto mt-4" Style="width:300px;">
+                            <MudListItem Icon="@Icons.Material.Filled.Add">
+                                Crea nuove richieste
+                            </MudListItem>
+                            <MudListItem Icon="@Icons.Material.Filled.ManageSearch">
+                                Gestisci tutte le richieste
+                            </MudListItem>
+                        </MudList>
+                    </MudCardContent>
+                    <MudCardActions Class="d-flex justify-center">
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" Style="width:50%" @onclick="@(()=>{nav.NavigateTo("/richieste");})">VAI</MudButton>
+                    </MudCardActions>
+                </MudCard>
+            </MudItem>
+
+            <MudItem xs="12">
+                <MudCard Elevation="5" Class="rounded-lg pb-4">
+                    <MudCardHeader>
+                        <CardHeaderContent>
+                            <MudText Typo="Typo.h5" Align="Align.Center">Rapporti d'assistenza</MudText>
+                        </CardHeaderContent>
+                    </MudCardHeader>
+                    <MudCardContent>
+                        <div class="d-flex justify-center">
+                            <MudIcon Icon="@Icons.Material.Filled.Assignment" Size="Size.Large"></MudIcon>
+                        </div>
+                        <MudList Class="mx-auto mt-4" Style="width:300px;">
+                            <MudListItem Icon="@Icons.Material.Filled.Add">
+                                Crea nuovi rapporti
+                            </MudListItem>
+                            <MudListItem Icon="@Icons.Material.Filled.ManageSearch">
+                                Gestisci tutti i rapporti
+                            </MudListItem>
+                        </MudList>
+                    </MudCardContent>
+                    <MudCardActions Class="d-flex justify-center">
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" Style="width:50%;" @onclick="@(()=>{nav.NavigateTo("/rapporti");})">VAI</MudButton>
+                    </MudCardActions>
+                </MudCard>
+            </MudItem>
 
 
-<MudContainer Class="">
-    <MudText Typo="Typo.h3" Align="Align.Center" GutterBottom="true">BENVENUTO</MudText>
-    <MudGrid Class="mt-8">
-
-        <MudItem xs="12" sm="6" md="6">
+            @*CARD PER RAPPORTI FAD*@
+            @*        <MudItem xs="12" sm="6" md="6">
             <MudCard Elevation="5" Class="rounded-lg pb-4">
-                <MudCardHeader>
-                    <CardHeaderContent>
-                        <MudText Typo="Typo.h5" Align="Align.Center">Clienti</MudText>
-                    </CardHeaderContent>
-                </MudCardHeader>
-                <MudCardContent>
-                    <div class="d-flex justify-center">
-                        <MudIcon Icon="@Icons.Material.Filled.Person" Size="Size.Large"></MudIcon>
-                    </div>
-                    <MudList Class="mx-auto mt-4" Style="width:300px;">
-                        <MudListItem Icon="@Icons.Material.Filled.Add">
-                            Aggiungi nuovi clienti
-                        </MudListItem>
-                        <MudListItem Icon="@Icons.Material.Filled.Edit">
-                            Modifica le loro informazioni
-                        </MudListItem>
-                    </MudList>
-                </MudCardContent>
-                <MudCardActions Class="d-flex justify-center">
-                    <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" Style="width:50%;" @onclick="@(()=>{nav.NavigateTo("/clienti");})">VAI</MudButton>
-                </MudCardActions>
+            <MudCardHeader>
+            <CardHeaderContent>
+            <MudText Typo="Typo.h5" Align="Align.Center">Formazione a distanza</MudText>
+            </CardHeaderContent>
+            </MudCardHeader>
+            <MudCardContent>
+            <div class="d-flex justify-center">
+            <MudIcon Icon="@Icons.Material.Filled.School" Size="Size.Large"></MudIcon>
+            </div>
+            <MudList Class="mx-auto mt-4" Style="width:300px;">
+            <MudListItem Icon="@Icons.Material.Filled.Add">
+            Crea nuovi documenti FAD
+            </MudListItem>
+            <MudListItem Icon="@Icons.Material.Filled.ManageSearch">
+            Gestisci i documenti FAD
+            </MudListItem>
+            </MudList>
+            </MudCardContent>
+            <MudCardActions Class="d-flex justify-center">
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" Style="width:50%;" @onclick="@(()=>{nav.NavigateTo("/fad");})">VAI</MudButton>
+            </MudCardActions>
             </MudCard>
-        </MudItem>
+            </MudItem>*@
 
-        <MudItem xs="12" sm="6" md="6">
-            <MudCard Elevation="5" Class="rounded-lg pb-4">
-                <MudCardHeader>
-                    <CardHeaderContent>
-                        <MudText Typo="Typo.h5" Align="Align.Center">Richieste d'assistenza</MudText>
-                    </CardHeaderContent>
-                </MudCardHeader>
-                <MudCardContent>
-                    <div class="d-flex justify-center">
-                        <MudIcon Icon="@Icons.Material.Filled.ContentPaste" Size="Size.Large"></MudIcon>
-                    </div>
-                    <MudList Class="mx-auto mt-4" Style="width:300px;">
-                        <MudListItem Icon="@Icons.Material.Filled.Add">
-                            Crea nuove richieste
-                        </MudListItem>
-                        <MudListItem Icon="@Icons.Material.Filled.ManageSearch">
-                            Gestisci tutte le richieste
-                        </MudListItem>
-                    </MudList>
-                </MudCardContent>
-                <MudCardActions Class="d-flex justify-center">
-                    <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" Style="width:50%" @onclick="@(()=>{nav.NavigateTo("/richieste");})">VAI</MudButton>
-                </MudCardActions>
-            </MudCard>
-        </MudItem>
+        </MudGrid>
+    </MudContainer>
 
-        <MudItem xs="12">
-            <MudCard Elevation="5" Class="rounded-lg pb-4">
-                <MudCardHeader>
-                    <CardHeaderContent>
-                        <MudText Typo="Typo.h5" Align="Align.Center">Rapporti d'assistenza</MudText>
-                    </CardHeaderContent>
-                </MudCardHeader>
-                <MudCardContent>
-                    <div class="d-flex justify-center">
-                        <MudIcon Icon="@Icons.Material.Filled.Assignment" Size="Size.Large"></MudIcon>
-                    </div>
-                    <MudList Class="mx-auto mt-4" Style="width:300px;">
-                        <MudListItem Icon="@Icons.Material.Filled.Add">
-                            Crea nuovi rapporti
-                        </MudListItem>
-                        <MudListItem Icon="@Icons.Material.Filled.ManageSearch">
-                            Gestisci tutti i rapporti
-                        </MudListItem>
-                    </MudList>
-                </MudCardContent>
-                <MudCardActions Class="d-flex justify-center">
-                    <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" Style="width:50%;" @onclick="@(()=>{nav.NavigateTo("/rapporti");})">VAI</MudButton>
-                </MudCardActions>
-            </MudCard>
-        </MudItem>
-
-
-        @*CARD PER RAPPORTI FAD*@
-        @*        <MudItem xs="12" sm="6" md="6">
-        <MudCard Elevation="5" Class="rounded-lg pb-4">
-        <MudCardHeader>
-        <CardHeaderContent>
-        <MudText Typo="Typo.h5" Align="Align.Center">Formazione a distanza</MudText>
-        </CardHeaderContent>
-        </MudCardHeader>
-        <MudCardContent>
-        <div class="d-flex justify-center">
-        <MudIcon Icon="@Icons.Material.Filled.School" Size="Size.Large"></MudIcon>
-        </div>
-        <MudList Class="mx-auto mt-4" Style="width:300px;">
-        <MudListItem Icon="@Icons.Material.Filled.Add">
-        Crea nuovi documenti FAD
-        </MudListItem>
-        <MudListItem Icon="@Icons.Material.Filled.ManageSearch">
-        Gestisci i documenti FAD
-        </MudListItem>
-        </MudList>
-        </MudCardContent>
-        <MudCardActions Class="d-flex justify-center">
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" Style="width:50%;" @onclick="@(()=>{nav.NavigateTo("/fad");})">VAI</MudButton>
-        </MudCardActions>
-        </MudCard>
-        </MudItem>*@
-
-    </MudGrid>
-</MudContainer>
+</AuthorizeView>

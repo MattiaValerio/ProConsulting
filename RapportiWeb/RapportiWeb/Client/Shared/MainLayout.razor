@@ -1,23 +1,36 @@
-﻿@inherits LayoutComponentBase
+﻿@using Blazored.LocalStorage;
+@inherits LayoutComponentBase
 @inject NavigationManager nav
+@inject ILocalStorageService localstorage
+@inject AuthenticationStateProvider authstate
 
 
-<MudThemeProvider Theme="MyCustomTheme"/>
+<MudThemeProvider Theme="MyCustomTheme" />
 <MudDialogProvider />
 <MudSnackbarProvider />
 
 <MudLayout>
 
-    <MudAppBar  Color="Color.Primary" Fixed="false">
-        <MudImage Src="\img\logo.png" Fluid="true" Width="225" @onclick="@(()=>{nav.NavigateTo("/");})" />
+    <MudAppBar Color="Color.Primary" Fixed="false">
+        <MudImage Src="\img\logo.png" Fluid="true" Width="225" />
         <MudSpacer />
-        <MudIconButton Icon="@Icons.Material.Filled.AdminPanelSettings" Color="Color.Inherit" @onclick="@(()=>{nav.NavigateTo("/admin");})" />
-        <MudIconButton Icon="@Icons.Material.Filled.Home" Color="Color.Inherit" @onclick="@(()=>{nav.NavigateTo("/");})" />
-        <MudIconButton Icon="@Icons.Material.Filled.Logout" Color="Color.Inherit" @onclick="@(()=>{nav.NavigateTo("/login");})" />
+        <AuthorizeView>
+            <MudIconButton Icon="@Icons.Material.Filled.AdminPanelSettings" Color="Color.Inherit" @onclick="@(()=>{nav.NavigateTo("/admin");})" />
+            <MudIconButton Icon="@Icons.Material.Filled.Home" Color="Color.Inherit" @onclick="@(()=>{nav.NavigateTo("/");})" />
+
+            <MudIconButton Icon="@Icons.Material.Filled.Logout" Color="Color.Inherit" @onclick="@(async()=>{await LogOut();})" />
+        </AuthorizeView>
     </MudAppBar>
 
     <MudMainContent>
-        @Body
+        <AuthorizeView>
+            <Authorized>
+                @Body
+            </Authorized>
+            <NotAuthorized>
+                <RapportiWeb.Client.Pages.Login />
+            </NotAuthorized>
+        </AuthorizeView>
     </MudMainContent>
 
 </MudLayout>
@@ -30,4 +43,15 @@
                 Primary = "#337ab7",
             },
         };
+
+
+    private async Task LogOut()
+    {
+        await localstorage.RemoveItemAsync("authToken");
+        await authstate.GetAuthenticationStateAsync();
+
+        nav.NavigateTo("/login");
+    }
+
+
 }

@@ -5,6 +5,7 @@
 @inject IClientiService ClientiService
 @inject IAuthService AuthService
 @inject IDialogService DialogService
+@inject NavigationManager nav
 
 
 <MudPaper Class="pa-6" Elevation="12">
@@ -135,16 +136,20 @@
 
         var cliente = ListaClienti.FirstOrDefault(c => c.ragioneSociale == Cliente.ragioneSociale);
 
-        if (cliente is not null)
-            user.ClienteId = cliente.id;
+        try
+        {
+            if (user != null && cliente != null)
+            {
+                user.ClienteId = cliente.id;
 
-        var res = await AuthService.Register(User, cliente);
-
-        if (!res.Success)
-            ErrorMessage = res.Message;
-        else
-            await OpenDialog(user);
-
+                var res = await AuthService.Register(user, cliente);
+                await OpenDialog(user, res.Message, Color.Success);
+            }
+        }
+        catch
+        {
+            Console.WriteLine("WOOPS");
+        }
     }
 
     private async Task<IEnumerable<string>> Search(string value)
@@ -158,12 +163,12 @@
     }
 
 
-    private async Task OpenDialog(UserRegistration user)
+    private async Task OpenDialog(UserRegistration user, string text, Color color)
     {
         var parameters = new DialogParameters<Dialog>();
-        parameters.Add(x => x.ContentText, $"Hai creato un nuovo utente");
+        parameters.Add(x => x.ContentText, text);
         parameters.Add(x => x.ButtonText, "CHIUDI");
-        parameters.Add(x => x.Color, Color.Success);
+        parameters.Add(x => x.Color, color);
 
 
         var options = new DialogOptions() { CloseButton = true, MaxWidth = MaxWidth.ExtraSmall };

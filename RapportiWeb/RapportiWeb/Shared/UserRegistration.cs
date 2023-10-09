@@ -12,10 +12,10 @@ namespace RapportiWeb.Shared
         public string Cognome { get; set; } = string.Empty;
         public string UserName { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
-        public string? Figuraprof { get; set; }
+        public string Figuraprof { get; set; } = string.Empty;
         public int Amministratore { get; set; }
         public int Attivo { get; set; }
-        public string TipoUtente { get; set; } //0= tecnico 1=cliente
+        public string TipoUtente { get; set; } = string.Empty;
         public int ClienteId { get; set; } 
     }
 }

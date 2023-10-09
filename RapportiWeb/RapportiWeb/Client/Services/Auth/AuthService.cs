@@ -15,11 +15,43 @@ namespace RapportiWeb.Client.Services.Auth
             _NavigationManager = nav;
         }
 
+        public async Task<ServiceResponse<string>> Login(UserLogin request)
+        {
+            var req = await _http.PostAsJsonAsync("api/users/login", request);
+
+            var resp = await req.Content.ReadFromJsonAsync<ServiceResponse<string>>();
+
+            if(resp is not null)
+            {
+                return resp;
+            }
+            else
+            {
+                return new ServiceResponse<string>()
+                {
+                    Success = false,
+                    Data = string.Empty,
+                    Message = "Errore durante il login"
+                };
+            }
+        }
+
         public async Task<ServiceResponse<int>> Register(UserRegistration req, Cliente cliente)
         {
-            req.ClienteId = cliente.id;
-            var result = await _http.PostAsJsonAsync("api/users/register", req);
-            return await result.Content.ReadFromJsonAsync<ServiceResponse<int>>();
+            try
+            {
+                var result = await _http.PostAsJsonAsync("api/users/register", req);
+                req.ClienteId = cliente.id;
+
+                return await result.Content.ReadFromJsonAsync<ServiceResponse<int>>();
+            }
+            catch
+            {
+                return new ServiceResponse<int>()
+                {
+                    Data = -1
+                };
+            }
         }
     }
 }

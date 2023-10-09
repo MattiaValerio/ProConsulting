@@ -1,54 +1,90 @@
 ﻿@page "/Login"
 @using System.Text.RegularExpressions
 @using System.ComponentModel.DataAnnotations
+@using Blazored.LocalStorage;
+@using RapportiWeb.Client.Services.Auth;
 
+@inject IAuthService AuthService
+@inject ILocalStorageService localstorage
+@inject AuthenticationStateProvider authprovider
+@inject NavigationManager nav
 <MudGrid Justify="Justify.Center">
-	
 
-	<MudItem xs="10" sm="8" md="5" xl="3">
-		<MudPaper Elevation="12" Class="pa-4 d-flex flex-column justify-content-center">
-			<MudImage Fluid="true" Src="/img/logo.png"></MudImage>
+    <MudItem xs="10" sm="8" md="5" xl="3">
+        <MudPaper Elevation="12" Class="pa-4 d-flex flex-column justify-content-center">
+            <MudImage Fluid="true" Src="/img/logo.png"></MudImage>
 
-			<MudForm @ref="form" @bind-IsValid="@success" @bind-Errors="@errors">
-				<MudTextField T="string" Label="Username" />
-				<MudTextField T="string" Label="Password" @ref="pwField1"
-							  InputType="InputType.Password" />
-			</MudForm>
-			<MudButton Class="mt-4" Variant="Variant.Filled" Color="Color.Primary" DisableElevation="true" OnClick="@(()=>form.Validate())">LOGIN</MudButton>
-		</MudPaper>
-	</MudItem>
+            <EditForm Model="user" OnValidSubmit="HandleLogin">
+                <DataAnnotationsValidator />
+                <MudTextField T="string" Label="Username" @bind-Value="user.UserName" For="@(()=>user.UserName)"
+                    Required="true"
+                    RequiredError="Username obbligatorio!" />
+
+                <MudTextField T="string" Label="Password" @bind-Value="user.Password" @ref="pwField1" For="@(()=>user.Password)"
+                    Required="true"
+                    InputType="InputType.Password"
+                    RequiredError="Password obbligatoria!"/>
+                <span class="text-danger d-flex">@errormsg</span>
+
+                <MudButton Class="mt-4" Variant="Variant.Filled" Color="Color.Primary" DisableElevation="true" ButtonType="ButtonType.Submit">LOGIN</MudButton>
+
+
+            </EditForm>
+        </MudPaper>
+    </MudItem>
 
 </MudGrid>
 
 
 @code {
-	bool success;
-	string[] errors = { };
-	MudTextField<string> pwField1;
-	MudForm form;
+    public UserLogin user { get; set; } = new UserLogin();
 
-	private IEnumerable<string> PasswordStrength(string pw)
-	{
-		if (string.IsNullOrWhiteSpace(pw))
-		{
-			yield return "Password is required!";
-			yield break;
-		}
-		if (pw.Length < 8)
-			yield return "Password must be at least of length 8";
-		if (!Regex.IsMatch(pw, @"[A-Z]"))
-			yield return "Password must contain at least one capital letter";
-		if (!Regex.IsMatch(pw, @"[a-z]"))
-			yield return "Password must contain at least one lowercase letter";
-		if (!Regex.IsMatch(pw, @"[0-9]"))
-			yield return "Password must contain at least one digit";
-	}
+    public string errormsg { get; set; } = string.Empty;
 
-	private string PasswordMatch(string arg)
-	{
-		if (pwField1.Value != arg)
-			return "Passwords don't match";
-		return null;
-	}
 
+    bool success;
+    string[] errors = { };
+    MudTextField<string> pwField1;
+    MudForm form;
+
+    private IEnumerable<string> PasswordStrength(string pw)
+    {
+        if (string.IsNullOrWhiteSpace(pw))
+        {
+            yield return "Password is required!";
+            yield break;
+        }
+        if (pw.Length < 8)
+            yield return "Password must be at least of length 8";
+        if (!Regex.IsMatch(pw, @"[A-Z]"))
+            yield return "Password must contain at least one capital letter";
+        if (!Regex.IsMatch(pw, @"[a-z]"))
+            yield return "Password must contain at least one lowercase letter";
+        if (!Regex.IsMatch(pw, @"[0-9]"))
+            yield return "Password must contain at least one digit";
+    }
+
+    private string PasswordMatch(string arg)
+    {
+        if (pwField1.Value != arg)
+            return "Passwords don't match";
+        return null;
+    }
+
+    private async Task HandleLogin()
+    {
+        var res = await AuthService.Login(user);
+
+        if (res.Success)
+        {
+            errormsg = string.Empty;
+            await localstorage.SetItemAsync("authToken", res.Data);
+            await authprovider.GetAuthenticationStateAsync(); 
+            nav.NavigateTo("");
+        }
+        else
+        {
+            errormsg = res.Message;
+        }
+    }
 }
