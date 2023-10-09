@@ -39,6 +39,7 @@ else
     app.UseHsts();
 }
 
+
 app.UseSwagger();
 app.UseHttpsRedirection();
 
