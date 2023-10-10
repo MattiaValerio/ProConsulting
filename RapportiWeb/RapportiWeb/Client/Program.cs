@@ -12,6 +12,7 @@ using RapportiWeb.Shared;
 using System.Net.Http.Json;
 using Microsoft.AspNetCore.Components.Authorization;
 using RapportiWeb.Client.Services.Users;
+using Microsoft.AspNetCore.Components;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");

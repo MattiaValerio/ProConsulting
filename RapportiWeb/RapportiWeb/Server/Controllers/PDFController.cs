@@ -1,15 +1,15 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query.Internal;
 using Microsoft.JSInterop;
-using QuestPDF.Drawing;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
 using RapportiWeb.Client.Pages;
 using RapportiWeb.Server.Data;
 using RapportiWeb.Shared;
-using System.Security.Cryptography.X509Certificates;
+using System.Buffers.Text;
+using RouteAttribute = Microsoft.AspNetCore.Mvc.RouteAttribute;
 
 namespace RapportiWeb.Server.Controllers
 {
@@ -18,35 +18,36 @@ namespace RapportiWeb.Server.Controllers
     [Route("api/[controller]")]
     public class PDFController : ControllerBase
     {
-		//await JSRuntime.InvokeAsync<object>("open", $"https://localhost:7124/PDF/{Cliente.ragioneSociale}_ric{Richiesta.id}.pdf", "_blank");
-
 		private readonly DataContext _context;
 		private IJSRuntime _jsRunTime;
+        private NavigationManager _nav;
 
-		public PDFController(DataContext context, IJSRuntime jsRuntime)
+        public PDFController(DataContext context, IJSRuntime jsRuntime, NavigationManager nav)
 		{
 			_context = context;
             _jsRunTime = jsRuntime;
+            _nav = nav;
 		}
 
         [HttpPost("DownloadRichiesta")]
-        public async Task<IActionResult> DownloadRichiesta(Richiesta richiesta)
+        public async Task<string> DownloadRichiesta(Richiesta richiesta)
         {
 
             var listaClienti = await _context.Clienti.ToListAsync();
             var cliente = listaClienti.Find(c => c.id == richiesta.Clienteid);
             // Generate the PDF for Richiesta and save it on the server
-            var pdfDocument = CreateRichiestaPdf(richiesta);
-            var pdfBytes = (await pdfDocument).GeneratePdf();
-            var pdfFileName = $"ric{richiesta.id}.pdf";
+            var pdfDocument = await CreateRichiestaPdf(richiesta);
+            var pdfBytes = (pdfDocument).GeneratePdf();
+            var pdfFileName = $"{cliente.ragioneSociale}_{richiesta.id}_{richiesta.Data.ToShortDateString().Replace("/", "")}.pdf";
 
-            var pdfFolder = "/PDF";
+            var pdfFolder = "PdfRichieste/";
+            var x = Directory.GetCurrentDirectory();
             Directory.CreateDirectory(pdfFolder);
             var pdfFilePath = Path.Combine(pdfFolder, pdfFileName);
 
-            System.IO.File.WriteAllBytes(pdfFilePath, pdfBytes);
+            System.IO.File.WriteAllBytes($"PdfRichieste/{pdfFileName}", pdfBytes);
 
-            return Ok(pdfFileName);
+            return Convert.ToBase64String(pdfBytes);
         }
 
         [HttpPost("DownloadRapporto")]
@@ -56,15 +57,15 @@ namespace RapportiWeb.Server.Controllers
             var listaClienti = await _context.Clienti.ToListAsync();
             var cliente = listaClienti.Find(c => c.id == rap.Clienteid);
             // Generate the PDF for Richiesta and save it on the server
-            var pdfDocument = CreateRapportoPdf(rap);
-            var pdfBytes = (await pdfDocument).GeneratePdf();
-            var pdfFileName = $"rap{rap.id}.pdf";
+            var pdfDocument = await CreateRapportoPdf(rap);
+            var pdfBytes = ( pdfDocument).GeneratePdf();
+            var pdfFileName = $"{cliente.ragioneSociale}_{rap.id}_{rap.DataIntervento?.ToShortDateString().Replace("/", "")}.pdf";
 
-            var pdfFolder = "/PDF";
+            var pdfFolder = "Rapporti/";
             Directory.CreateDirectory(pdfFolder);
             var pdfFilePath = Path.Combine(pdfFolder, pdfFileName);
 
-            System.IO.File.WriteAllBytes(pdfFilePath, pdfBytes);
+            System.IO.File.WriteAllBytes($"Rapporti/{pdfFileName}", pdfBytes);
 
             return Ok(pdfFileName);
         }
@@ -81,6 +82,7 @@ namespace RapportiWeb.Server.Controllers
         private async Task<Document> CreateRichiestaPdf(Richiesta richiesta)
         {
             QuestPDF.Settings.License = LicenseType.Community;
+
             var listaClienti = await _context.Clienti.ToListAsync();
             var cliente = listaClienti.Find(c => c.id == richiesta.Clienteid);
 
@@ -99,7 +101,7 @@ namespace RapportiWeb.Server.Controllers
                     page.Header()
                      .Row(row =>
                      {
-                         row.RelativeColumn(0.5f).Image("/img/logo.png");
+                         row.RelativeColumn(0.5f).Image($"img/logo.png");
                          row.RelativeColumn(0.1f).Text("");
                          row.RelativeColumn(0.5f).Border((float) 0.5).AlignCenter().Text($"MODULO RICHIESTA DI INTERVENTO PRESSO IL CLIENTE: " +
                              $"                      Codice richiesta: {richiesta.id}" +

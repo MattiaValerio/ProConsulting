@@ -12,9 +12,10 @@ namespace RapportiWeb.Client.Services.Clienti
 
 		Task<List<Cliente>> GetClienti();
 
-		Task<Cliente> GetCliente(string ragsoc);
+        Task<Cliente> GetCliente(string ragsoc);
+        Task<Cliente> GetClienteById(int id);
 
-		Task CreateCliente(Cliente Cliente);
+        Task CreateCliente(Cliente Cliente);
 
         Task UpdateCliente(Cliente Cliente);
 

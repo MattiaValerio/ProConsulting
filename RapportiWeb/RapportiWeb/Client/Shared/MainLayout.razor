@@ -3,6 +3,8 @@
 @inject NavigationManager nav
 @inject ILocalStorageService localstorage
 @inject AuthenticationStateProvider authstate
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Authorization;
 
 
 <MudThemeProvider Theme="MyCustomTheme" />
@@ -15,7 +17,10 @@
         <MudImage Src="\img\logo.png" Fluid="true" Width="225" />
         <MudSpacer />
         <AuthorizeView>
-            <MudIconButton Icon="@Icons.Material.Filled.AdminPanelSettings" Color="Color.Inherit" @onclick="@(()=>{nav.NavigateTo("/admin");})" />
+            @if (authorized)
+            {
+                <MudIconButton Icon="@Icons.Material.Filled.AdminPanelSettings" Color="Color.Inherit" @onclick="@(()=>{nav.NavigateTo("/admin");})" />
+            }
             <MudIconButton Icon="@Icons.Material.Filled.Home" Color="Color.Inherit" @onclick="@(()=>{nav.NavigateTo("/");})" />
 
             <MudIconButton Icon="@Icons.Material.Filled.Logout" Color="Color.Inherit" @onclick="@(async()=>{await LogOut();})" />
@@ -36,6 +41,8 @@
 </MudLayout>
 
 @code {
+    bool authorized;
+
     MudTheme MyCustomTheme = new MudTheme()
         {
             Palette = new PaletteLight()
@@ -43,6 +50,22 @@
                 Primary = "#337ab7",
             },
         };
+
+    protected override async Task OnInitializedAsync()
+    {
+        var role = (await authstate.GetAuthenticationStateAsync()).User.Claims
+        .FirstOrDefault(c => c.Type == ClaimTypes.IsPersistent)?.Value;
+
+        if (role == "1")
+        {
+            authorized = true;
+        }
+        else
+        {
+            authorized = false;
+        }
+    }
+
 
 
     private async Task LogOut()

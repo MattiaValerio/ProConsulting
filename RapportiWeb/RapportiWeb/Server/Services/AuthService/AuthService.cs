@@ -137,7 +137,7 @@ namespace RapportiWeb.Server.Services.AuthService
                 new Claim(ClaimTypes.IsPersistent, user.Amministratore.ToString()), //amministratore
                 new Claim(ClaimTypes.Role, user.TipoUtente), //tipo utente -> tecnico/cliente
                 new Claim(ClaimTypes.Rsa, user.Figuraprof), //figura
-                new Claim(ClaimTypes.System, user.ClienteId.ToString())
+                new Claim(ClaimTypes.System, user.ClienteId.ToString()) //organizzazione
             };
 
             var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8

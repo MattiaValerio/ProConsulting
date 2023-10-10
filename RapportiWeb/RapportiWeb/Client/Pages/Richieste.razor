@@ -3,7 +3,10 @@
 @inject IRichiesteService RichiesteService
 @inject IRapportiService RapportiService
 @inject IDialogService DialogService
-
+@inject AuthenticationStateProvider AuthStateProvider
+@using Microsoft.AspNetCore.Authorization;
+@using System.Security.Claims;
+@attribute [Authorize]
 
 <MudContainer>
     <MudGrid Justify="Justify.Center">
@@ -19,111 +22,195 @@
                 <MudText Align="Align.Center" Typo="Typo.h2">RICHIESTE INTERVENTO</MudText>
             </MudItem>
         }
-        
-        @if (NuovaRichiesta)
+        @if (tecnico)
         {
-            <NewRichiesta Annulla="AnnullaEdit" ShowHidePopUp="@(()=>{ShowHide();})" />
-        }
-        else if (EditRichiesta)
-        {
-            <NewRichiesta Annulla="AnnullaEdit" Richiesta="Richiesta" Cliente="Cliente" Edit="true" ShowHidePopUp="@(()=>{ShowHideEdit();})" />
-        }
-        else if (CreateRapporto)
-        {
-            <NewRapporto Annulla="AnnullaGenerate" Richiesta="Richiesta" Rapporto="Rapporto" Cliente="Cliente" RapportoCreation="true" ShowHidePopUp="@(()=>{ShowHideCreation();})" />
-        }
-        else if (RedirectRapporto)
-        {
-            <NewRapporto Annulla="AnnullaRedirect" Rapporto="Rapporto" Cliente="Cliente" Edit="true" ShowHidePopUp="@(()=>{ShowHideRedirect();})" />
-        }
-        else
-        {
-            <MudItem xs="1" md="1" Class="d-flex flex-column align-items-center justify-center">
-                <MudIconButton Icon="@Icons.Material.Filled.Add" Color="Color.Primary" aria-label="github" OnClick="@(()=>{NuovaRichiesta = !NuovaRichiesta;})"></MudIconButton>
-            </MudItem>
-
-            <MudItem xs="1" md="1" Class="d-flex flex-column align-items-center justify-center">
-                <MudIconButton Icon="@Icons.Material.Filled.RemoveRedEye" Color="Color.Primary" aria-label="github" OnClick="@(()=>{ShowHideRagioniSociali();})"></MudIconButton>
-            </MudItem>
-
-            <MudItem xs="10" md="10" xl="6">
-                <MudAutocomplete T="string" Label="Ragione Sociale" @bind-Value="Cliente.ragioneSociale" SearchFunc="@Search" OnAdornmentClick="@(()=>{Search2(Cliente.ragioneSociale);})"
-                             ResetValueOnEmptyText="true"
-                             Clearable="true"
-                             CoerceValue="true"
-                             AdornmentIcon="@Icons.Material.Filled.Search"
-                             AdornmentColor="Color.Primary" />
-            </MudItem>
-
-            <MudItem xs="12" md="12" xl="4">
-
-                <MudDateRangePicker Label="Data" Clearable="true" DateFormat="dd/MM/yyy"
-                                DateRange="_dateRange"
-                                DateRangeChanged="RicercaPerData" />
-                        
-            </MudItem>
-
-            @if (_ListaRichieste is null)
+            @if (NuovaRichiesta)
             {
-                <MudItem xs="12" Style="display:flex; justify-content:center; align-items:center;">
-                    <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
-                </MudItem>
+                <NewRichiesta Annulla="AnnullaEdit" ShowHidePopUp="@(()=>{ShowHide();})" />
+            }
+            else if (EditRichiesta)
+            {
+                <NewRichiesta Annulla="AnnullaEdit" Richiesta="Richiesta" Cliente="Cliente" Edit="true" ShowHidePopUp="@(()=>{ShowHideEdit();})" />
+            }
+            else if (CreateRapporto)
+            {
+                <NewRapporto Annulla="AnnullaGenerate" Richiesta="Richiesta" Rapporto="Rapporto" Cliente="Cliente" RapportoCreation="true" ShowHidePopUp="@(()=>{ShowHideCreation();})" />
+            }
+            else if (RedirectRapporto)
+            {
+                <NewRapporto Annulla="AnnullaRedirect" Rapporto="Rapporto" Cliente="Cliente" Edit="true" ShowHidePopUp="@(()=>{ShowHideRedirect();})" />
             }
             else
             {
-                <MudItem xs="12">
-                    <MudTable Elevation="4" Items="_ListaRichieste" Height="100" Breakpoint="Breakpoint.Sm" Striped="true" Virtualize="true" FixedHeader="true">
-                        <HeaderContent>
-                            <MudTh>Ragione Sociale</MudTh>
-                            <MudTh>Indirizzo</MudTh>
-                            <MudTh>Creazione Richiesta</MudTh>
-                            <MudTh>E-Mail</MudTh>
-                            <MudTh>Telefono</MudTh>
-                            <MudTh>Data Intervento</MudTh>
-                            <MudTh>Visualizza</MudTh>
-                            <MudTh>Elimina</MudTh>
-                            <MudTh>Crea/Visualizza Rapporto</MudTh>
-                        </HeaderContent>
-                        <RowTemplate>
-                            @if (ShowRagSoc)
-                            {
-                                <MudTd DataLabel="Ragione Sociale">@_ListaClienti.Find(c=> c.id == context.Clienteid).ragioneSociale</MudTd>
-                            }
-                            else
-                            {
-                                <MudTd DataLabel="Ragione Sociale">@_ListaClienti.Find(c=> c.id == context.Clienteid).NomeAbbreviato</MudTd>
-                            }
-                            <MudTd DataLabel="Indirizzo">@_ListaClienti.Find(c=> c.id == context.Clienteid).Indirizzo</MudTd>
-                            <MudTd DataLabel="Data Creazione">@context.Data.ToString("dd/MM/yyyy")</MudTd>
-                            <MudTd DataLabel="E-Mail">@_ListaClienti.Find(c=> c.id == context.Clienteid).email</MudTd>
-                            <MudTd DataLabel="Telefono">@_ListaClienti.Find(c=> c.id == context.Clienteid).telefono</MudTd>
-                            <MudTd DataLabel="Data Intervento">@context.DataIntervento.Value.ToString("dd/MM/yyyy")</MudTd>
-                            <MudTd DataLabel="Modifica">
-                                <MudIconButton Icon="@Icons.Material.Filled.RemoveRedEye" Color="Color.Primary" aria-label="github" OnClick="@(()=>{ModificaRichiesta(context);})"></MudIconButton>
-                            </MudTd>
-                            <MudTd DataLabel="Elimina">
-                                <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" aria-label="github" @onclick="@(()=>{OpenDialog(context);})"></MudIconButton>
-                            </MudTd>
-                            <MudTd DataLabel="Crea/Visualizza Rapporto">
-                                @if (context.RapportoCreato == false)
+                <MudItem xs="1" md="1" Class="d-flex flex-column align-items-center justify-center">
+                    <MudIconButton Icon="@Icons.Material.Filled.Add" Color="Color.Primary" aria-label="github" OnClick="@(()=>{NuovaRichiesta = !NuovaRichiesta;})"></MudIconButton>
+                </MudItem>
+
+                <MudItem xs="1" md="1" Class="d-flex flex-column align-items-center justify-center">
+                    <MudIconButton Icon="@Icons.Material.Filled.RemoveRedEye" Color="Color.Primary" aria-label="github" OnClick="@(()=>{ShowHideRagioniSociali();})"></MudIconButton>
+                </MudItem>
+
+                <MudItem xs="10" md="10" xl="6">
+                    <MudAutocomplete T="string" Label="Ragione Sociale" @bind-Value="Cliente.ragioneSociale" SearchFunc="@Search" OnAdornmentClick="@(()=>{Search2(Cliente.ragioneSociale);})"
+                                     ResetValueOnEmptyText="true"
+                                     Clearable="true"
+                                     CoerceValue="true"
+                                     AdornmentIcon="@Icons.Material.Filled.Search"
+                                     AdornmentColor="Color.Primary" />
+                </MudItem>
+
+                <MudItem xs="12" md="12" xl="4">
+
+                    <MudDateRangePicker Label="Data" Clearable="true" DateFormat="dd/MM/yyy"
+                                        DateRange="_dateRange"
+                                        DateRangeChanged="RicercaPerData" />
+
+                </MudItem>
+
+                @if (_ListaRichieste is null)
+                {
+                    <MudItem xs="12" Style="display:flex; justify-content:center; align-items:center;">
+                        <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+                    </MudItem>
+                }
+                else
+                {
+                    <MudItem xs="12">
+                        <MudTable Elevation="4" Items="_ListaRichieste" Height="100" Breakpoint="Breakpoint.Sm" Striped="true" Virtualize="true" FixedHeader="true">
+                            <HeaderContent>
+                                <MudTh>Ragione Sociale</MudTh>
+                                <MudTh>Indirizzo</MudTh>
+                                <MudTh>Creazione Richiesta</MudTh>
+                                <MudTh>E-Mail</MudTh>
+                                <MudTh>Telefono</MudTh>
+                                <MudTh>Data Intervento</MudTh>
+                                <MudTh>Visualizza</MudTh>
+                                <MudTh>Elimina</MudTh>
+                                <MudTh>Crea/Visualizza Rapporto</MudTh>
+                            </HeaderContent>
+                            <RowTemplate>
+                                @if (ShowRagSoc)
                                 {
-                                    <MudIconButton Icon="@Icons.Material.Filled.Add" Color="Color.Primary" aria-label="github" @onclick="@(()=>{GeneraRapporto(context);})"/>
+                                    <MudTd DataLabel="Ragione Sociale">@_ListaClienti.Find(c=> c.id == context.Clienteid).ragioneSociale</MudTd>
                                 }
                                 else
                                 {
-                                    <MudIconButton Icon="@Icons.Material.Filled.CallMade" Color="Color.Primary" aria-label="github" @onclick="@(()=>{RedirectToRapporto(context);})"/>
+                                    <MudTd DataLabel="Ragione Sociale">@_ListaClienti.Find(c=> c.id == context.Clienteid).NomeAbbreviato</MudTd>
                                 }
-                            </MudTd>
-                        </RowTemplate>
-                    </MudTable>
+                                <MudTd DataLabel="Indirizzo">@_ListaClienti.Find(c=> c.id == context.Clienteid).Indirizzo</MudTd>
+                                <MudTd DataLabel="Data Creazione">@context.Data.ToString("dd/MM/yyyy")</MudTd>
+                                <MudTd DataLabel="E-Mail">@_ListaClienti.Find(c=> c.id == context.Clienteid).email</MudTd>
+                                <MudTd DataLabel="Telefono">@_ListaClienti.Find(c=> c.id == context.Clienteid).telefono</MudTd>
+                                <MudTd DataLabel="Data Intervento">@context.DataIntervento.Value.ToString("dd/MM/yyyy")</MudTd>
+                                <MudTd DataLabel="Modifica">
+                                    <MudIconButton Icon="@Icons.Material.Filled.RemoveRedEye" Color="Color.Primary" aria-label="github" OnClick="@(()=>{ModificaRichiesta(context);})"></MudIconButton>
+                                </MudTd>
+                                <MudTd DataLabel="Elimina">
+                                    <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" aria-label="github" @onclick="@(()=>{OpenDialog(context);})"></MudIconButton>
+                                </MudTd>
+                                <MudTd DataLabel="Crea/Visualizza Rapporto">
+                                    @if (context.RapportoCreato == false)
+                                    {
+                                        <MudIconButton Icon="@Icons.Material.Filled.Add" Color="Color.Primary" aria-label="github" @onclick="@(()=>{GeneraRapporto(context);})" />
+                                    }
+                                    else
+                                    {
+                                        <MudIconButton Icon="@Icons.Material.Filled.CallMade" Color="Color.Primary" aria-label="github" @onclick="@(()=>{RedirectToRapporto(context);})" />
+                                    }
+                                </MudTd>
+                            </RowTemplate>
+                        </MudTable>
 
-                </MudItem>
+                    </MudItem>
+                }
+            }
+
+        }
+        else
+        {
+            @if (EditRichiesta)
+            {
+                <NewRichiesta Annulla="AnnullaEdit" Richiesta="Richiesta" Cliente="Cliente" Edit="true" ShowHidePopUp="@(()=>{ShowHideEdit();})" />
+            }
+            @*else if (RedirectRapporto)
+            {
+                <NewRapporto Annulla="AnnullaRedirect" Rapporto="Rapporto" Cliente="Cliente" Edit="true" ShowHidePopUp="@(()=>{ShowHideRedirect();})" />
+            }*@
+            else
+            {
+                @*<MudItem xs="1" md="1" Class="d-flex flex-column align-items-center justify-center">
+        <MudIconButton Icon="@Icons.Material.Filled.Add" Color="Color.Primary" aria-label="github" OnClick="@(()=>{NuovaRichiesta = !NuovaRichiesta;})"></MudIconButton>
+        </MudItem>
+
+        <MudItem xs="1" md="1" Class="d-flex flex-column align-items-center justify-center">
+        <MudIconButton Icon="@Icons.Material.Filled.RemoveRedEye" Color="Color.Primary" aria-label="github" OnClick="@(()=>{ShowHideRagioniSociali();})"></MudIconButton>
+        </MudItem>
+
+        <MudItem xs="10" md="10" xl="6">
+        <MudAutocomplete T="string" Label="Ragione Sociale" @bind-Value="Cliente.ragioneSociale" SearchFunc="@Search" OnAdornmentClick="@(()=>{Search2(Cliente.ragioneSociale);})"
+        ResetValueOnEmptyText="true"
+        Clearable="true"
+        CoerceValue="true"
+        AdornmentIcon="@Icons.Material.Filled.Search"
+        AdornmentColor="Color.Primary" />
+        </MudItem>
+
+        <MudItem xs="12" md="12" xl="4">
+
+        <MudDateRangePicker Label="Data" Clearable="true" DateFormat="dd/MM/yyy"
+        DateRange="_dateRange"
+        DateRangeChanged="RicercaPerData" />
+
+        </MudItem>*@
+
+                @if (_ListaRichieste is null)
+                {
+                    <MudItem xs="12" Style="display:flex; justify-content:center; align-items:center;">
+                        <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+                    </MudItem>
+                }
+                else
+                {
+                    <MudItem xs="12">
+                        <MudTable Elevation="4" Items="_ListaRichieste" Height="100" Breakpoint="Breakpoint.Sm" Striped="true" Virtualize="true" FixedHeader="true">
+                            <HeaderContent>
+                                <MudTh>Ragione Sociale</MudTh>
+                                <MudTh>Indirizzo</MudTh>
+                                <MudTh>Creazione Richiesta</MudTh>
+                                <MudTh>E-Mail</MudTh>
+                                <MudTh>Telefono</MudTh>
+                                <MudTh>Data Intervento</MudTh>
+                                <MudTh>Visualizza Richiesta</MudTh>
+                                <MudTh>Visualizza Rapporto</MudTh>
+                            </HeaderContent>
+                            <RowTemplate>
+                                <MudTd DataLabel="Ragione Sociale">@Cliente.ragioneSociale</MudTd>
+                                <MudTd DataLabel="Indirizzo">@Cliente.Indirizzo</MudTd>
+                                <MudTd DataLabel="Data Creazione">@context.Data.ToString("dd/MM/yyyy")</MudTd>
+                                <MudTd DataLabel="E-Mail">@Cliente.email</MudTd>
+                                <MudTd DataLabel="Telefono">@Cliente.telefono</MudTd>
+                                <MudTd DataLabel="Data Intervento">@context.DataIntervento.Value.ToString("dd/MM/yyyy")</MudTd>
+                                <MudTd DataLabel="Modifica">
+                                    <MudIconButton Icon="@Icons.Material.Filled.RemoveRedEye" Color="Color.Primary" aria-label="github" OnClick="@(()=>{ModificaRichiesta(context);})"></MudIconButton>
+                                </MudTd>
+                                <MudTd DataLabel="Crea/Visualizza Rapporto">
+                                    <MudIconButton Icon="@Icons.Material.Filled.CallMade" Color="Color.Primary" aria-label="github" @onclick="@(async()=>{await RedirectToRapporto(context);})" />
+                                </MudTd>
+                            </RowTemplate>
+                        </MudTable>
+
+                    </MudItem>
+                }
             }
         }
+
     </MudGrid>
 </MudContainer>
 
 @code {
+    private bool tecnico = false;
+    private string NomeOrganizzazione = string.Empty;
+
     private string[]? ArrClienti;
     private DateRange? _dateRange = new DateRange();
 
@@ -142,16 +229,27 @@
     private bool ShowRagSoc = false;
 
 
-    private void onchange(EventArgs args)
-    {
-        Console.WriteLine("CCC");
-    }
-
     protected override async Task OnInitializedAsync()
     {
-        _ListaRichieste = await RichiesteService.GetRichieste();
-        _ListaClienti = await ClientiService.GetClienti();
-        ArrClienti = await ClientiService.GetArrayClienti() ;
+        var role = (await AuthStateProvider.GetAuthenticationStateAsync()).User.Claims
+        .FirstOrDefault(c => c.Type == ClaimTypes.Role).Value;
+
+        if (role == "Tecnico")
+        {
+            tecnico = true;
+            _ListaRichieste = await RichiesteService.GetRichieste();
+            _ListaClienti = await ClientiService.GetClienti();
+        }
+        else if (role == "Cliente")
+        {
+            tecnico = false;
+            var orgId = (await AuthStateProvider.GetAuthenticationStateAsync()).User.Claims
+            .FirstOrDefault(c => c.Type == ClaimTypes.System).Value;
+
+            Cliente = await ClientiService.GetClienteById(Int32.Parse(orgId));
+
+            _ListaRichieste = await RichiesteService.GetRichiestaByRagSoc(Cliente.ragioneSociale);
+        }
     }
 
     private async Task ShowHide()
@@ -163,9 +261,16 @@
 
     private async Task AnnullaEdit()
     {
-        EditRichiesta = !EditRichiesta;
-        Cliente = new Cliente();
-        Richiesta = new Richiesta();
+        if (tecnico)
+        {
+            EditRichiesta = !EditRichiesta;
+            Cliente = new Cliente();
+            Richiesta = new Richiesta();
+        }
+        else
+        {
+            EditRichiesta = !EditRichiesta;
+        }
     }
 
     private async Task AnnullaGenerate()
@@ -189,11 +294,21 @@
 
     private async Task ShowHideEdit()
     {
-        EditRichiesta = !EditRichiesta;
-        _ListaRichieste = await RichiesteService.GetRichieste();
-        Cliente = new Cliente();
-        Richiesta = new Richiesta();
-        StateHasChanged();
+        if (tecnico)
+        {
+            EditRichiesta = !EditRichiesta;
+            _ListaRichieste = await RichiesteService.GetRichieste();
+            Cliente = new Cliente();
+            Richiesta = new Richiesta();
+            StateHasChanged();
+        }
+        else
+        {
+            EditRichiesta = !EditRichiesta;
+            _ListaRichieste = await RichiesteService.GetRichiestaByRagSoc(Cliente.ragioneSociale);
+            Richiesta = new Richiesta();
+            StateHasChanged();
+        }
     }
 
     private async Task ShowHideCreation()
@@ -228,11 +343,11 @@
         return clienti.Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
     }
 
-    private async Task Search2(string value )
+    private async Task Search2(string value)
     {
         var nomecliente = Search(value);
 
-        if(_dateRange.End.HasValue && _dateRange.Start.HasValue)
+        if (_dateRange.End.HasValue && _dateRange.Start.HasValue)
         {
             _ListaRichieste = await RichiesteService.GetRichiestaByRagSoc(value);
             _ListaRichieste = await RichiesteService.RicercaPerData(_dateRange.Start, _dateRange.End);
@@ -262,7 +377,7 @@
                 _ListaRichieste = await RichiesteService.RicercaPerData(dateRange.Start, dateRange.End);
             }
         }
-        else if(Cliente.ragioneSociale is not null)
+        else if (Cliente.ragioneSociale is not null)
         {
             if (dateRange.Start is null && dateRange.End is null)
             {
@@ -306,14 +421,17 @@
     private void ModificaRichiesta(Richiesta richiesta)
     {
         Richiesta = richiesta;
-        Cliente = _ListaClienti.FirstOrDefault(c => c.id == richiesta.Clienteid);
+        if (tecnico)
+        {
+            Cliente = _ListaClienti.FirstOrDefault(c => c.id == richiesta.Clienteid);
+        }
         EditRichiesta = !EditRichiesta;
     }
 
     private void GeneraRapporto(Richiesta richiesta)
     {
         Cliente = _ListaClienti.Find(c => richiesta.Clienteid == c.id);
-        Richiesta = richiesta; 
+        Richiesta = richiesta;
 
         CreateRapporto = !CreateRapporto;
         Rapporto.RichiestaId = richiesta.id;
@@ -326,5 +444,5 @@
 
     }
 
-    
+
 }

@@ -3,8 +3,10 @@
 @inject HttpClient httpClient
 @inject IUsersServices UsersServices
 @inject IClientiService ClientiService
+@inject IDialogService DialogService
 
 <MudItem xs="12">
+
     @if (_ListaUtenti is null)
     {
         <MudItem xs="12" Style="display:flex; justify-content:center; align-items:center;">
@@ -13,36 +15,47 @@
     }
     else
     {
-        <MudTable Elevation="4" Items="_ListaUtenti" Height="100" Breakpoint="Breakpoint.Sm" Striped="true" Virtualize="true" FixedHeader="true">
-            <HeaderContent>
-                <MudTh>UserName</MudTh>
-                <MudTh>Nome</MudTh>
-                <MudTh>Cognome</MudTh>
-                <MudTh>Organizzazione</MudTh>
-                <MudTh>Modifica</MudTh>
-                <MudTh>Elimina</MudTh>
-            </HeaderContent>
-            <RowTemplate>
-                <MudTd DataLabel="Username">@context.UserName</MudTd>
-                <MudTd DataLabel="Nome Creazione">@context.Nome</MudTd>
-                <MudTd DataLabel="Cognome">@context.Cognome</MudTd>
-                <MudTd DataLabel="Organizzazione">@_ListaClienti.FirstOrDefault(c=> c.id == context.ClienteId).ragioneSociale</MudTd>
-                <MudTd DataLabel="Modifica">
-                    <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" aria-label="github" OnClick="@(()=>{})"></MudIconButton>
-                </MudTd>
-                <MudTd DataLabel="Elimina">
-                    <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" aria-label="github" @onclick="@(()=>{})"></MudIconButton>
-                </MudTd>
-            </RowTemplate>
-        </MudTable>
+        @if (EditUser)
+        {
+            <UserForm EditUser="User" Cliente="cliente" Edit="true" Back="BackEdit" />
+        }
+        else
+        {
+
+            <MudTable Elevation="4" Items="_ListaUtenti" Height="100" Breakpoint="Breakpoint.Sm" Striped="true" Virtualize="true" FixedHeader="true">
+                <HeaderContent>
+                    <MudTh>UserName</MudTh>
+                    <MudTh>Nome</MudTh>
+                    <MudTh>Cognome</MudTh>
+                    <MudTh>Organizzazione</MudTh>
+                    <MudTh>Modifica</MudTh>
+                    <MudTh>Elimina</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel="Username">@context.UserName</MudTd>
+                    <MudTd DataLabel="Nome Creazione">@context.Nome</MudTd>
+                    <MudTd DataLabel="Cognome">@context.Cognome</MudTd>
+                    <MudTd DataLabel="Organizzazione">@_ListaClienti.FirstOrDefault(c=> c.id == context.ClienteId).ragioneSociale</MudTd>
+                    <MudTd DataLabel="Modifica">
+                        <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" aria-label="github" OnClick="@(async ()=>{await ModificaUser(context);})"></MudIconButton>
+                    </MudTd>
+                    <MudTd DataLabel="Elimina">
+                        <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" aria-label="github" @onclick="@(async()=>{await DeleteUser(context);})"></MudIconButton>
+                    </MudTd>
+                </RowTemplate>
+            </MudTable>
+        }
     }
 
 </MudItem>
 
 @code {
+    private bool EditUser = false;
     private string searchString1 = string.Empty;
     private string selecteduser = string.Empty;
+    private Cliente cliente = new Cliente();
     private HashSet<User> selectedItems = new HashSet<User>();
+    private User User = new User();
     private List<User> _ListaUtenti;
     private List<Cliente> _ListaClienti = new List<Cliente>();
 
@@ -52,5 +65,42 @@
         _ListaUtenti = res.Data;
         _ListaClienti = await ClientiService.GetClienti();
 
+    }
+
+    private async Task DeleteUser(User user)
+    {
+        var parameters = new DialogParameters<Dialog>();
+        parameters.Add(x => x.ContentText, $"Vuoi veramente eliminare {user.UserName} dalla lista utenti? \nQuesta operazione non potrà essere annullata e l'utente non potrà più accedere al sistema.");
+        parameters.Add(x => x.ButtonText, "ELIMINA");
+        parameters.Add(x => x.Color, Color.Error);
+
+
+        var options = new DialogOptions() { CloseButton = true, MaxWidth = MaxWidth.ExtraSmall };
+
+        var dialog = await DialogService.ShowAsync<Dialog>("ATTENZIONE", parameters, options);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            await UsersServices.DeleteUser(user);
+            var lista = await UsersServices.GetUsers();
+            _ListaUtenti = lista.Data;
+            StateHasChanged();
+        }
+    }
+
+    private async Task ModificaUser(User user)
+    {
+        User = user;
+        cliente = _ListaClienti.FirstOrDefault(c => c.id == user.ClienteId);
+        EditUser = !EditUser;
+    }
+
+    private async Task BackEdit()
+    {
+        EditUser = !EditUser;
+        var res = await UsersServices.GetUsers();
+        _ListaUtenti = res.Data;
+        StateHasChanged();
     }
 }

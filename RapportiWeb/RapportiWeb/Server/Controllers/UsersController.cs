@@ -85,5 +85,43 @@ namespace RapportiWeb.Server.Controllers
             return Ok(res);
 
         }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<ServiceResponse<User>>> DeleteUser(int id)
+        {
+            var user = await _context.Utenti.FirstOrDefaultAsync(user => user.Id == id);
+
+            if(user != null)
+            {
+                _context.Utenti.Remove(user);
+                await _context.SaveChangesAsync();
+
+                return Ok(new ServiceResponse<User>(){
+                    Success = true,
+                    Data = user,
+                    Message = $"{user.Nome} {user.Cognome} è stato eliminato dalla lista degli utenti."
+                });
+            }
+            else
+            {
+                return BadRequest(new ServiceResponse<User>()
+                {
+                    Success = false,
+                    Data = user,
+                    Message = $"Non è possibile eliminare questo utente."
+                });
+            }
+        }
+
+        [HttpPut]
+        public async Task<ActionResult<User>> UpdateUser(User user)
+        {
+            _context.Utenti.Update(user);
+
+            await _context.SaveChangesAsync();
+
+            return Ok(user);
+
+        }
     }
 }

@@ -1,83 +1,171 @@
 ﻿@using System.Text.RegularExpressions
 @using System.ComponentModel.DataAnnotations
 @using RapportiWeb.Client.Services.Auth;
+@using RapportiWeb.Client.Services.Users;
 
 @inject IClientiService ClientiService
+@inject IUsersServices UserService
 @inject IAuthService AuthService
 @inject IDialogService DialogService
 @inject NavigationManager nav
 
+@if (Edit)
+{
+    <MudPaper Class="pa-6" Elevation="12">
+        <MudForm @ref="form" Model="RegUser" @bind-IsValid="@success">
+            <MudGrid Justify="Justify.Center">
+                <MudItem xs="12">
 
-<MudPaper Class="pa-6" Elevation="12">
-    <MudForm @ref="form" Model="User" @bind-IsValid="@success">
-        <MudGrid Justify="Justify.Center">
-            <MudItem xs="12">
+                    <MudItem xs="12" sm="12" md="12">
+                        <MudAutocomplete For="@(()=> Cliente.ragioneSociale)" @bind-Value="Cliente.ragioneSociale" Required="true" RequiredError="Selezionare un cliente" T="string" Label="Cliente" SearchFunc="Search" ShowProgressIndicator="true">
+                            <ProgressIndicatorTemplate>
+                                <MudProgressLinear Size="Size.Small" Indeterminate="true" Color="Color.Primary" />
+                            </ProgressIndicatorTemplate>
+                        </MudAutocomplete>
+                    </MudItem>
 
-                <MudItem xs="12" sm="12" md="12">
-                    <MudAutocomplete For="@(()=> Cliente.ragioneSociale)" @bind-Value="Cliente.ragioneSociale" Required="true" RequiredError="Selezionare un cliente" T="string" Label="Cliente" SearchFunc="Search" ShowProgressIndicator="true">
-                        <ProgressIndicatorTemplate>
-                            <MudProgressLinear Size="Size.Small" Indeterminate="true" Color="Color.Primary" />
-                        </ProgressIndicatorTemplate>
-                    </MudAutocomplete>
+                    <MudTextField @bind-Value="EditUser.Nome" T="string" Label="Nome" Required="true" RequiredError="Nome obbligatorio!" />
+                    <MudTextField @bind-Value="EditUser.Cognome" T="string" Label="Cognome" Required="true" RequiredError="Cognome obbligatorio!" />
+                    <MudTextField @bind-Value="EditUser.UserName" T="string" Label="Username" Required="true" RequiredError="Username obbligatorio!" />
+
+
+                    @*                    <MudTextField T="string" Label="Password" @ref="pwField1"
+                InputType="InputType.Password"
+                Validation="@(new Func<string, IEnumerable<string>>(PasswordStrength))" Required="true"
+                RequiredError="Password obblligatoria!" />
+                <MudTextField T="string"
+                @bind-Value="RegUser.Password"
+                Label="Password" InputType="InputType.Password"
+                Validation="@(new Func<string, string>(PasswordMatch))" />*@
                 </MudItem>
 
-                <MudTextField @bind-Value="User.Nome" T="string" Label="Nome" Required="true" RequiredError="Nome obbligatorio!" />
-                <MudTextField @bind-Value="User.Cognome" T="string" Label="Cognome" Required="true" RequiredError="Cognome obbligatorio!" />
-                <MudTextField @bind-Value="User.UserName" T="string" Label="Username" Required="true" RequiredError="Username obbligatorio!" />
-
-
-                <MudTextField T="string" Label="Password" @ref="pwField1"
-                              InputType="InputType.Password"
-                              Validation="@(new Func<string, IEnumerable<string>>(PasswordStrength))" Required="true"
-                              RequiredError="Password obblligatoria!" />
-                <MudTextField T="string"
-                @bind-Value="User.Password"
-                              Label="Password" InputType="InputType.Password"
-                              Validation="@(new Func<string, string>(PasswordMatch))" />
-            </MudItem>
-
-            <MudItem xs="12" md="6">
-                <MudSelect Required="true" RequiredError="Selezionare la tipologia dell'utente" For="@(()=> User.TipoUtente)" @bind-Value="User.TipoUtente" T="string" Label="Tipologia Utente" AnchorOrigin="Origin.BottomCenter">
-                    <MudSelectItem Value="@("Tecnico")" />
-                    <MudSelectItem Value="@("Cliente")" />
-                </MudSelect>
-            </MudItem>
-            <MudItem xs="12" md="6" Style="display:flex; justify-content:start; align-items:end;">
-                <MudSwitch @bind-Checked="User.Amministratore" LabelPosition="LabelPosition.Start" Label="Amministratore:" Color="Color.Primary" />
-            </MudItem>
-
-
-
-            <MudItem xs="12">
-                <MudText Style="padding-top:2%;">Figura professionale richiesta:</MudText>
-                @if (User.TipoUtente == "Tecnico")
+                <MudItem xs="12" md="6">
+                    <MudSelect Required="true" RequiredError="Selezionare la tipologia dell'utente" For="@(()=> EditUser.TipoUtente)" @bind-Value="EditUser.TipoUtente" T="string" Label="Tipologia Utente" AnchorOrigin="Origin.BottomCenter">
+                        <MudSelectItem Value="@("Tecnico")" />
+                        <MudSelectItem Value="@("Cliente")" />
+                    </MudSelect>
+                </MudItem>
+                @if (EditUser.TipoUtente == "Cliente")
                 {
-                    <MudRadioGroup Disabled="false" Required="true" For="@(()=> User.Figuraprof)" @bind-SelectedOption="User.Figuraprof">
-                        <MudRadio Color="Color.Primary" Option="@("Sistemista Senior/Tecnico ERP")">Sistemista Senior/Tecnico ERP</MudRadio>
-                        <MudRadio Color="Color.Primary" Option="@("Consulente Applicativo Senior")">Consulente Applicativo Senior</MudRadio>
-                        <MudRadio Color="Color.Primary" Option="@("Consulente Master")">Consulente Master</MudRadio>
-                        <MudRadio Color="Color.Primary" Option="@("Project Manager")">Project Manager</MudRadio>
-                    </MudRadioGroup>
+                    <MudItem xs="12" md="6" Style="display:flex; justify-content:start; align-items:end;">
+                        <MudSwitch Disabled="true" @bind-Checked="EditUser.Amministratore" LabelPosition="LabelPosition.Start" Label="Amministratore:" Color="Color.Primary" />
+                    </MudItem>
                 }
                 else
                 {
-                    <MudRadioGroup Disabled="true" Required="false" For="@(()=> User.Figuraprof)">
-                        <MudRadio Color="Color.Primary" Option="@("Sistemista Senior/Tecnico ERP")">Sistemista Senior/Tecnico ERP</MudRadio>
-                        <MudRadio Color="Color.Primary" Option="@("Consulente Applicativo Senior")">Consulente Applicativo Senior</MudRadio>
-                        <MudRadio Color="Color.Primary" Option="@("Consulente Master")">Consulente Master</MudRadio>
-                        <MudRadio Color="Color.Primary" Option="@("Project Manager")">Project Manager</MudRadio>
-                    </MudRadioGroup>
+                    <MudItem xs="12" md="6" Style="display:flex; justify-content:start; align-items:end;">
+                        <MudSwitch @bind-Checked="EditUser.Amministratore" LabelPosition="LabelPosition.Start" Label="Amministratore:" Color="Color.Primary" />
+                    </MudItem>
                 }
-            </MudItem>
 
-            <MudItem xs="12">
-                <MudButton Variant="Variant.Filled" Color="Color.Primary" DisableElevation="true" OnClick="@(()=>{Back.InvokeAsync();})">Annulla</MudButton>
-                <MudButton Variant="Variant.Filled" Color="Color.Primary" DisableElevation="true" OnClick="@(async ()=>{await AddUser(User);})">Crea utente</MudButton>
-            </MudItem>
 
-        </MudGrid>
-    </MudForm>
-</MudPaper>
+
+                <MudItem xs="12">
+                    <MudText Style="padding-top:2%;">Figura professionale richiesta:</MudText>
+                    @if (EditUser.TipoUtente == "Tecnico")
+                    {
+                        <MudRadioGroup Disabled="false" Required="true" For="@(()=> EditUser.Figuraprof)" @bind-SelectedOption="EditUser.Figuraprof">
+                            <MudRadio Color="Color.Primary" Option="@("Sistemista Senior/Tecnico ERP")">Sistemista Senior/Tecnico ERP</MudRadio>
+                            <MudRadio Color="Color.Primary" Option="@("Consulente Applicativo Senior")">Consulente Applicativo Senior</MudRadio>
+                            <MudRadio Color="Color.Primary" Option="@("Consulente Master")">Consulente Master</MudRadio>
+                            <MudRadio Color="Color.Primary" Option="@("Project Manager")">Project Manager</MudRadio>
+                        </MudRadioGroup>
+                    }
+                    else
+                    {
+                        <MudRadioGroup Disabled="true" Required="false" For="@(()=> EditUser.Figuraprof)">
+                            <MudRadio Color="Color.Primary" Option="@("Sistemista Senior/Tecnico ERP")">Sistemista Senior/Tecnico ERP</MudRadio>
+                            <MudRadio Color="Color.Primary" Option="@("Consulente Applicativo Senior")">Consulente Applicativo Senior</MudRadio>
+                            <MudRadio Color="Color.Primary" Option="@("Consulente Master")">Consulente Master</MudRadio>
+                            <MudRadio Color="Color.Primary" Option="@("Project Manager")">Project Manager</MudRadio>
+                        </MudRadioGroup>
+                    }
+                </MudItem>
+
+                <MudItem xs="12">
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" DisableElevation="true" OnClick="@(async()=>{await Back.InvokeAsync();})">Annulla</MudButton>
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" DisableElevation="true" OnClick="@(async ()=>{await ModificaUser(EditUser);})">Modifica utente</MudButton>
+                </MudItem>
+
+            </MudGrid>
+        </MudForm>
+    </MudPaper>
+
+}
+else
+{
+    <MudPaper Class="pa-6" Elevation="12">
+        <MudForm @ref="form" Model="RegUser" @bind-IsValid="@success">
+            <MudGrid Justify="Justify.Center">
+                <MudItem xs="12">
+
+                    <MudItem xs="12" sm="12" md="12">
+                        <MudAutocomplete For="@(()=> Cliente.ragioneSociale)" @bind-Value="Cliente.ragioneSociale" Required="true" RequiredError="Selezionare un cliente" T="string" Label="Cliente" SearchFunc="Search" ShowProgressIndicator="true">
+                            <ProgressIndicatorTemplate>
+                                <MudProgressLinear Size="Size.Small" Indeterminate="true" Color="Color.Primary" />
+                            </ProgressIndicatorTemplate>
+                        </MudAutocomplete>
+                    </MudItem>
+
+                    <MudTextField @bind-Value="RegUser.Nome" T="string" Label="Nome" Required="true" RequiredError="Nome obbligatorio!" />
+                    <MudTextField @bind-Value="RegUser.Cognome" T="string" Label="Cognome" Required="true" RequiredError="Cognome obbligatorio!" />
+                    <MudTextField @bind-Value="RegUser.UserName" T="string" Label="Username" Required="true" RequiredError="Username obbligatorio!" />
+
+
+                    <MudTextField T="string" Label="Password" @ref="pwField1"
+                                  InputType="InputType.Password"
+                                  Validation="@(new Func<string, IEnumerable<string>>(PasswordStrength))" Required="true"
+                                  RequiredError="Password obblligatoria!" />
+                    <MudTextField T="string"
+                    @bind-Value="RegUser.Password"
+                                  Label="Password" InputType="InputType.Password"
+                                  Validation="@(new Func<string, string>(PasswordMatch))" />
+                </MudItem>
+
+                <MudItem xs="12" md="6">
+                    <MudSelect Required="true" RequiredError="Selezionare la tipologia dell'utente" For="@(()=> RegUser.TipoUtente)" @bind-Value="RegUser.TipoUtente" T="string" Label="Tipologia Utente" AnchorOrigin="Origin.BottomCenter">
+                        <MudSelectItem Value="@("Tecnico")" />
+                        <MudSelectItem Value="@("Cliente")" />
+                    </MudSelect>
+                </MudItem>
+                <MudItem xs="12" md="6" Style="display:flex; justify-content:start; align-items:end;">
+                    <MudSwitch @bind-Checked="RegUser.Amministratore" LabelPosition="LabelPosition.Start" Label="Amministratore:" Color="Color.Primary" />
+                </MudItem>
+
+
+
+                <MudItem xs="12">
+                    <MudText Style="padding-top:2%;">Figura professionale richiesta:</MudText>
+                    @if (RegUser.TipoUtente == "Tecnico")
+                    {
+                        <MudRadioGroup Disabled="false" Required="true" For="@(()=> RegUser.Figuraprof)" @bind-SelectedOption="RegUser.Figuraprof">
+                            <MudRadio Color="Color.Primary" Option="@("Sistemista Senior/Tecnico ERP")">Sistemista Senior/Tecnico ERP</MudRadio>
+                            <MudRadio Color="Color.Primary" Option="@("Consulente Applicativo Senior")">Consulente Applicativo Senior</MudRadio>
+                            <MudRadio Color="Color.Primary" Option="@("Consulente Master")">Consulente Master</MudRadio>
+                            <MudRadio Color="Color.Primary" Option="@("Project Manager")">Project Manager</MudRadio>
+                        </MudRadioGroup>
+                    }
+                    else
+                    {
+                        <MudRadioGroup Disabled="true" Required="false" For="@(()=> RegUser.Figuraprof)">
+                            <MudRadio Color="Color.Primary" Option="@("Sistemista Senior/Tecnico ERP")">Sistemista Senior/Tecnico ERP</MudRadio>
+                            <MudRadio Color="Color.Primary" Option="@("Consulente Applicativo Senior")">Consulente Applicativo Senior</MudRadio>
+                            <MudRadio Color="Color.Primary" Option="@("Consulente Master")">Consulente Master</MudRadio>
+                            <MudRadio Color="Color.Primary" Option="@("Project Manager")">Project Manager</MudRadio>
+                        </MudRadioGroup>
+                    }
+                </MudItem>
+
+                <MudItem xs="12">
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" DisableElevation="true" OnClick="@(()=>{Back.InvokeAsync();})">Annulla</MudButton>
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" DisableElevation="true" OnClick="@(async ()=>{await AddUser(RegUser);})">Crea utente</MudButton>
+                </MudItem>
+
+            </MudGrid>
+        </MudForm>
+    </MudPaper>
+
+}
 
 
 
@@ -93,9 +181,14 @@
     public EventCallback Back { get; set; }
 
     [Parameter]
-    public UserRegistration User { get; set; } = new UserRegistration();
+    public UserRegistration RegUser { get; set; } = new UserRegistration();
 
+    [Parameter]
+    public User EditUser { get; set; } = new User();
+
+    [Parameter]
     public Cliente Cliente { get; set; } = new Cliente();
+
     public string ErrorMessage { get; set; } = string.Empty;
     public List<Cliente> ListaClienti { get; set; } = new List<Cliente>();
 
@@ -143,7 +236,29 @@
                 user.ClienteId = cliente.id;
 
                 var res = await AuthService.Register(user, cliente);
-                await OpenDialog(user, res.Message, Color.Success);
+                await CreateUserDialog(user, res.Message, Color.Success);
+            }
+        }
+        catch
+        {
+            Console.WriteLine("WOOPS");
+        }
+    }
+
+    private async Task ModificaUser(User user)
+    {
+        await form.Validate();
+
+        var cliente = ListaClienti.FirstOrDefault(c => c.ragioneSociale == Cliente.ragioneSociale);
+
+        try
+        {
+            if (user != null && cliente != null)
+            {
+                user.ClienteId = cliente.id;
+
+                var res = await UserService.UpdateUser(user);
+                await EditDialog(user, res.Message, Color.Success);
             }
         }
         catch
@@ -163,7 +278,7 @@
     }
 
 
-    private async Task OpenDialog(UserRegistration user, string text, Color color)
+    private async Task CreateUserDialog(UserRegistration user, string text, Color color)
     {
         var parameters = new DialogParameters<Dialog>();
         parameters.Add(x => x.ContentText, text);
@@ -176,7 +291,26 @@
         var dialog = await DialogService.ShowAsync<Dialog>("ATTENZIONE", parameters, options);
         var result = await dialog.Result;
 
+        await Back.InvokeAsync();
     }
+
+    private async Task EditDialog(User user, string text, Color color)
+    {
+        var parameters = new DialogParameters<Dialog>();
+        parameters.Add(x => x.ContentText, text);
+        parameters.Add(x => x.ButtonText, "CHIUDI");
+        parameters.Add(x => x.Color, color);
+
+
+        var options = new DialogOptions() { CloseButton = true, MaxWidth = MaxWidth.ExtraSmall };
+
+        var dialog = await DialogService.ShowAsync<Dialog>("ATTENZIONE", parameters, options);
+        var result = await dialog.Result;
+
+
+        await Back.InvokeAsync();
+    }
+
 
 
 }

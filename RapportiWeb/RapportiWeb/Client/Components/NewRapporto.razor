@@ -3,9 +3,12 @@
 @inject IClientiService ClientiService
 @inject IPdfService PDFService
 @inject IJSRuntime JSRuntime
+@inject AuthenticationStateProvider AuthStateProvider
+@using Microsoft.AspNetCore.Authorization;
+@using System.Security.Claims;
 
 
-@if (RapportoCreation)
+@if (RapportoCreation && tecnico)
 {
     <MudItem xs="12">
         <MudPaper Class="pa-6" Elevation="5">
@@ -15,18 +18,18 @@
 
                     <MudItem xs="12" sm="12" md="12">
                         <MudAutocomplete Disabled="true" @bind-Value="Cliente.ragioneSociale"
-                            Required="true" RequiredError="Selezionare un cliente" For="@(() => Cliente.ragioneSociale)"
-                            T="string" Label="Cliente" SearchFunc="Search" 
-                            ShowProgressIndicator="true">
-                                <ProgressIndicatorTemplate>
-                                    <MudProgressLinear Size="Size.Small" Indeterminate="true" Color="Color.Primary" />
-                                </ProgressIndicatorTemplate>
+                                         Required="true" RequiredError="Selezionare un cliente" For="@(() => Cliente.ragioneSociale)"
+                                         T="string" Label="Cliente" SearchFunc="Search"
+                                         ShowProgressIndicator="true">
+                            <ProgressIndicatorTemplate>
+                                <MudProgressLinear Size="Size.Small" Indeterminate="true" Color="Color.Primary" />
+                            </ProgressIndicatorTemplate>
                         </MudAutocomplete>
                     </MudItem>
 
                     <MudItem xs="12" md="4">
                         <MudTextField @bind-Value="Rapporto.RespRic" T="string" Label="Responsabile richiesta"
-                            Required="true" RequiredError="Campo obbligatorio!" For="@(() => Rapporto.RespRic)" />
+                                      Required="true" RequiredError="Campo obbligatorio!" For="@(() => Rapporto.RespRic)" />
                     </MudItem>
 
                     <MudItem xs="12" md="4">
@@ -62,7 +65,7 @@
                     </MudItem>
 
                     <MudItem xs="12" md="6">
-                        <MudDatePicker DateFormat="dd/MM/yyyy" Label="Data intervento" Required="true" RequiredError="Campo obbligatorio!" @bind-Date="Rapporto.DataIntervento" For="@(() => Rapporto.DataIntervento)"/>
+                        <MudDatePicker DateFormat="dd/MM/yyyy" Label="Data intervento" Required="true" RequiredError="Campo obbligatorio!" @bind-Date="Rapporto.DataIntervento" For="@(() => Rapporto.DataIntervento)" />
                     </MudItem>
 
                     <MudItem xs="12" md="6">
@@ -178,8 +181,15 @@ else
                     {
                         <MudItem xs="12" Class="d-flex justify-content-around">
                             <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="@(()=>{ShowHidePopUp.InvokeAsync();})">Annulla</MudButton>
-                            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(()=>{EditRapporto(Rapporto);})">Modifica Rapporto</MudButton>
-                            <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="@(()=>{DownloadPDF(Rapporto);})">Download</MudButton>
+                            @if (tecnico)
+                            {
+                                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(()=>{EditRapporto(Rapporto);})">Modifica Rapporto</MudButton>
+                                <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="@(()=>{DownloadPDF(Rapporto);})">Download</MudButton>
+                            }
+                            else
+                            {
+                            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(()=>{DownloadPDF(Rapporto);})">Download</MudButton>
+                            }
                         </MudItem>
                     }
                     else
@@ -225,8 +235,26 @@ else
 
     private string[] ArrClienti;
 
+    private bool tecnico = false;
     MudForm form;
 
+
+    protected override async Task OnInitializedAsync()
+    {
+        var role = (await AuthStateProvider.GetAuthenticationStateAsync()).User.Claims
+         .FirstOrDefault(c => c.Type == ClaimTypes.Role).Value;
+
+        if (role == "Tecnico")
+        {
+            tecnico = true;
+
+        }
+        else if (role == "Cliente")
+        {
+            tecnico = false;
+
+        }
+    }
 
 
 

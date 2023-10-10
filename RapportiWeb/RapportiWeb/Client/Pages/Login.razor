@@ -80,7 +80,7 @@
             errormsg = string.Empty;
             await localstorage.SetItemAsync("authToken", res.Data);
             await authprovider.GetAuthenticationStateAsync(); 
-            nav.NavigateTo("");
+            nav.NavigateTo("", true);
         }
         else
         {

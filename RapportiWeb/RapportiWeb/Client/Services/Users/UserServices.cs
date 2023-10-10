@@ -13,12 +13,27 @@ namespace RapportiWeb.Client.Services.Users
             _http = http;
         }
 
+        public async Task DeleteUser(User user)
+        {
+            var req = await _http.DeleteAsync($"api/users/{user.Id}");
+        }
+
         public async Task<ServiceResponse<List<User>>> GetUsers()
         {
             var users = await _http.GetFromJsonAsync<ServiceResponse<List<User>>>("api/users");
             return users;
         }
 
+        public async Task<ServiceResponse<User>> UpdateUser(User user)
+        {
+            await _http.PutAsJsonAsync("api/users", user);
 
+            return new ServiceResponse<User>()
+            {
+                Success = true,
+                Data = user,
+                Message = $"L'utente {user.UserName} è stato modificato con successo."
+            };
+        }
     }
 }

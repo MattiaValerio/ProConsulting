@@ -31,10 +31,6 @@
 	  </Content>
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="wwwroot\PDF\" />
-  </ItemGroup>
-
 	<ItemGroup>
 		<Folder Include="wwwroot\img" />
 	</ItemGroup>
