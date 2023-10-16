@@ -1,5 +1,6 @@
 ﻿
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RapportiWeb.Shared
 {
@@ -17,6 +18,7 @@ namespace RapportiWeb.Shared
 		public string FiguraProfessionale { get; set; }
 		[Required(ErrorMessage = "Campo obbligatorio")]
 		public string TipologiaIntervento { get; set; }
+        [Required(ErrorMessage="Campo obbligatorio!")]
         public DateTime? DataIntervento { get; set; }
 		[Required(ErrorMessage = "Campo obbligatorio")]
 		public string DurataIntervento { get; set; }

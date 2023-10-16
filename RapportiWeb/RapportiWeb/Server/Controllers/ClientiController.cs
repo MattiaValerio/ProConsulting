@@ -48,19 +48,30 @@ namespace RapportiWeb.Server.Controllers
 
         [HttpGet("{ragsoc}")]
         public async Task<ActionResult<Cliente>> GetCliente(string ragsoc)
-		{
+        {
 
-			var res = await _context.Clienti.ToListAsync();
+            var res = await _context.Clienti.ToListAsync();
 
             var cliente = res.FirstOrDefault(c => c.ragioneSociale == ragsoc);
 
             return Ok(cliente);
-		}
+        }
+
+        [HttpGet("[Action]/{id}")]
+        public async Task<ActionResult<Cliente>> ClienteById(int id)
+        {
+
+            var res = await _context.Clienti.ToListAsync();
+
+            var cliente = res.FirstOrDefault(c => c.id == id);
+
+            return Ok(cliente);
+        }
 
 
 
 
-		[HttpPost]
+        [HttpPost]
         public async Task<ActionResult<Cliente>> CreateCliente(Cliente cliente)
         {
             _context.Clienti.Add(cliente);

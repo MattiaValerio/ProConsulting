@@ -9,8 +9,25 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <None Remove="img\logo.png" />
+	  <None Remove="img\logo_small.png" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Include="img\logo.png">
+	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+	  </Content>
+	  <Content Include="img\logo_small.png">
+	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+	  </Content>
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="BlazorDownloadFile" Version="2.4.0.2" />
 		<PackageReference Include="Microsoft.AspNet.WebApi.Core" Version="5.2.9" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.22" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="6.0.15" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.9" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.9">
@@ -30,7 +47,8 @@
 
 	<ItemGroup>
 	  <Folder Include="Migrations\" />
+	  <Folder Include="Rapporti\" />
 	</ItemGroup>
-
+	
 
 </Project>

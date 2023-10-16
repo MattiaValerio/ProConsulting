@@ -1,11 +1,14 @@
-﻿@inject IClientiService ClientiService 
+﻿@inject IClientiService ClientiService
+@inject NavigationManager nav
 
 <MudDialog>
     <DialogContent>
         <MudText>@ContentText</MudText>
     </DialogContent>
     <DialogActions>
+
         <MudButton OnClick="Cancel">ANNULLA</MudButton>
+
         <MudButton Color="@Color" Variant="Variant.Filled" OnClick="@(()=> {Submit();})">@ButtonText</MudButton>
     </DialogActions>
 </MudDialog>
