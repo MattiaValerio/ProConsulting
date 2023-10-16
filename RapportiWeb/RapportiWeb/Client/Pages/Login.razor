@@ -23,7 +23,8 @@
                 <MudTextField T="string" Label="Password" @bind-Value="user.Password" @ref="pwField1" For="@(()=>user.Password)"
                     Required="true"
                     InputType="InputType.Password"
-                    RequiredError="Password obbligatoria!"/>
+                    RequiredError="Password obbligatoria!"
+                    OnKeyPress="LoginOnEnter"/>
                 <span class="text-danger d-flex">@errormsg</span>
 
                 <MudButton Class="mt-4" Variant="Variant.Filled" Color="Color.Primary" DisableElevation="true" ButtonType="ButtonType.Submit">LOGIN</MudButton>
@@ -85,6 +86,14 @@
         else
         {
             errormsg = res.Message;
+        }
+    }
+
+    private async Task LoginOnEnter(KeyboardEventArgs e)
+    {
+        if (e.Code == "Enter" || e.Code == "NumpadEnter")
+        {
+            await HandleLogin();
         }
     }
 }

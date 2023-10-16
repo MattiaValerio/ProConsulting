@@ -14,6 +14,7 @@
 <MudContainer>
     <MudGrid Justify="Justify.Center">
 
+
         <MudItem xs="12">
             <MudText Align="Align.Center" Typo="Typo.h2">RAPPORTI DI INTERVENTO</MudText>
         </MudItem>
@@ -26,7 +27,7 @@
             }
             else if (EditRapporto)
             {
-                <NewRapporto Annulla="AnnullaEdit" Rapporto="Rapporto" Cliente="Cliente" Edit="true" ShowHidePopUp="@(()=>{ShowHideEdit();})" />
+                <NewRapporto Annulla="AnnullaEdit" Rapporto="Rapporto" Cliente="Cliente" Edit="true" ShowHidePopUp="@(async()=>{await ShowHideEdit();})" />
             }
             else
             {
@@ -39,7 +40,7 @@
                 </MudItem>
 
                 <MudItem xs="10" md="10" xl="6">
-                    <MudAutocomplete T="string" Label="Ragione Sociale" @bind-Value="Cliente.ragioneSociale" SearchFunc="@Search" OnAdornmentClick="@(()=>{Search2(Cliente.ragioneSociale);})"
+                    <MudAutocomplete T="string" Label="Ragione Sociale" @bind-Value="Cliente.ragioneSociale" SearchFunc="@Search" OnAdornmentClick="@(async()=>{await Search2(Cliente.ragioneSociale);})"
                                      ResetValueOnEmptyText="true"
                                      Clearable="true"
                                      CoerceValue="true"
@@ -63,7 +64,7 @@
                 else
                 {
                     <MudItem xs="12">
-                        <MudTable Elevation="4" Items="_ListaRapporti" Height="100" Breakpoint="Breakpoint.Sm" Striped="true" Virtualize="true" FixedHeader="true">
+                        <MudTable Elevation="4" Items="_ListaRapporti" Height="100" Breakpoint="Breakpoint.Sm" Hover="true" Virtualize="true" FixedHeader="true">
                             <HeaderContent>
                                 <MudTh>Ragione Sociale</MudTh>
                                 <MudTh>Indirizzo</MudTh>
@@ -88,7 +89,7 @@
                                 <MudTd DataLabel="Telefono">@_ListaClienti.Find(c=> c.id == context.Clienteid).telefono</MudTd>
                                 <MudTd DataLabel="Data Intervento">@context.DataIntervento.Value.ToString("dd/MM/yyyy")</MudTd>
                                 <MudTd DataLabel="Modifica">
-                                    <MudIconButton Icon="@Icons.Material.Filled.RemoveRedEye" Color="Color.Primary" aria-label="github" OnClick="@(()=>{ModificaRapporto(context);})"></MudIconButton>
+                                    <MudIconButton Icon="@Icons.Material.Filled.RemoveRedEye" Color="Color.Primary" aria-label="github" OnClick="@(()=>{ModificaRapporto(context, _ListaClienti.Find(c=> c.id == context.Clienteid));})"></MudIconButton>
                                 </MudTd>
                                 <MudTd DataLabel="Elimina">
                                     <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" aria-label="github" @onclick="@(()=>{OpenDialog(context);})"></MudIconButton>
@@ -118,7 +119,7 @@
                 else
                 {
                     <MudItem xs="12">
-                        <MudTable Elevation="4" Items="_ListaRapporti" Height="100" Breakpoint="Breakpoint.Sm" Striped="true" Virtualize="true" FixedHeader="true">
+                        <MudTable Elevation="4" Items="_ListaRapporti" Height="100" Breakpoint="Breakpoint.Sm" Hover="true" Virtualize="true" FixedHeader="true">
                             <HeaderContent>
                                 <MudTh>Ragione Sociale</MudTh>
                                 <MudTh>Indirizzo</MudTh>
@@ -137,7 +138,7 @@
                                 <MudTd DataLabel="Telefono">@Cliente.telefono</MudTd>
                                 <MudTd DataLabel="Data Intervento">@context.DataIntervento.Value.ToString("dd/MM/yyyy")</MudTd>
                                 <MudTd DataLabel="Modifica">
-                                    <MudIconButton Icon="@Icons.Material.Filled.RemoveRedEye" Color="Color.Primary" aria-label="github" OnClick="@(()=>{ModificaRapporto(context);})"></MudIconButton>
+                                    <MudIconButton Icon="@Icons.Material.Filled.RemoveRedEye" Color="Color.Primary" aria-label="github" OnClick="@(()=>{ModificaRapporto(context, Cliente);})"></MudIconButton>
                                 </MudTd>
                             </RowTemplate>
                         </MudTable>
@@ -312,10 +313,10 @@
         }
     }
 
-    private void ModificaRapporto(Rapporto rapporto)
+    private void ModificaRapporto(Rapporto rapporto, Cliente cliente)
     {
         Rapporto = rapporto;
-        Cliente = Cliente;
+        Cliente = cliente;
         EditRapporto = !EditRapporto;
     }
 

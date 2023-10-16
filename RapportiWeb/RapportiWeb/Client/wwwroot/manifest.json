@@ -8,12 +8,12 @@
   "prefer_related_applications": false,
   "icons": [
     {
-      "src": "icon-512.png",
+      "src": "img/logo_webApp.png",
       "type": "image/png",
-      "sizes": "512x512"
+      "sizes": "200x200"
     },
     {
-      "src": "icon-192.png",
+      "src": "img/logo_small.png",
       "type": "image/png",
       "sizes": "192x192"
     }

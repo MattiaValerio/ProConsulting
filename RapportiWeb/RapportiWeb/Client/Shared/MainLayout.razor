@@ -14,7 +14,7 @@
 <MudLayout>
 
     <MudAppBar Color="Color.Primary" Fixed="false">
-        <MudImage Src="\img\logo.png" Fluid="true" Width="225" />
+        <MudImage Src="\img\logo_bianco.png" Fluid="true" Width="225" @onclick="@(()=>{nav.NavigateTo("/");})" />
         <MudSpacer />
         <AuthorizeView>
             @if (authorized)
@@ -27,7 +27,7 @@
         </AuthorizeView>
     </MudAppBar>
 
-    <MudMainContent>
+    <MudMainContent Class="pt-5">
         <AuthorizeView>
             <Authorized>
                 @Body

@@ -13,12 +13,15 @@ using System.Net.Http.Json;
 using Microsoft.AspNetCore.Components.Authorization;
 using RapportiWeb.Client.Services.Users;
 using Microsoft.AspNetCore.Components;
+using BlazorDownloadFile;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.Services.AddMudServices();
 builder.Services.AddBlazoredLocalStorage();
+builder.Services.AddBlazorDownloadFile();
+
 
 
 builder.Services.AddScoped<IClientiService, ClientiService>();
@@ -27,6 +30,7 @@ builder.Services.AddScoped<IRapportiService, RapportiService>();
 builder.Services.AddScoped<IPdfService, PdfService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUsersServices, UserServices>();
+
 
 
 builder.Services.AddOptions();

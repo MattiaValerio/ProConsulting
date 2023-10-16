@@ -7,11 +7,9 @@
 
 <AuthorizeView>
 
-    <PageTitle>Home</PageTitle>
-
     <MudContainer Class="">
         <MudText Typo="Typo.h3" Align="Align.Center" GutterBottom="true">BENVENUTO @context.User.Identity.Name.ToUpper()</MudText>
-        <MudGrid Class="mt-8">
+        <MudGrid Class="mt-5">
 
             @if (tecnico)
             {
@@ -74,7 +72,7 @@
                     <MudCard Elevation="5" Class="rounded-lg pb-4">
                         <MudCardHeader>
                             <CardHeaderContent>
-                                <MudText Typo="Typo.h5" Align="Align.Center">Rapporti d'assistenza</MudText>
+                                <MudText Typo="Typo.h5" Align="Align.Center">Rapporti di intervento</MudText>
                             </CardHeaderContent>
                         </MudCardHeader>
                         <MudCardContent>
@@ -102,7 +100,7 @@
                     <MudCard Elevation="5" Class="rounded-lg pb-4">
                         <MudCardHeader>
                             <CardHeaderContent>
-                                <MudText Typo="Typo.h5" Align="Align.Center">Rapporti d'assistenza</MudText>
+                                <MudText Typo="Typo.h5" Align="Align.Center">Rapporti di intervento</MudText>
                             </CardHeaderContent>
                         </MudCardHeader>
                         <MudCardContent>

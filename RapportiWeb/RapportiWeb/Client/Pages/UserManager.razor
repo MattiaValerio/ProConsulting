@@ -1,5 +1,6 @@
 ﻿@page "/Admin"
 @inject AuthenticationStateProvider AuthStateProvider
+@inject NavigationManager nav
 @using System.Security.Claims
 @using Microsoft.AspNetCore.Authorization;
 @attribute [Authorize]
@@ -18,10 +19,6 @@
                 @if (AddUser)
                 {
                     <UserForm Back="@(()=>{AddUser = !AddUser;})" />
-                }
-                else if (Elencousers)
-                {
-                    <ElencoUsers />
                 }
                 else
                 {
@@ -66,7 +63,7 @@
                                 </MudList>
                             </MudCardContent>
                             <MudCardActions Class="d-flex justify-center">
-                                <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" Style="width:50%;" @onclick="@(()=>{Elencousers = !Elencousers;})">VAI</MudButton>
+                                <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" Style="width:50%;" @onclick="@(()=>{nav.NavigateTo("/users");})">VAI</MudButton>
                             </MudCardActions>
                         </MudCard>
                     </MudItem>

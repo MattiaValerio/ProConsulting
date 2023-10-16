@@ -13,7 +13,11 @@
         @if (RedirectRapporto)
         {
             <MudItem xs="12">
-                <MudText Align="Align.Center" Typo="Typo.h2">RAPPORTI</MudText>
+                <MudText Align="Align.Center" Typo="Typo.h2">RAPPORTI DI INTERVENTO</MudText>
+            </MudItem>
+        }else if(CreateRapporto){
+            <MudItem xs="12">
+                <MudText Align="Align.Center" Typo="Typo.h2">RAPPORTI DI INTERVENTO</MudText>
             </MudItem>
         }
         else
@@ -43,7 +47,7 @@
             else
             {
                 <MudItem xs="1" md="1" Class="d-flex flex-column align-items-center justify-center">
-                    <MudIconButton Icon="@Icons.Material.Filled.Add" Color="Color.Primary" aria-label="github" OnClick="@(()=>{NuovaRichiesta = !NuovaRichiesta;})"></MudIconButton>
+                    <MudIconButton Icon="@Icons.Material.Filled.Add" Color="Color.Primary" aria-label="github" OnClick="@(()=>{ NuovaRichiesta = !NuovaRichiesta;})"></MudIconButton>
                 </MudItem>
 
                 <MudItem xs="1" md="1" Class="d-flex flex-column align-items-center justify-center">
@@ -51,7 +55,7 @@
                 </MudItem>
 
                 <MudItem xs="10" md="10" xl="6">
-                    <MudAutocomplete T="string" Label="Ragione Sociale" @bind-Value="Cliente.ragioneSociale" SearchFunc="@Search" OnAdornmentClick="@(()=>{Search2(Cliente.ragioneSociale);})"
+                    <MudAutocomplete T="string" Label="Ragione Sociale" @bind-Value="Cliente.ragioneSociale" SearchFunc="@Search" OnAdornmentClick="@(async()=>{await Search2(Cliente.ragioneSociale);})"
                                      ResetValueOnEmptyText="true"
                                      Clearable="true"
                                      CoerceValue="true"
@@ -76,7 +80,7 @@
                 else
                 {
                     <MudItem xs="12">
-                        <MudTable Elevation="4" Items="_ListaRichieste" Height="100" Breakpoint="Breakpoint.Sm" Striped="true" Virtualize="true" FixedHeader="true">
+                        <MudTable Hover="true" Elevation="4" Items="_ListaRichieste" Height="100" Breakpoint="Breakpoint.Sm" Virtualize="true" FixedHeader="true">
                             <HeaderContent>
                                 <MudTh>Ragione Sociale</MudTh>
                                 <MudTh>Indirizzo</MudTh>
@@ -115,7 +119,7 @@
                                     }
                                     else
                                     {
-                                        <MudIconButton Icon="@Icons.Material.Filled.CallMade" Color="Color.Primary" aria-label="github" @onclick="@(()=>{RedirectToRapporto(context);})" />
+                                        <MudIconButton Icon="@Icons.Material.Filled.CallMade" Color="Color.Primary" aria-label="github" @onclick="@(async()=>{await RedirectToRapporto(context);})" />
                                     }
                                 </MudTd>
                             </RowTemplate>
@@ -132,36 +136,12 @@
             {
                 <NewRichiesta Annulla="AnnullaEdit" Richiesta="Richiesta" Cliente="Cliente" Edit="true" ShowHidePopUp="@(()=>{ShowHideEdit();})" />
             }
-            @*else if (RedirectRapporto)
+            else if (RedirectRapporto)
             {
                 <NewRapporto Annulla="AnnullaRedirect" Rapporto="Rapporto" Cliente="Cliente" Edit="true" ShowHidePopUp="@(()=>{ShowHideRedirect();})" />
-            }*@
+            }
             else
             {
-                @*<MudItem xs="1" md="1" Class="d-flex flex-column align-items-center justify-center">
-        <MudIconButton Icon="@Icons.Material.Filled.Add" Color="Color.Primary" aria-label="github" OnClick="@(()=>{NuovaRichiesta = !NuovaRichiesta;})"></MudIconButton>
-        </MudItem>
-
-        <MudItem xs="1" md="1" Class="d-flex flex-column align-items-center justify-center">
-        <MudIconButton Icon="@Icons.Material.Filled.RemoveRedEye" Color="Color.Primary" aria-label="github" OnClick="@(()=>{ShowHideRagioniSociali();})"></MudIconButton>
-        </MudItem>
-
-        <MudItem xs="10" md="10" xl="6">
-        <MudAutocomplete T="string" Label="Ragione Sociale" @bind-Value="Cliente.ragioneSociale" SearchFunc="@Search" OnAdornmentClick="@(()=>{Search2(Cliente.ragioneSociale);})"
-        ResetValueOnEmptyText="true"
-        Clearable="true"
-        CoerceValue="true"
-        AdornmentIcon="@Icons.Material.Filled.Search"
-        AdornmentColor="Color.Primary" />
-        </MudItem>
-
-        <MudItem xs="12" md="12" xl="4">
-
-        <MudDateRangePicker Label="Data" Clearable="true" DateFormat="dd/MM/yyy"
-        DateRange="_dateRange"
-        DateRangeChanged="RicercaPerData" />
-
-        </MudItem>*@
 
                 @if (_ListaRichieste is null)
                 {
@@ -172,7 +152,7 @@
                 else
                 {
                     <MudItem xs="12">
-                        <MudTable Elevation="4" Items="_ListaRichieste" Height="100" Breakpoint="Breakpoint.Sm" Striped="true" Virtualize="true" FixedHeader="true">
+                        <MudTable Elevation="4" Items="_ListaRichieste" Height="100" Breakpoint="Breakpoint.Sm" Hover="true" Virtualize="true" FixedHeader="true">
                             <HeaderContent>
                                 <MudTh>Ragione Sociale</MudTh>
                                 <MudTh>Indirizzo</MudTh>
@@ -194,7 +174,9 @@
                                     <MudIconButton Icon="@Icons.Material.Filled.RemoveRedEye" Color="Color.Primary" aria-label="github" OnClick="@(()=>{ModificaRichiesta(context);})"></MudIconButton>
                                 </MudTd>
                                 <MudTd DataLabel="Crea/Visualizza Rapporto">
-                                    <MudIconButton Icon="@Icons.Material.Filled.CallMade" Color="Color.Primary" aria-label="github" @onclick="@(async()=>{await RedirectToRapporto(context);})" />
+                                    @if(context.RapportoCreato){
+                                        <MudIconButton Icon="@Icons.Material.Filled.CallMade" Color="Color.Primary" aria-label="github" @onclick="@(async()=>{await RedirectToRapporto(context);})" />
+                                    }
                                 </MudTd>
                             </RowTemplate>
                         </MudTable>
@@ -275,16 +257,31 @@
 
     private async Task AnnullaGenerate()
     {
-        CreateRapporto = !CreateRapporto;
-        Cliente = new Cliente();
-        Richiesta = new Richiesta();
+        if (tecnico)
+        {
+            CreateRapporto = !CreateRapporto;
+            Cliente = new Cliente();
+            Richiesta = new Richiesta();
+        }
+        else
+        {
+            CreateRapporto = !CreateRapporto;
+        }
     }
 
     private async Task AnnullaRedirect()
     {
-        RedirectRapporto = !RedirectRapporto;
-        Cliente = new Cliente();
-        Rapporto = new Rapporto();
+        if (tecnico)
+        {
+            RedirectRapporto = !RedirectRapporto;
+            Cliente = new Cliente();
+            Rapporto = new Rapporto();
+        }
+        else
+        {
+            RedirectRapporto = !RedirectRapporto;
+        }
+
     }
 
     private void ShowHideRagioniSociali()
@@ -320,23 +317,39 @@
 
     private async Task ShowHideRedirect()
     {
-        RedirectRapporto = !RedirectRapporto;
-        Cliente = new Cliente();
-        Rapporto = new Rapporto();
+        if (tecnico)
+        {
+            RedirectRapporto = !RedirectRapporto;
+            Cliente = new Cliente();
+            Rapporto = new Rapporto();
+        }
+        else
+        {
+            RedirectRapporto = !RedirectRapporto;
+        }
     }
 
     private async Task RedirectToRapporto(Richiesta ric)
     {
-        Rapporto = await RapportiService.GetRapportoByRichiesta(ric);
-        Cliente = _ListaClienti.First(c => c.id == ric.Clienteid);
-        RedirectRapporto = !RedirectRapporto;
-        StateHasChanged();
+        if (tecnico)
+        {
+            Rapporto = await RapportiService.GetRapportoByRichiesta(ric);
+            Cliente = _ListaClienti.First(c => c.id == ric.Clienteid);
+            RedirectRapporto = !RedirectRapporto;
+            StateHasChanged();
+        }
+        else
+        {
+            Rapporto = await RapportiService.GetRapportoByRichiesta(ric);
+            RedirectRapporto = !RedirectRapporto;
+            StateHasChanged();
+        }
     }
 
     //metodo per la ricerca tra tutte le ragioni sociali
     private async Task<IEnumerable<string>> Search(string value)
     {
-        var clienti = ArrClienti;
+        var clienti = await ClientiService.GetArrayClienti();
 
         if (string.IsNullOrEmpty(value))
             return new string[0];
@@ -354,8 +367,7 @@
 
             _ListaRichieste = _ListaRichieste.FindAll(r => r.Clienteid == _ListaClienti.FirstOrDefault(c => c.ragioneSociale == value).id);
             StateHasChanged();
-        }
-        else
+        }else
         {
             _ListaRichieste = await RichiesteService.GetRichiestaByRagSoc(value);
             StateHasChanged();

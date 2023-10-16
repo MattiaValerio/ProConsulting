@@ -39,7 +39,7 @@ namespace RapportiWeb.Client.Services.Pdf
             return "ERRORE";
         }
 
-        public async Task DownloadRapporto(Cliente cliente, Rapporto rap)
+        public async Task<string> DownloadRapporto(Cliente cliente, Rapporto rap)
         {
             try
             {
@@ -47,15 +47,16 @@ namespace RapportiWeb.Client.Services.Pdf
                 if (response.IsSuccessStatusCode)
                 {
                     var pdfFileName = await response.Content.ReadAsStringAsync();
-                    var pdfUrl = $"../PDF/{pdfFileName}";
+                    //var pdfUrl = $"/PDF/{pdfFileName}";
+                    return await response.Content.ReadAsStringAsync();
                 }
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                throw;
+                return e.Message;
             }
-
+            return "ERRORE";
         }
 
         public async Task GetFile(string filename)

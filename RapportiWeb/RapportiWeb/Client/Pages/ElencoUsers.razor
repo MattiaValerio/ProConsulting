@@ -1,11 +1,15 @@
-﻿@using RapportiWeb.Client.Services.Users;
+﻿@page "/users"
+
+@using RapportiWeb.Client.Services.Users;
+@using System.Security.Claims;
 
 @inject HttpClient httpClient
 @inject IUsersServices UsersServices
 @inject IClientiService ClientiService
 @inject IDialogService DialogService
+@inject AuthenticationStateProvider AuthStateProvider
 
-<MudItem xs="12">
+@* <MudItem xs="12">
 
     @if (_ListaUtenti is null)
     {
@@ -22,7 +26,7 @@
         else
         {
 
-            <MudTable Elevation="4" Items="_ListaUtenti" Height="100" Breakpoint="Breakpoint.Sm" Striped="true" Virtualize="true" FixedHeader="true">
+            <MudTable Elevation="4" Items="_ListaUtenti" Height="100" Breakpoint="Breakpoint.Sm" Hover="true" Virtualize="true" FixedHeader="true">
                 <HeaderContent>
                     <MudTh>UserName</MudTh>
                     <MudTh>Nome</MudTh>
@@ -47,10 +51,64 @@
         }
     }
 
-</MudItem>
+</MudItem> *@
+
+
+@if (authorized)
+{
+    <MudContainer>
+        <MudGrid>
+            <MudItem xs="12">
+                <AuthorizeView>
+
+                    <MudItem xs="12">
+                        <MudText Typo="Typo.h3" Align="Align.Center" GutterBottom="true">GESTIONE UTENTI</MudText>
+                    </MudItem>
+                    @if (EditUser)
+                    {
+                        <UserForm EditUser="User" Cliente="cliente" Edit="true" Back="BackEdit" />
+                    }
+                    else
+                    {
+
+                        <MudTable Context="utente" Elevation="4" Items="_ListaUtenti" Height="100" Breakpoint="Breakpoint.Sm" Hover="true" Virtualize="true" FixedHeader="true">
+                            <HeaderContent>
+                                <MudTh>UserName</MudTh>
+                                <MudTh>Nome</MudTh>
+                                <MudTh>Cognome</MudTh>
+                                <MudTh>Organizzazione</MudTh>
+                                <MudTh>Modifica</MudTh>
+                                <MudTh>Elimina</MudTh>
+                            </HeaderContent>
+                            <RowTemplate>
+                                <MudTd DataLabel="Username">@utente.UserName</MudTd>
+                                <MudTd DataLabel="Nome Creazione">@utente.Nome</MudTd>
+                                <MudTd DataLabel="Cognome">@utente.Cognome</MudTd>
+                                <MudTd DataLabel="Organizzazione">@_ListaClienti.FirstOrDefault(c=> c.id == utente.ClienteId).ragioneSociale</MudTd>
+                                <MudTd DataLabel="Modifica">
+                                    <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" aria-label="github" OnClick="@(async ()=>{await ModificaUser(utente);})"></MudIconButton>
+                                </MudTd>
+                                <MudTd DataLabel="Elimina">
+                                    <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" aria-label="github" @onclick="@(async()=>{await DeleteUser(utente);})"></MudIconButton>
+                                </MudTd>
+                            </RowTemplate>
+                        </MudTable>
+                    }
+                </AuthorizeView>
+            </MudItem>
+        </MudGrid>
+    </MudContainer>
+}
+else
+{
+    <MudText>Sembra che tu non sia autorizzato ad accedere a questa pagina...</MudText>
+}
+
 
 @code {
     private bool EditUser = false;
+    private bool authorized = false;
+
     private string searchString1 = string.Empty;
     private string selecteduser = string.Empty;
     private Cliente cliente = new Cliente();
@@ -61,6 +119,16 @@
 
     protected override async Task OnInitializedAsync()
     {
+
+        var role = (await AuthStateProvider.GetAuthenticationStateAsync()).User.Claims
+        .FirstOrDefault(c => c.Type == ClaimTypes.IsPersistent).Value;
+
+        if (role == "1")
+        {
+            authorized = true;
+
+        }
+
         var res = await UsersServices.GetUsers();
         _ListaUtenti = res.Data;
         _ListaClienti = await ClientiService.GetClienti();
@@ -71,11 +139,13 @@
     {
         var parameters = new DialogParameters<Dialog>();
         parameters.Add(x => x.ContentText, $"Vuoi veramente eliminare {user.UserName} dalla lista utenti? \nQuesta operazione non potrà essere annullata e l'utente non potrà più accedere al sistema.");
+        parameters.Add(x => x.ButtonText, "ANNULLA");
+        parameters.Add(x => x.Color, Color.Default);
         parameters.Add(x => x.ButtonText, "ELIMINA");
         parameters.Add(x => x.Color, Color.Error);
 
 
-        var options = new DialogOptions() { CloseButton = true, MaxWidth = MaxWidth.ExtraSmall };
+        var options = new DialogOptions() { CloseButton = true, MaxWidth = MaxWidth.Small };
 
         var dialog = await DialogService.ShowAsync<Dialog>("ATTENZIONE", parameters, options);
         var result = await dialog.Result;

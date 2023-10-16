@@ -61,6 +61,8 @@ app.UseHttpsRedirection();
 app.UseBlazorFrameworkFiles();
 
 app.UseAuthentication();
+
+app.UseFileServer(); //permette di accedere ai file/cartelle statici contenuti all'interno di wwroot
 app.UseStaticFiles();
 
 app.UseRouting();

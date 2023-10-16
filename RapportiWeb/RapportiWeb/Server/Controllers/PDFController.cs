@@ -32,50 +32,21 @@ namespace RapportiWeb.Server.Controllers
         [HttpPost("DownloadRichiesta")]
         public async Task<string> DownloadRichiesta(Richiesta richiesta)
         {
-
-            var listaClienti = await _context.Clienti.ToListAsync();
-            var cliente = listaClienti.Find(c => c.id == richiesta.Clienteid);
-            // Generate the PDF for Richiesta and save it on the server
             var pdfDocument = await CreateRichiestaPdf(richiesta);
             var pdfBytes = (pdfDocument).GeneratePdf();
-            var pdfFileName = $"{cliente.ragioneSociale}_{richiesta.id}_{richiesta.Data.ToShortDateString().Replace("/", "")}.pdf";
-
-            var pdfFolder = "PdfRichieste/";
-            var x = Directory.GetCurrentDirectory();
-            Directory.CreateDirectory(pdfFolder);
-            var pdfFilePath = Path.Combine(pdfFolder, pdfFileName);
-
-            System.IO.File.WriteAllBytes($"PdfRichieste/{pdfFileName}", pdfBytes);
 
             return Convert.ToBase64String(pdfBytes);
         }
 
         [HttpPost("DownloadRapporto")]
-        public async Task<IActionResult> DownloadRapporto(Rapporto rap)
+        public async Task<string> DownloadRapporto(Rapporto rap)
         {
 
-            var listaClienti = await _context.Clienti.ToListAsync();
-            var cliente = listaClienti.Find(c => c.id == rap.Clienteid);
-            // Generate the PDF for Richiesta and save it on the server
             var pdfDocument = await CreateRapportoPdf(rap);
-            var pdfBytes = ( pdfDocument).GeneratePdf();
-            var pdfFileName = $"{cliente.ragioneSociale}_{rap.id}_{rap.DataIntervento?.ToShortDateString().Replace("/", "")}.pdf";
+            var pdfBytes = (pdfDocument).GeneratePdf();
 
-            var pdfFolder = "Rapporti/";
-            Directory.CreateDirectory(pdfFolder);
-            var pdfFilePath = Path.Combine(pdfFolder, pdfFileName);
-
-            System.IO.File.WriteAllBytes($"Rapporti/{pdfFileName}", pdfBytes);
-
-            return Ok(pdfFileName);
+            return Convert.ToBase64String(pdfBytes);
         }
-
-  //      [HttpGet("{FileName}")]
-  //      public async Task GetFile(string filename)
-  //      {
-		//	await _jsRunTime.InvokeAsync<object>("open", $"/PDF/{filename}", "_blank");
-		//}
-
 
 
 
@@ -186,7 +157,7 @@ namespace RapportiWeb.Server.Controllers
                     page.Header()
                 .Row(row =>
                 {
-                    //row.RelativeColumn(0.5f).Image("/img/logo.png");
+                    row.RelativeColumn(0.5f).Image("img/logo.png");
                     row.RelativeColumn(0.1f).Text("");
                     row.RelativeColumn(0.5f).Border((float) 0.5).AlignCenter().Text($"RELAZIONE DI INTERVENTO           Codice richiesta: {rapporto.id}").Bold().FontSize((float) 14.5);
 

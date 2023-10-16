@@ -49,7 +49,7 @@
                 else
                 {
                     <MudItem xs="12">
-                        <MudTable Elevation="4" Items="_FilteredList" Height="100" Breakpoint="Breakpoint.Sm" Striped="true" Virtualize="true" FixedHeader="true">
+                        <MudTable Elevation="4" Items="_FilteredList" Height="100" Breakpoint="Breakpoint.Sm" Hover="true" Virtualize="true" FixedHeader="true">
                             <HeaderContent>
                                 <MudTh><MudTableSortLabel SortBy="new Func<Cliente, object>(x=>x.ragioneSociale)">Ragione Sociale</MudTableSortLabel></MudTh>
                                 <MudTh><MudTableSortLabel SortBy="new Func<Cliente, object>(x=>x.Indirizzo)">Indirizzo</MudTableSortLabel></MudTh>
