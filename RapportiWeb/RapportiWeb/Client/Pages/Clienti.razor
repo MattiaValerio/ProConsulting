@@ -1,81 +1,95 @@
 ﻿@page "/Clienti"
+@using Microsoft.AspNetCore.Authorization;
+@inject AuthenticationStateProvider AuthStateProvider
+@using System.Security.Claims;
 @inject IClientiService ClientiService
 @inject IDialogService DialogService
-
-<MudContainer>
-    <MudGrid Justify="Justify.Center">
+@attribute [Authorize]
 
 
-        @if (NewCliente)
-        {
-            <AddClienteForm ViewTable="PopUpNewCliente" CreateCliente="AddCliente"></AddClienteForm>
-        }else if (ModificaCliente)
-        {
-            <AddClienteForm Cliente="Cliente" EditCliente="EditCliente" Edit="true" ViewTable="PopUpEditCliente" CreateCliente="AddCliente"></AddClienteForm>
-        }
-        else
-        {
-            <MudItem xs="12">
-                <MudText Align="Align.Center" Typo="Typo.h2">CLIENTI</MudText>
-            </MudItem>
+@if (authorized)
+{
+    <MudContainer>
+        <MudGrid Justify="Justify.Center">
 
-             <MudItem xs="1" Class="d-flex flex-column align-items-center justify-center">
-                <MudIconButton Icon="@Icons.Material.Filled.Add" Color="Color.Primary" aria-label="github" OnClick="@(()=>{NewCliente = !NewCliente;})"></MudIconButton>
-            </MudItem>
 
-            <MudItem xs="11">
-                <MudAutocomplete T="string" Label="Ragione Sociale" @bind-Value="Cliente.ragioneSociale" SearchFunc="@Search"
-                                 ResetValueOnEmptyText="true"
-                                 Clearable="true"
-                                 CoerceValue="true"
-                                 AdornmentIcon="@Icons.Material.Filled.Search"
-                                 AdornmentColor="Color.Primary" />
-            </MudItem>
-
-            @if (_FilteredList is null)
+            @if (NewCliente)
             {
-                <MudItem xs="12" Style="display:flex; justify-content:center; align-items:center;">
-                    <MudProgressCircular  Color="Color.Primary" Indeterminate="true" />
-                </MudItem>
+                <AddClienteForm ViewTable="PopUpNewCliente" CreateCliente="AddCliente"></AddClienteForm>
+            }
+            else if (ModificaCliente)
+            {
+                <AddClienteForm Cliente="Cliente" EditCliente="EditCliente" Edit="true" ViewTable="PopUpEditCliente" CreateCliente="AddCliente"></AddClienteForm>
             }
             else
             {
                 <MudItem xs="12">
-                    <MudTable Elevation="4" Items="_FilteredList" Height="100" Breakpoint="Breakpoint.Sm" Striped="true" Virtualize="true" FixedHeader="true">
-                        <HeaderContent>
-                            <MudTh>Ragione Sociale</MudTh>
-                            <MudTh>Indirizzo</MudTh>
-                            <MudTh>Città</MudTh>
-                            <MudTh>E-Mail</MudTh>
-                            <MudTh>Telefono</MudTh>
-                            <MudTh>Modifica</MudTh>
-                            <MudTh>Elimina</MudTh>
-                        </HeaderContent>
-                        <RowTemplate>
-                            <MudTd DataLabel="Ragione Sociale">@context.ragioneSociale</MudTd>
-                            <MudTd DataLabel="Indirizzo">@context.Indirizzo</MudTd>
-                            <MudTd DataLabel="Citta">@context.Citta</MudTd>
-                            <MudTd DataLabel="E-Mail">@context.email</MudTd>
-                            <MudTd DataLabel="Telefono">@context.telefono</MudTd>
-                            <MudTd DataLabel="Modifica">
-                                <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" aria-label="github" OnClick="@(()=>{EditBtnClick(context);})"></MudIconButton>
-                            </MudTd>
-                            <MudTd DataLabel="Elimina">
-                                <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" aria-label="github"  @onclick="@(()=>{OpenDialog(context);})"></MudIconButton>
-                            </MudTd>
-                        </RowTemplate>
-                    </MudTable>
-
+                    <MudText Align="Align.Center" Typo="Typo.h2">CLIENTI</MudText>
                 </MudItem>
-            }
 
-        }
-    </MudGrid>
-</MudContainer>
+                <MudItem xs="1" Class="d-flex flex-column align-items-center justify-center">
+                    <MudIconButton Icon="@Icons.Material.Filled.Add" Color="Color.Primary" aria-label="github" OnClick="@(()=>{NewCliente = !NewCliente;})"></MudIconButton>
+                </MudItem>
+
+                <MudItem xs="11">
+                    <MudAutocomplete T="string" Label="Ragione Sociale" @bind-Value="Cliente.ragioneSociale" SearchFunc="@Search"
+                                     ResetValueOnEmptyText="true"
+                                     Clearable="true"
+                                     CoerceValue="true"
+                                     AdornmentIcon="@Icons.Material.Filled.Search"
+                                     AdornmentColor="Color.Primary" />
+                </MudItem>
+
+                @if (_FilteredList is null)
+                {
+                    <MudItem xs="12" Style="display:flex; justify-content:center; align-items:center;">
+                        <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+                    </MudItem>
+                }
+                else
+                {
+                    <MudItem xs="12">
+                        <MudTable Elevation="4" Items="_FilteredList" Height="100" Breakpoint="Breakpoint.Sm" Hover="true" Virtualize="true" FixedHeader="true">
+                            <HeaderContent>
+                                <MudTh><MudTableSortLabel SortBy="new Func<Cliente, object>(x=>x.ragioneSociale)">Ragione Sociale</MudTableSortLabel></MudTh>
+                                <MudTh><MudTableSortLabel SortBy="new Func<Cliente, object>(x=>x.Indirizzo)">Indirizzo</MudTableSortLabel></MudTh>
+                                <MudTh><MudTableSortLabel SortBy="new Func<Cliente, object>(x=>x.Citta)">Città</MudTableSortLabel></MudTh>
+                                <MudTh><MudTableSortLabel SortBy="new Func<Cliente, object>(x=>x.email)">E-Mail</MudTableSortLabel></MudTh>
+                                <MudTh><MudTableSortLabel SortBy="new Func<Cliente, object>(x=>x.telefono)">Telefono</MudTableSortLabel></MudTh>
+                                <MudTh>Modifica</MudTh>
+                                <MudTh>Elimina</MudTh>
+                            </HeaderContent>
+                            <RowTemplate>
+                                <MudTd DataLabel="Ragione Sociale">@context.ragioneSociale</MudTd>
+                                <MudTd DataLabel="Indirizzo">@context.Indirizzo</MudTd>
+                                <MudTd DataLabel="Citta">@context.Citta</MudTd>
+                                <MudTd DataLabel="E-Mail">@context.email</MudTd>
+                                <MudTd DataLabel="Telefono">@context.telefono</MudTd>
+                                <MudTd DataLabel="Modifica">
+                                    <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" aria-label="github" OnClick="@(()=>{EditBtnClick(context);})"></MudIconButton>
+                                </MudTd>
+                                <MudTd DataLabel="Elimina">
+                                    <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" aria-label="github" @onclick="@(()=>{OpenDialog(context);})"></MudIconButton>
+                                </MudTd>
+                            </RowTemplate>
+                        </MudTable>
+
+                    </MudItem>
+                }
+
+            }
+        </MudGrid>
+    </MudContainer>
+}
+else
+{
+    <MudText>Sembra che tu non sia autorizzato ad accedere a questa pagina...</MudText>
+}
 
 
 
 @code {
+    private bool authorized = false;
     private bool ModificaCliente = false;
     private bool NewCliente = false;
 
@@ -92,6 +106,15 @@
 
     protected override async Task OnInitializedAsync()
     {
+        var role = (await AuthStateProvider.GetAuthenticationStateAsync()).User.Claims
+        .FirstOrDefault(c => c.Type == ClaimTypes.Role).Value;
+
+        if (role == "Tecnico")
+        {
+            authorized = true;
+
+        }
+
         ArrClienti = await GetArray();
     }
 

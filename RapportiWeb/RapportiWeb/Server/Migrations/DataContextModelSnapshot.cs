@@ -241,12 +241,16 @@ namespace RapportiWeb.Server.Migrations
                     b.Property<int>("Attivo")
                         .HasColumnType("int");
 
+                    b.Property<int>("ClienteId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Cognome")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Figuraprof")
-                        .HasColumnType("int");
+                    b.Property<string>("Figuraprof")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<byte[]>("Hash")
                         .IsRequired()
@@ -256,15 +260,13 @@ namespace RapportiWeb.Server.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Organizzazioneid")
-                        .HasColumnType("int");
-
                     b.Property<byte[]>("Salt")
                         .IsRequired()
                         .HasColumnType("varbinary(max)");
 
-                    b.Property<int>("TipoUtente")
-                        .HasColumnType("int");
+                    b.Property<string>("TipoUtente")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserName")
                         .IsRequired()
@@ -272,7 +274,7 @@ namespace RapportiWeb.Server.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Organizzazioneid");
+                    b.HasIndex("ClienteId");
 
                     b.ToTable("Utenti");
                 });
@@ -297,13 +299,11 @@ namespace RapportiWeb.Server.Migrations
 
             modelBuilder.Entity("RapportiWeb.Shared.User", b =>
                 {
-                    b.HasOne("RapportiWeb.Shared.Cliente", "Organizzazione")
+                    b.HasOne("RapportiWeb.Shared.Cliente", null)
                         .WithMany("Utenti")
-                        .HasForeignKey("Organizzazioneid")
+                        .HasForeignKey("ClienteId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Organizzazione");
                 });
 
             modelBuilder.Entity("RapportiWeb.Shared.Cliente", b =>

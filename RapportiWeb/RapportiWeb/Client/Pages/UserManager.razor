@@ -1,0 +1,98 @@
+﻿@page "/Admin"
+@inject AuthenticationStateProvider AuthStateProvider
+@inject NavigationManager nav
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Authorization;
+@attribute [Authorize]
+
+
+@if (authorized)
+{
+    <AuthorizeView>
+        <MudContainer>
+            <MudGrid Justify="Justify.Center">
+
+                <MudItem xs="12">
+                    <MudText Typo="Typo.h3" Align="Align.Center" GutterBottom="true">GESTIONE UTENTI</MudText>
+                </MudItem>
+
+                @if (AddUser)
+                {
+                    <UserForm Back="@(()=>{AddUser = !AddUser;})" />
+                }
+                else
+                {
+                    <MudItem xs="12" sm="6" md="6">
+                        <MudCard Elevation="5" Class="rounded-lg pb-4">
+                            <MudCardHeader>
+                                <CardHeaderContent>
+                                    <MudText Typo="Typo.h5" Align="Align.Center">Nuovo Utente</MudText>
+                                </CardHeaderContent>
+                            </MudCardHeader>
+                            <MudCardContent>
+                                <div class="d-flex justify-center">
+                                    <MudIcon Icon="@Icons.Material.Filled.Person" Size="Size.Large"></MudIcon>
+                                </div>
+                                <MudList Class="mx-auto mt-4" Style="width:300px;">
+                                    <MudListItem Icon="@Icons.Material.Filled.Add">
+                                        Aggiungi nuovi utenti all'app
+                                    </MudListItem>
+                                </MudList>
+                            </MudCardContent>
+                            <MudCardActions Class="d-flex justify-center">
+                                <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" Style="width:50%;" @onclick="@(()=>{AddUser = !AddUser;})">VAI</MudButton>
+                            </MudCardActions>
+                        </MudCard>
+                    </MudItem>
+
+                    <MudItem xs="12" sm="6" md="6">
+                        <MudCard Elevation="5" Class="rounded-lg pb-4">
+                            <MudCardHeader>
+                                <CardHeaderContent>
+                                    <MudText Typo="Typo.h5" Align="Align.Center">Gestione Utenti</MudText>
+                                </CardHeaderContent>
+                            </MudCardHeader>
+                            <MudCardContent>
+                                <div class="d-flex justify-center">
+                                    <MudIcon Icon="@Icons.Material.Filled.Contacts" Size="Size.Large"></MudIcon>
+                                </div>
+                                <MudList Class="mx-auto mt-4" Style="width:300px;">
+                                    <MudListItem Icon="@Icons.Material.Filled.Edit">
+                                        Gestisci gli account
+                                    </MudListItem>
+                                </MudList>
+                            </MudCardContent>
+                            <MudCardActions Class="d-flex justify-center">
+                                <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" Style="width:50%;" @onclick="@(()=>{nav.NavigateTo("/users");})">VAI</MudButton>
+                            </MudCardActions>
+                        </MudCard>
+                    </MudItem>
+                }
+            </MudGrid>
+        </MudContainer>
+    </AuthorizeView>
+}
+else
+{
+    <MudText>Sembra che tu non sia autorizzato ad accedere a questa pagina...</MudText>
+}
+
+@code {
+    bool authorized = false;
+    bool EditUser = false;
+
+    public bool AddUser { get; set; } = false;
+    public bool Elencousers { get; set; } = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var role = (await AuthStateProvider.GetAuthenticationStateAsync()).User.Claims
+        .FirstOrDefault(c => c.Type == ClaimTypes.IsPersistent).Value;
+
+        if (role == "1")
+        {
+            authorized = true;
+
+        }
+    }
+}

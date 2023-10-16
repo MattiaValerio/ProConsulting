@@ -72,5 +72,15 @@ namespace RapportiWeb.Client.Services.Clienti
             return new Cliente { };
 
 		}
-	}
+
+        public async Task<Cliente> GetClienteById(int id)
+        {
+            var result = await _http.GetFromJsonAsync<Cliente>($"/api/clienti/clientebyid/{id}");
+
+            if (result is not null)
+                return result;
+
+            return new Cliente { };
+        }
+    }
 }
